@@ -98,6 +98,10 @@ import {Dex} from '../sim/dex';
 global.Dex = Dex;
 global.toID = Dex.getId;
 
+import { startDb, Database } from './database';
+global.Database = Database;
+global.Db = Database;
+
 import {LoginServer} from './loginserver';
 global.LoginServer = LoginServer;
 
@@ -140,6 +144,13 @@ if (Config.crashguard) {
 	});
 }
 
+// Start database
+try {
+	startDb();
+} catch(e) {
+	if (e) throw e;
+}
+
 /*********************************************************
  * Start networking processes to be connected to
  *********************************************************/
@@ -173,5 +184,6 @@ TeamValidatorAsync.PM.spawn();
  *********************************************************/
 
 import {Repl} from '../lib/repl';
+import { consoleips } from '../config/config-example';
 // tslint:disable-next-line: no-eval
 Repl.start('app', cmd => eval(cmd));
