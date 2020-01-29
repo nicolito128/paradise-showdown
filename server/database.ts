@@ -10,6 +10,8 @@
 import * as fs from 'fs';
 import { Monitor } from './monitor';
 
+type $ = number | string | object | null | undefined;
+
 const ROOT: string = __dirname + '/../db/';
 
 export function startDb(): void {
@@ -42,7 +44,7 @@ export function Database(name: string): object | any {
 	const keys: string[] = Object.keys(Db);
 	const values: any[] = Object.values(Db);
 
-	function setDb<Y>(key: string | Y, value: string | Y): void {
+	function setDb<Y>(key: string, value: string | Y): void {
 		if (Db[key] === undefined) {
 			if (value === undefined || value === '') {
 				Db[key] = null;
@@ -56,7 +58,7 @@ export function Database(name: string): object | any {
 		overwrite(path, Db);
 	}
 
-	function getDb<X>(key: string | X): X {
+	function getDb<X>(key: string): X {
 		if (Db[key] === undefined) {
 			return undefined as any;
 		}
@@ -64,7 +66,7 @@ export function Database(name: string): object | any {
 		return Db[key];
 	}
 
-	function removeDb<O>(key: string | O): void | O {
+	function removeDb<O>(key: string): void | O {
 		if (Db[key] === undefined) {
 			return undefined as any;
 		}
@@ -98,6 +100,7 @@ export function Database(name: string): object | any {
 		call: (func: any): any => callDb(func),
 		keys: (): string[] => keys,
 		values: (): any[] => values,
+		exists: (): boolean => existsDb,
 		data: Db
 	};
 }
