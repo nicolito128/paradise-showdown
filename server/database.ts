@@ -10,8 +10,6 @@
 import * as fs from 'fs';
 import { Monitor } from './monitor';
 
-type $ = number | string | object | null | undefined;
-
 const ROOT: string = __dirname + '/../db/';
 
 export function startDb(): void {
