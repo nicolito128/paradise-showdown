@@ -27,13 +27,13 @@ function overwrite(path: string, data: object): void {
 	fs.writeFileSync(path, json);
 }
 
-export function Database<T>(name: string): object | T {
+export function Database(name: string): object | any {
 	const path: string = ROOT + `${name}.json`;
 	const existsDb: boolean = fs.existsSync(path);
 	let Db: any;
 
 	if (!existsDb) {
-		fs.writeFileSync(path, {});
+		overwrite(path, {});
 		Db = {};
 	} else {
 		Db = JSON.parse(fs.readFileSync(path));
