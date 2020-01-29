@@ -1503,6 +1503,22 @@ export const Chat = new class {
 		for (const file of files) {
 			this.loadPlugin(`chat-plugins/${file}`);
 		}
+
+		let plugins = FS('server/plugins').readdirSync();
+		plugins.splice(plugins.indexOf('utils'), 1);
+
+		for (let folder of plugins) {
+			let files = FS(`server/plugins/${folder}`).readdirSync();
+
+			let i: string;
+			if (files.includes('index.ts')) {
+				i = 'index.ts';
+			} else {
+				i = 'index.js';
+			}
+
+			this.loadPlugin(`plugins/${folder}/${i}`);
+		}
 	}
 	destroy() {
 		for (const handler of Chat.destroyHandlers) {
