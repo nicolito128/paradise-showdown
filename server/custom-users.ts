@@ -7,8 +7,8 @@ interface IUser {
 	money: number;
 	lvl: number;
 	exp: number;
-	friends: any[];
-	badges: any[];
+	friends: object[];
+	badges: object[];
 }
 
 export function setProfiles(obj: object): object {
@@ -33,8 +33,8 @@ export class CustomUser implements IUser {
 	money: number;
 	lvl: number;
 	exp: number;
-	friends: any;
-	badges: any[];
+	friends: object[];
+	badges: object[];
 	
 	constructor(id: string, name: string, options: object = {}) {
 		this.id = id;
