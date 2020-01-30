@@ -27,8 +27,16 @@ function overwrite(path: string, data: object): void {
 	fs.writeFileSync(path, json);
 }
 
-export function Database(name: string): object | any {
-	const path: string = ROOT + `${name}.json`;
+export function Database(name: string, folder?: string): object | any {
+	let path: string;
+	if (folder && folder !== undefined) {
+		const existsFolder = fs.existsSync(ROOT + folder);
+		if (!existsFolder) fs.mkdirSync(ROOT + folder);
+
+		path = ROOT + `${folder}/${name}.json`
+	} else {
+		path = ROOT + `${name}.json`;
+	}
 
 	const existsDb: boolean = fs.existsSync(path);
 	let Db: any;
