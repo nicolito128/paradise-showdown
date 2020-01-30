@@ -29,6 +29,7 @@ function overwrite(path: string, data: object): void {
 
 export function Database(name: string): object | any {
 	const path: string = ROOT + `${name}.json`;
+
 	const existsDb: boolean = fs.existsSync(path);
 	let Db: any;
 
