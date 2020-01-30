@@ -1,5 +1,7 @@
 import * as fs from 'fs';
 import { Database } from './database';
+import {Dex} from '../sim/dex';
+const toID = Dex.getId;
 
 interface IUser {
 	id: string;
@@ -11,7 +13,7 @@ interface IUser {
 	badges: object[];
 }
 
-export function setProfiles(obj: object): object {
+function setProfiles(obj: object): object {
 	let users = fs.readdirSync(__dirname + `/../db/users`)
 	if (users.length < 1) return null;
 
@@ -27,6 +29,15 @@ export function setProfiles(obj: object): object {
 	return obj as object;
 }
 
+export function getProfile(user: string): object | null {
+	user = toID(user);
+	const profiles = setProfiles(Object.create(null));
+
+	if (profiles[user] === undefined) return null;
+
+	return profiles[user];
+}
+
 export class CustomUser implements IUser {
 	id: string;
 	name: string;
@@ -36,8 +47,8 @@ export class CustomUser implements IUser {
 	friends: object[];
 	badges: object[];
 	
-	constructor(id: string, name: string, options: object = {}) {
-		this.id = id;
+	constructor(name: string, options: object = {}) {
+		this.id = toID(name);
 		this.name = name;
 
 		// Plugins
@@ -55,9 +66,16 @@ export class CustomUser implements IUser {
 		Database(this.id, 'users').set('data', {id: this.id, name: this.name, money: this.money, lvl: this.lvl, exp: this.exp, friends: [...this.friends], badges: this.badges});
 	}
 
-	get(key: string): any | null {
+	get(key: string): object | null {
 		const k = Database(this.id, 'users').get('data')[key];
 		if (k === undefined) return null;
 		return k;
+	}
+
+	update(): void {
+		let data: object = Object.assign(Object.create(null), Database(this.id, 'users').get('data'));
+		data.name = this.name;
+		Database(this.id, 'users').remove('data');
+		Database(this.id, 'users').set('data', data);
 	}
 }

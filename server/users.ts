@@ -116,8 +116,9 @@ function merge(toRemain: User, toDestroy: User) {
 function getUser(name: string | User | null, exactName = false) {
 	if (!name || name === '!') return null;
 
-	const customUser = new CustomUser(toID(name), name as string);
+	const customUser = new CustomUser(name as string);
 	customUser.init();
+	customUser.update();
 	
 	if ((name as User).id) return name as User;
 	let userid = toID(name);

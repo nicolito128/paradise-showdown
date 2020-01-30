@@ -102,8 +102,8 @@ import { startDb, Database } from './database';
 global.Database = Database;
 global.Db = Database;
 
-import { setProfiles } from './custom-users';
-global.Profiles = setProfiles(Object.create(null));
+import { getProfile } from './custom-users';
+global.Profiles = getProfile;
 
 import {LoginServer} from './loginserver';
 global.LoginServer = LoginServer;
