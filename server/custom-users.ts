@@ -63,7 +63,7 @@ export class CustomUser implements IUser {
 		const exists = Database(this.id, 'users').exists();
 		if (exists) return null;
 
-		Database(this.id, 'users').set('data', {id: this.id, name: this.name, money: this.money, lvl: this.lvl, exp: this.exp, friends: [...this.friends], badges: this.badges});
+		Database(this.id, 'users').set('data', {id: this.id, name: this.name, money: this.money, lvl: this.lvl, exp: this.exp, friends: this.friends, badges: this.badges});
 	}
 
 	get(key: string): object | null {
