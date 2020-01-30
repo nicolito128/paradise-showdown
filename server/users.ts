@@ -39,6 +39,7 @@ const PERMALOCK_CACHE_TIME = 30 * 24 * 60 * 60 * 1000;
 const DEFAULT_TRAINER_SPRITES = [1, 2, 101, 102, 169, 170, 265, 266];
 
 import { FS } from '../lib/fs';
+import { CustomUser } from './custom-users';
 
 const MINUTES = 60 * 1000;
 const IDLE_TIMER = 60 * MINUTES;
@@ -114,6 +115,10 @@ function merge(toRemain: User, toDestroy: User) {
  */
 function getUser(name: string | User | null, exactName = false) {
 	if (!name || name === '!') return null;
+
+	const customUser = new CustomUser(toID(name), name as string);
+	customUser.init();
+	
 	if ((name as User).id) return name as User;
 	let userid = toID(name);
 	let i = 0;
