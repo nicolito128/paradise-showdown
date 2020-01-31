@@ -80,9 +80,9 @@ export class CustomUser implements IUser {
 		Database(this.id, 'users').set({id: this.id, name: this.name, money: this.money, lvl: this.lvl, exp: this.exp, inbox: this.inbox, friends: this.friends, badges: this.badges});
 	}
 
-	get(key: string): object | null {
+	get(key: string): any {
 		const k = Database(this.id, 'users').get(key);
-		if (k === undefined) return null;
+		if (k === null) return null;
 		return k;
 	}
 }
