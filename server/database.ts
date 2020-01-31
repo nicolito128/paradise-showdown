@@ -2,9 +2,8 @@
 /**
  * Json handler system to Pokemon Showdown
  *
- * By: n128
- *
- * @license MIT license
+ * @author n128
+ * @license MIT
  */
 
 export type KeyType = string | number;
@@ -34,13 +33,13 @@ function overwrite(path: string, data: Db): void {
 	fs.writeFileSync(path, json);
 }
 
-export function Database(name: string, folder?: string): object | any {
+export function Database(name: string, group?: string): object | any {
 	let path: string;
-	if (folder && folder !== undefined) {
-		const existsFolder = fs.existsSync(ROOT + folder);
-		if (!existsFolder) fs.mkdirSync(ROOT + folder);
+	if (group && group !== undefined) {
+		const existsFolder = fs.existsSync(ROOT + group);
+		if (!existsFolder) fs.mkdirSync(ROOT + group);
 
-		path = ROOT + `${folder}/${name}.json`
+		path = ROOT + `${group}/${name}.json`
 	} else {
 		path = ROOT + `${name}.json`;
 	}
@@ -127,7 +126,7 @@ export function Database(name: string, folder?: string): object | any {
 	}
 
 	return {
-		set: (key: KeyType | ValueType, value: ValueType): any => setDb(key, value),
+		set: (key: KeyType | ValueType, value?: ValueType): void | null => setDb(key, value),
 		put: (key: KeyType, value: ValueType): ValueType => putDb(key, value),
 		get: (key: KeyType): ValueType => getDb(key),
 		remove: (key: KeyType): void | null => removeDb(key),

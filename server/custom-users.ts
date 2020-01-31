@@ -1,3 +1,10 @@
+/**
+ * Custom Users system to Pokemon Showdown
+ * 
+ * @author n128
+ * @license MIT
+ */
+
 import * as fs from 'fs';
 import { Database } from './database';
 import {Dex} from '../sim/dex';
