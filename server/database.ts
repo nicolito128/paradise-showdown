@@ -7,6 +7,13 @@
  * @license MIT license
  */
 
+export type KeyType = string | number;
+export type ValueType = string | string[] | number | number[] | object | object[] | boolean | null;
+
+interface Db {
+	[k: string]: ValueType;
+}
+
 import * as fs from 'fs';
 import { Monitor } from './monitor';
 
@@ -39,51 +46,51 @@ export function Database(name: string, folder?: string): object | any {
 	}
 
 	const existsDb: boolean = fs.existsSync(path);
-	let Db: any;
+	let db: Db;
 
 	if (!existsDb) {
 		overwrite(path, {});
-		Db = {};
+		db = {};
 	} else {
-		Db = JSON.parse(fs.readFileSync(path));
+		db = JSON.parse(fs.readFileSync(path));
 	}
 
-	const keys: string[] = Object.keys(Db);
-	const values: any[] = Object.values(Db);
+	const keys: KeyType[] = Object.keys(db);
+	const values: ValueType[] = Object.values(db);
 
-	function setDb<Y>(key: string, value: string | Y): void {
-		if (Db[key] === undefined) {
+	function setDb(key: KeyType, value: ValueType): void {
+		if (db[key] === undefined) {
 			if (value === undefined || value === '') {
-				Db[key] = null;
+				db[key] = null;
 			} else {
-				Db[key] = value;
+				db[key] = value;
 			}
 		} else {
-			Db[key] = value;
+			db[key] = value;
 		}
 
-		overwrite(path, Db);
+		overwrite(path, db);
 	}
 
-	function getDb<X>(key: string): X {
-		if (Db[key] === undefined) {
+	function getDb(key: KeyType) {
+		if (db[key] === undefined) {
 			return undefined as any;
 		}
 
-		return Db[key];
+		return db[key];
 	}
 
-	function removeDb<O>(key: string): void | O {
-		if (Db[key] === undefined) {
+	function removeDb(key: KeyType): void {
+		if (db[key] === undefined) {
 			return undefined as any;
 		}
 
-		delete Db[key];
-		overwrite(path, Db);
+		delete db[key];
+		overwrite(path, db);
 	}
 
-	function hasDb(key: string): boolean {
-		if (Db[key] === undefined || Db[key] === '') {
+	function hasDb(key: KeyType): boolean {
+		if (db[key] === undefined || db[key] === '') {
 			return false;
 		}
 
@@ -95,19 +102,19 @@ export function Database(name: string, folder?: string): object | any {
 			throw new Error('The required parameter must be a function!');
 		}
 
-		func(Db, keys);
-		overwrite(path, Db);
+		func(db, keys);
+		overwrite(path, db);
 	}
 
 	return {
-		set: (key: any, value: any): any => setDb(key, value),
-		get: (key: string): any => getDb(key),
-		remove: (key: string): any => removeDb(key),
-		has: (key: string): boolean => hasDb(key),
-		call: (func: any): any => callDb(func),
-		keys: (): string[] => keys,
-		values: (): any[] => values,
+		set: (key: KeyType, value: ValueType): any => setDb(key, value),
+		get: (key: KeyType): ValueType => getDb(key),
+		remove: (key: KeyType): void => removeDb(key),
+		has: (key: KeyType): boolean => hasDb(key),
+		call: (func: any): void => callDb(func),
+		keys: (): KeyType[] => keys,
+		values: (): ValueType[] => values,
 		exists: (): boolean => existsDb,
-		data: Db
+		data: (): Db => db
 	};
 }
