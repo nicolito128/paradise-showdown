@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { Database } from './database';
+import { Database, KeyType, ValueType } from './database';
 import {Dex} from '../sim/dex';
 const toID = Dex.getId;
 
@@ -9,30 +9,42 @@ interface IUser {
 	money: number;
 	lvl: number;
 	exp: number;
+	inbox: object;
 	friends: object[];
 	badges: object[];
 }
 
-function setProfiles(obj: object): object {
-	let users = fs.readdirSync(__dirname + `/../db/users`)
+interface Profile {
+	[k: string]: any;
+	Set?: (key: KeyType, value: ValueType) => void;
+}
+
+function setProfiles(obj: Profile): object | null{
+	let users: string[] = fs.readdirSync(__dirname + `/../db/users`)
 	if (users.length < 1) return null;
 
 	users.forEach(user => {
-		const userid = user.slice(0, -5);
+		const userid: string = user.slice(0, -5);
 		obj[userid] = {};
 		let data: object = Database(userid, 'users').get('data');
-		let keys = Object.keys(data);
+		let keys: string[] = Object.keys(data);
 
 		keys.forEach(key => obj[userid][key] = data[key]);
+		profiles[userid].Set = function (key: KeyType, value: ValueType): void {
+			let setObject: object;
+			setObject[key] = value;
+			Database(userid, 'users').set('data', setObject);
+		}
+
+		Object.assign(obj, data);
 	});
 
 	return obj as object;
 }
 
-export function getProfile(user: string): object | null {
+let profiles: Profile = setProfiles(Object.create(null));
+export function getProfile(user: string): Profile | null {
 	user = toID(user);
-	const profiles = setProfiles(Object.create(null));
-
 	if (profiles[user] === undefined) return null;
 
 	return profiles[user];
@@ -44,6 +56,7 @@ export class CustomUser implements IUser {
 	money: number;
 	lvl: number;
 	exp: number;
+	inbox: object;
 	friends: object[];
 	badges: object[];
 	
@@ -55,6 +68,7 @@ export class CustomUser implements IUser {
 		this.money = 0;
 		this.lvl = 1;
 		this.exp = 0;
+		this.inbox = {};
 		this.friends = [];
 		this.badges = [];
 	}
@@ -63,19 +77,12 @@ export class CustomUser implements IUser {
 		const exists = Database(this.id, 'users').exists();
 		if (exists) return null;
 
-		Database(this.id, 'users').set('data', {id: this.id, name: this.name, money: this.money, lvl: this.lvl, exp: this.exp, friends: this.friends, badges: this.badges});
+		Database(this.id, 'users').set('data', {id: this.id, name: this.name, money: this.money, lvl: this.lvl, exp: this.exp, inbox: this.inbox, friends: this.friends, badges: this.badges});
 	}
 
 	get(key: string): object | null {
 		const k = Database(this.id, 'users').get('data')[key];
 		if (k === undefined) return null;
 		return k;
-	}
-
-	update(): void {
-		let data: object = Object.assign(Object.create(null), Database(this.id, 'users').get('data'));
-		data.name = this.name;
-		Database(this.id, 'users').remove('data');
-		Database(this.id, 'users').set('data', data);
 	}
 }
