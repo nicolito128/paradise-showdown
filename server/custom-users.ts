@@ -16,10 +16,9 @@ interface IUser {
 
 interface Profile {
 	[k: string]: any;
-	Set?: (key: KeyType, value: ValueType) => void;
 }
 
-function setProfiles(obj: Profile): object | null{
+function setProfiles(obj: Profile): Profile | null{
 	let users: string[] = fs.readdirSync(__dirname + `/../db/users`)
 	if (users.length < 1) return null;
 
@@ -30,22 +29,16 @@ function setProfiles(obj: Profile): object | null{
 		let keys: string[] = Object.keys(data);
 
 		keys.forEach(key => obj[userid][key] = data[key]);
-		profiles[userid].Set = function (key: KeyType, value: ValueType): void {
-			let setObject: object;
-			setObject[key] = value;
-			Database(userid, 'users').set('data', setObject);
-		}
-
 		Object.assign(obj, data);
 	});
 
-	return obj as object;
+	return obj;
 }
 
 let profiles: Profile = setProfiles(Object.create(null));
 export function getProfile(user: string): Profile | null {
 	user = toID(user);
-	if (profiles[user] === undefined) return null;
+	if (typeof profiles[user] === 'undefined') return null;
 
 	return profiles[user];
 }
