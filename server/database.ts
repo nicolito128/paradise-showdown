@@ -29,7 +29,7 @@ export function startDb(): void {
 	}
 }
 
-function overwrite(path: string, data: object): void {
+function overwrite(path: string, data: Db): void {
 	const json: string = JSON.stringify(data);
 	fs.writeFileSync(path, json);
 }
@@ -72,17 +72,17 @@ export function Database(name: string, folder?: string): object | any {
 		overwrite(path, db);
 	}
 
-	function getDb(key: KeyType) {
+	function getDb(key: KeyType): ValueType | null {
 		if (db[key] === undefined) {
-			return undefined as any;
+			return null;
 		}
 
 		return db[key];
 	}
 
-	function removeDb(key: KeyType): void {
+	function removeDb(key: KeyType): void | null {
 		if (db[key] === undefined) {
-			return undefined as any;
+			return null;
 		}
 
 		delete db[key];
@@ -109,7 +109,7 @@ export function Database(name: string, folder?: string): object | any {
 	return {
 		set: (key: KeyType, value: ValueType): any => setDb(key, value),
 		get: (key: KeyType): ValueType => getDb(key),
-		remove: (key: KeyType): void => removeDb(key),
+		remove: (key: KeyType): void | null => removeDb(key),
 		has: (key: KeyType): boolean => hasDb(key),
 		call: (func: any): void => callDb(func),
 		keys: (): KeyType[] => keys,
