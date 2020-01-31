@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { Database, KeyType, ValueType } from './database';
+import { Database } from './database';
 import {Dex} from '../sim/dex';
 const toID = Dex.getId;
 
@@ -25,7 +25,7 @@ function setProfiles(obj: Profile): Profile | null{
 	users.forEach(user => {
 		const userid: string = user.slice(0, -5);
 		obj[userid] = {};
-		let data: object = Database(userid, 'users').get('data');
+		let data: object = Database(userid, 'users').data();
 		let keys: string[] = Object.keys(data);
 
 		keys.forEach(key => obj[userid][key] = data[key]);
@@ -35,9 +35,9 @@ function setProfiles(obj: Profile): Profile | null{
 	return obj;
 }
 
-let profiles: Profile = setProfiles(Object.create(null));
 export function getProfile(user: string): Profile | null {
 	user = toID(user);
+	let profiles: Profile = setProfiles(Object.create(null));
 	if (typeof profiles[user] === 'undefined') return null;
 
 	return profiles[user];
@@ -70,11 +70,11 @@ export class CustomUser implements IUser {
 		const exists = Database(this.id, 'users').exists();
 		if (exists) return null;
 
-		Database(this.id, 'users').set('data', {id: this.id, name: this.name, money: this.money, lvl: this.lvl, exp: this.exp, inbox: this.inbox, friends: this.friends, badges: this.badges});
+		Database(this.id, 'users').set({id: this.id, name: this.name, money: this.money, lvl: this.lvl, exp: this.exp, inbox: this.inbox, friends: this.friends, badges: this.badges});
 	}
 
 	get(key: string): object | null {
-		const k = Database(this.id, 'users').get('data')[key];
+		const k = Database(this.id, 'users').get(key);
 		if (k === undefined) return null;
 		return k;
 	}
