@@ -118,7 +118,6 @@ function getUser(name: string | User | null, exactName = false) {
 
 	const customUser = new CustomUser(name as string);
 	customUser.init();
-	customUser.update();
 	
 	if ((name as User).id) return name as User;
 	let userid = toID(name);
