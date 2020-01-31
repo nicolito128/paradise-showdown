@@ -58,18 +58,38 @@ export function Database(name: string, folder?: string): object | any {
 	const keys: KeyType[] = Object.keys(db);
 	const values: ValueType[] = Object.values(db);
 
-	function setDb(key: KeyType, value: ValueType): void {
-		if (db[key] === undefined) {
-			if (value === undefined || value === '') {
-				db[key] = null;
-			} else {
-				db[key] = value;
-			}
+	function setDb(key: KeyType | ValueType, value?: ValueType): void | null {
+		if (key === undefined) return null;
+		if (value === undefined || value === '' && typeof key === 'object') {
+			Object.assign(db, key);
+		} else if (key && value) {
+			db[(key as KeyType)] = value;
 		} else {
-			db[key] = value;
+			return null;
 		}
 
 		overwrite(path, db);
+	}
+
+	function putDb(key: KeyType, value: ValueType): ValueType {
+		if (key && db[key] !== undefined && value) {
+			if (typeof db[key] === 'number' && typeof value === 'number') {
+				(db[key] as number) += value;
+			} else if (typeof db[key] === 'string' && typeof value === 'string') {
+				(db[key] as string) += value;
+			} else if (Array.isArray(db[key])) {
+				(db[key] as ValueType[]).push(value);
+			} else if (typeof db[key] === 'object' && typeof value === 'object') {
+				Object.assign(db[key], value);
+			} else {
+				return null;
+			}
+
+			overwrite(path, db);
+			return db[key];
+		}
+
+		return null;
 	}
 
 	function getDb(key: KeyType): ValueType | null {
@@ -107,7 +127,8 @@ export function Database(name: string, folder?: string): object | any {
 	}
 
 	return {
-		set: (key: KeyType, value: ValueType): any => setDb(key, value),
+		set: (key: KeyType | ValueType, value: ValueType): any => setDb(key, value),
+		put: (key: KeyType, value: ValueType): ValueType => putDb(key, value),
 		get: (key: KeyType): ValueType => getDb(key),
 		remove: (key: KeyType): void | null => removeDb(key),
 		has: (key: KeyType): boolean => hasDb(key),
