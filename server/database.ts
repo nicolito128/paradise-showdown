@@ -1,10 +1,11 @@
-'use strict';
 /**
  * Json handler system to Pokemon Showdown
  *
  * @author n128
  * @license MIT
  */
+
+'use strict';
 
 export type KeyType = string | number;
 export type ValueType = string | string[] | number | number[] | object | object[] | boolean | null;
