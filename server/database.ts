@@ -37,8 +37,8 @@ function overwrite(path: string, data: Db): void {
 export function Database(name: string, group?: string): object | any {
 	let path: string;
 	if (group && group !== undefined) {
-		const existsFolder = fs.existsSync(ROOT + group);
-		if (!existsFolder) fs.mkdirSync(ROOT + group);
+		const existsGroup = fs.existsSync(ROOT + group);
+		if (!existsGroup) fs.mkdirSync(ROOT + group);
 
 		path = ROOT + `${group}/${name}.json`
 	} else {
@@ -58,7 +58,7 @@ export function Database(name: string, group?: string): object | any {
 	const keys: KeyType[] = Object.keys(db);
 	const values: ValueType[] = Object.values(db);
 
-	function setDb(key: KeyType | ValueType, value?: ValueType): void | null {
+	function setDb(key: KeyType | object, value?: ValueType): void | null {
 		if (key === undefined) return null;
 		if (value === undefined || value === '' && typeof key === 'object') {
 			Object.assign(db, key);
