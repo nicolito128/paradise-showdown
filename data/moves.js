@@ -2490,10 +2490,12 @@ let BattleMovedex = {
 		priority: 0,
 		flags: {snatch: 1, sound: 1, dance: 1},
 		onTryHit(pokemon, target, move) {
-			if (pokemon.hp <= pokemon.maxhp / 3 || pokemon.boosts.atk >= 6 || pokemon.boosts.def >= 6 || pokemon.boosts.spa >= 6 || pokemon.boosts.spd >= 6 || pokemon.boosts.spe >= 6 || pokemon.maxhp === 1) {
-				delete move.boosts;
+			if (pokemon.hp <= pokemon.maxhp / 3 || pokemon.maxhp === 1) {
 				return false;
 			}
+			// @ts-ignore
+			if (!this.boost(move.boosts)) return null;
+			delete move.boosts;
 		},
 		onHit(pokemon) {
 			this.directDamage(pokemon.maxhp / 3);
@@ -2987,7 +2989,7 @@ let BattleMovedex = {
 		accuracy: 100,
 		basePower: 0,
 		category: "Status",
-		desc: "Switches the Spikes, Toxic Spikes, Stealth Rock, Sticky Web, Light Screen, Reflect, Aurora Veil, and Tailwind from the user's side to the target's side and vice versa.",
+		desc: "Switches the Mist, Light Screen, Reflect, Spikes, Safeguard, Tailwind, Toxic Spikes, Stealth Rock, Water Pledge, Fire Pledge, Grass Pledge, Sticky Web, Aurora Veil, G-Max Steelsurge, and G-Max Wildfire effects from the user's side to the target's side and vice versa.",
 		shortDesc: "Swaps field effects with the foe.",
 		id: "courtchange",
 		isViable: true,
@@ -2999,7 +3001,7 @@ let BattleMovedex = {
 			const sourceSide = source.side;
 			const targetSide = source.side.foe;
 			const sideConditions = [
-				'spikes', 'toxicspikes', 'stealthrock', 'gmaxsteelsurge', 'stickyweb', 'lightscreen', 'reflect', 'auroraveil', 'tailwind',
+				'mist', 'lightscreen', 'reflect', 'spikes', 'safeguard', 'tailwind', 'toxicspikes', 'stealthrock', 'waterpledge', 'firepledge', 'grasspledge', 'stickyweb', 'auroraveil', 'gmaxsteelsurge', 'gmaxwildfire',
 			];
 			let success = false;
 			for (let id of sideConditions) {
