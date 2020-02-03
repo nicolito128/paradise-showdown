@@ -297,9 +297,9 @@ class RandomTeams {
 		/**@type {number[]} */
 		let pool = [];
 		for (let id in this.dex.data.FormatsData) {
-			if (!this.dex.data.Pokedex[id] || this.dex.data.FormatsData[id].isNonstandard && this.dex.data.FormatsData[id].isNonstandard !== 'Unobtainable') continue;
+			if (!this.dex.data.Pokedex[id] || this.dex.data.FormatsData[id].isNonstandard && this.dex.data.FormatsData[id].isNonstandard === 'Past') continue;
 			let num = this.dex.data.Pokedex[id].num;
-			if (pool.includes(num)) continue;
+			if (num <= 0 || pool.includes(num)) continue;
 			if (num > last) break;
 			pool.push(num);
 		}
@@ -316,7 +316,7 @@ class RandomTeams {
 		for (let id in this.dex.data.Pokedex) {
 			if (!(this.dex.data.Pokedex[id].num in hasDexNumber)) continue;
 			let template = this.dex.getTemplate(id);
-			if (template.gen <= this.gen && template.isNonstandard !== 'Past') {
+			if (template.gen <= this.gen && template.isNonstandard !== 'Past' && template.isNonstandard !== 'LGPE') {
 				formes[hasDexNumber[template.num]].push(template.species);
 			}
 		}
@@ -712,6 +712,9 @@ class RandomTeams {
 				case 'hex':
 					if (!hasMove['willowisp']) rejected = true;
 					break;
+				case 'payback': case 'psychocut':
+					if (!counter.Status || hasMove['rest'] && hasMove['sleeptalk']) rejected = true;
+					break;
 				case 'raindance':
 					if (!counter['Water']) rejected = true;
 					break;
@@ -799,9 +802,6 @@ class RandomTeams {
 					break;
 				case 'partingshot':
 					if (counter.setupType || hasMove['fakeout'] || hasMove['uturn']) rejected = true;
-					break;
-				case 'payback': case 'psychocut':
-					if (hasMove['rest'] && hasMove['sleeptalk']) rejected = true;
 					break;
 				case 'rapidspin':
 					if (hasMove['curse'] || hasMove['nastyplot'] || hasMove['shellsmash'] || teamDetails.rapidSpin) rejected = true;

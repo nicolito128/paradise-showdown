@@ -63,6 +63,7 @@ let Formats = [
 		name: "[Gen 8] UU",
 		threads: [
 			`&bullet; <a href="https://www.smogon.com/forums/threads/3658529/">UU Metagame Discussion</a>`,
+			`&bullet; <a href="https://www.smogon.com/forums/threads/3659427/">UU Viability Rankings</a>`,
 		],
 
 		mod: 'gen8',
@@ -72,7 +73,7 @@ let Formats = [
 	{
 		name: "[Gen 8] RU",
 		threads: [
-			`&bullet; <a href="https://www.smogon.com/forums/threads/3658495/">RU Metagame Discussion</a>`,
+			`&bullet; <a href="https://www.smogon.com/forums/threads/3659533/">RU Metagame Discussion</a>`,
 		],
 
 		mod: 'gen8',
@@ -81,6 +82,9 @@ let Formats = [
 	},
 	{
 		name: "[Gen 8] NU",
+		threads: [
+			`&bullet; <a href="https://www.smogon.com/forums/threads/3659534/">NU Metagame Discussion</a>`,
+		],
 
 		mod: 'gen8',
 		ruleset: ['[Gen 8] RU'],
@@ -103,7 +107,7 @@ let Formats = [
 		desc: `All the Pok&eacute;mon on a team must share a type.`,
 		threads: [
 			`&bullet; <a href="https://www.smogon.com/forums/threads/3656253/">Monotype Metagame Discussion</a>`,
-			//`&bullet; <a href="https://www.smogon.com/forums/threads/3599682/">Monotype Sample Teams</a>`,
+			`&bullet; <a href="https://www.smogon.com/forums/threads/3658745/">Monotype Sample Teams</a>`,
 			//`&bullet; <a href="https://www.smogon.com/forums/threads/3622349">Monotype Viability Rankings</a>`,
 		],
 
@@ -173,6 +177,7 @@ let Formats = [
 		name: "[Gen 8] Battle Stadium Singles",
 		threads: [
 			`&bullet; <a href="https://www.smogon.com/forums/threads/3656336/">BSS Discussion</a>`,
+			`&bullet; <a href="https://www.smogon.com/forums/threads/3658806/">BSS Viability Rankings</a>`,
 		],
 
 		mod: 'gen8',
@@ -408,6 +413,7 @@ let Formats = [
 		name: "[Gen 8] National Dex",
 		threads: [
 			`&bullet; <a href="https://www.smogon.com/forums/threads/3656899/">National Dex Metagame Discussion</a>`,
+			`&bullet; <a href="https://www.smogon.com/forums/threads/3659038/">National Dex Viability Rankings</a>`,
 		],
 
 		mod: 'gen8',
@@ -419,6 +425,9 @@ let Formats = [
 			'Rayquaza', 'Reshiram', 'Salamence-Mega', 'Shaymin-Sky', 'Solgaleo', 'Xerneas', 'Yveltal', 'Zacian', 'Zamazenta', 'Zekrom',
 			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'Baton Pass',
 		],
+		onBegin() {
+			if (this.rated && this.format.id === 'gen8nationaldex') this.add('html', `<div class="broadcast-red"><strong>National Dex is currently suspecting Genesect! For information on how to participate check out the <a href="https://www.smogon.com/forums/threads/3659573/">suspect thread</a>.</strong></div>`);
+		},
 	},
 	{
 		name: "[Gen 8] National Dex AG",
@@ -460,7 +469,7 @@ let Formats = [
 		banlist: [],
 		restrictedMoves: [
 			'Baneful Bunker', 'Block', 'Copycat', 'Detect', 'Destiny Bond', 'Ingrain', 'King\'s Shield', 'Mean Look', 'Metronome',
-			'Obstruct', 'Octolock', 'Nature Power', 'Parting Shot', 'Protect', 'Roar', 'Skill Swap', 'Spiky Shield', 'Whirlwind',
+			'Obstruct', 'Octolock', 'Nature Power', 'Parting Shot', 'Protect', 'Roar', 'Skill Swap', 'Spiky Shield', 'Teleport', 'Whirlwind',
 		],
 		onValidateTeam(team, format, teamHas) {
 			for (const trademark in teamHas.trademarks) {
@@ -525,10 +534,15 @@ let Formats = [
 		mod: 'gen8',
 		ruleset: ['-Nonexistent', 'OHKO Clause', 'Evasion Moves Clause', 'Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod', 'Endless Battle Clause'],
 		banlist: [
-			'Eternatus-Eternamax', 'Shedinja', 'Zacian-Crowned', 'Comatose + Sleep Talk', 'Double Iron Bash',
+			'Eternatus-Eternamax', 'Shedinja', 'Comatose + Sleep Talk', 'Double Iron Bash',
 			'Arena Trap', 'Contrary', 'Gorilla Tactics', 'Huge Power', 'Illusion', 'Innards Out', 'Libero', 'Magnet Pull', 'Moody',
 			'Neutralizing Gas', 'Parental Bond', 'Protean', 'Psychic Surge', 'Pure Power', 'Shadow Tag', 'Stakeout', 'Water Bubble', 'Wonder Guard',
 		],
+		onValidateSet(set) {
+			if (set.species === 'Zacian-Crowned' && (toID(set.item) !== 'rustedsword' || toID(set.ability) !== 'intrepidsword')) {
+				return [set.species + " is banned."];
+			}
+		},
 		onChangeSet(set) {
 			const item = toID(set.item);
 			if (set.species === 'Zacian' && item === 'rustedsword') {
@@ -839,7 +853,6 @@ let Formats = [
 
 		mod: 'gen7',
 		team: 'randomFactory',
-		searchShow: false,
 		ruleset: ['Obtainable', 'Sleep Clause Mod', 'Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Mega Rayquaza Clause'],
 	},
 	{
@@ -1007,12 +1020,12 @@ let Formats = [
 		unbanlist: ['Wobbuffet', 'Wynaut', 'Sand Veil'],
 	},
 	{
-		name: "[Gen 1] OU (No Defense Curl, Harden, or Reflect)",
-		desc: `[Gen 1] OU, but common Defense-boosting moves are banned.`,
+		name: "[Gen 1] OU (No Defense Boosting)",
+		desc: `[Gen 1] OU, but all Defense-boosting moves are banned.`,
 
 		mod: 'gen1',
 		ruleset: ['[Gen 1] OU'],
-		banlist: ['Defense Curl', 'Harden', 'Reflect'],
+		banlist: ['Acid Armor', 'Barrier', 'Defense Curl', 'Harden', 'Reflect', 'Withdraw'],
 	},
 
 	// Past Gens OU
@@ -1764,7 +1777,7 @@ let Formats = [
 
 		mod: 'gen5',
 		searchShow: false,
-		ruleset: ['Standard', '!Evasion Moves Clause'],
+		ruleset: ['Standard', '!Evasion Moves Clause', 'Sleep Clause Mod'],
 	},
 	{
 		name: "[Gen 5] UU",
