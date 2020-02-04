@@ -1,4 +1,7 @@
 import Economy from './economy';
+import { setProfiles } from './../../custom-users';
+
+const profiles = setProfiles(Object.create(null));
 
 export const commands: ChatCommands = {
 	'!pd': true,
@@ -17,8 +20,8 @@ export const commands: ChatCommands = {
 	},
 	pdhelp: ['/pd [user] - Mira los ahorros de un usuario'],
 
-	givepd: 'writemoney',
-	givebucks: 'writemoney',
+	givepd: 'givemoney',
+	givebucks: 'givemoney',
 	givemoney(target, room, user) {
 		if (!this.can('makeroom')) return false;
 
@@ -36,7 +39,7 @@ export const commands: ChatCommands = {
 		if (isNaN(amount)) return this.errorReply("'amount' debe ser un valor numerico.");
 
 		Economy.write(userid, amount);
-		Economy.log(user.id).write(`${user.name} ingresó ${amount} ${Config.moneyName} en los ahorros de ${u.name}`);
+		Economy.log('moneylog').write(`${user.name} ingresó ${amount} ${Config.moneyName} en los ahorros de ${u.name}`);
 		this.sendReply(`|raw| Ingresaste <b>${amount} ${Config.moneyName}</b> en los ahorros de ${u.name}.`)
 	},
 	givemoneyhelp: ['/givemoney [user], [amount] - Ingresa una cantidad de dinero (amount) en los ahorros de un usuario.'],
@@ -60,20 +63,18 @@ export const commands: ChatCommands = {
 		if (isNaN(amount)) return this.errorReply("'amount' debe ser un valor numerico.");
 
 		Economy.write(userid, -amount);
-		Economy.log(user.id).write(`${user.name} extrajo ${amount} ${Config.moneyName} de los ahorros de ${u.name}`);
+		Economy.log('moneylog').write(`${user.name} extrajo ${amount} ${Config.moneyName} de los ahorros de ${u.name}`);
 		this.sendReply(`|raw| Extrajiste <b>${amount} ${Config.moneyName}</b> de los ahorros de ${u.name}.`)
 	},
 	takemoneyhelp: ['/takemoney [user], [amount] - Extrae una cantidad de dinero (amount) de los ahorros de un usuario.'],
 
 	moneylog(target, room, user) {
 		if (!this.can('gdeclare')) return false;
-		target = target.trim();
-		if (!target || target === '') return this.parse('/help moneylog');
 
-		let data = Economy.log(target).get();
-		if (data === null) return this.errorReply('No hay registrar para mostrar.');
+		let data = Economy.log('moneylog').get();
+		if (data === null) return this.errorReply('No hay registros para mostrar.');
 
 		user.popup(data);
 	},
-	moneyloghelp: ['/moneylog [user] - Mira los registros dejados por un usuario al usar comandos de economía.'],
+	moneyloghelp: ['/moneylog - Mira los registros dejados por autoridades al usar comandos de economía.'],
 };

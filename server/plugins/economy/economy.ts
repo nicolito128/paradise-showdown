@@ -14,6 +14,7 @@ import * as fs from 'fs';
 let Economy = Object.create(null);
 
 function read(user: string, callback?: ICallback): Money {
+	if (!user || user === '' || user === undefined) return null;
 	const userid = toID(user);
 	const money: Money = Database(userid, 'users').get('money');
 
@@ -22,6 +23,7 @@ function read(user: string, callback?: ICallback): Money {
 }
 
 function write(user: string, amount: number, callback?: ICallback): Money {
+	if (!user || user === '' || user === undefined) return null;
 	if (typeof amount === 'undefined') return null;
 	if (isNaN(amount)) return null;
 
@@ -32,17 +34,17 @@ function write(user: string, amount: number, callback?: ICallback): Money {
 	return money;
 }
 
-function log(user: string): object {
-	const userid = toID(user);
+function log(name: string): object {
+	const id = toID(name);
 	const ROOT_LOG = __dirname + '/../../../logs/economy'
 
 	const existsRoot = fs.existsSync(ROOT_LOG);
 	if (!existsRoot) fs.mkdirSync(ROOT_LOG);
 
-	const existsUser = fs.existsSync(ROOT_LOG + `/${userid}.txt`);
-	if (!existsUser) fs.writeFileSync(ROOT_LOG + `/${userid}.txt`, "");
+	const existsFile = fs.existsSync(ROOT_LOG + `/${id}.txt`);
+	if (!existsFile) fs.writeFileSync(ROOT_LOG + `/${id}.txt`, "");
 
-	const ROOT = ROOT_LOG + `/${userid}.txt`;
+	const ROOT = ROOT_LOG + `/${id}.txt`;
 
 	// local methods
 	const write = (message: string): void => {
@@ -52,7 +54,7 @@ function log(user: string): object {
 
 	const get = (): string | null => {
 		const files = fs.readdirSync(ROOT_LOG);
-		if (!files.includes(`${userid}.txt`)) return null;
+		if (!files.includes(`${id}.txt`)) return null;
 
 		let data = fs.readFileSync(ROOT, {encoding: 'utf8'});
 		return data as string;
