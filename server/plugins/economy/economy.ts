@@ -1,5 +1,5 @@
 /**
- * Economy handler
+ * Economy system
  *
  * @author n128
  */
