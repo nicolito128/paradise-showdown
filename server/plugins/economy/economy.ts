@@ -1,5 +1,5 @@
 /**
- * Json handler system to Pokemon Showdown
+ * Economy handler
  *
  * @author n128
  */
