@@ -17,6 +17,7 @@ interface IUser {
 	lvl: number;
 	exp: number;
 	inbox: object;
+	receipts: object[];
 	friends: object[];
 	badges: object[];
 }
@@ -44,7 +45,7 @@ function setProfiles(obj: Profile): Profile | null{
 
 export function getProfile(user: string): Profile | null {
 	user = toID(user);
-	let profiles: Profile = setProfiles(Object.create(null));
+	const profiles: Profile = setProfiles(Object.create(null));
 	if (typeof profiles[user] === 'undefined') return null;
 
 	return profiles[user];
@@ -57,6 +58,7 @@ export class CustomUser implements IUser {
 	lvl: number;
 	exp: number;
 	inbox: object;
+	receipts: object[];
 	friends: object[];
 	badges: object[];
 	
@@ -69,6 +71,7 @@ export class CustomUser implements IUser {
 		this.lvl = 1;
 		this.exp = 0;
 		this.inbox = {};
+		this.receipts = [];
 		this.friends = [];
 		this.badges = [];
 	}
@@ -77,10 +80,10 @@ export class CustomUser implements IUser {
 		const exists = Database(this.id, 'users').exists();
 		if (exists) return null;
 
-		Database(this.id, 'users').set({id: this.id, name: this.name, money: this.money, lvl: this.lvl, exp: this.exp, inbox: this.inbox, friends: this.friends, badges: this.badges});
+		Database(this.id, 'users').set({id: this.id, name: this.name, money: this.money, lvl: this.lvl, exp: this.exp, inbox: this.inbox, receipts: this.receipts, friends: this.friends, badges: this.badges});
 	}
 
-	get(key: string): any {
+	get<T>(key: string): T | null {
 		const k = Database(this.id, 'users').get(key);
 		if (k === null) return null;
 		return k;

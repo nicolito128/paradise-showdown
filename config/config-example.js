@@ -9,6 +9,7 @@ exports.port = 8000;
  * Server
  */
 exports.serverName = 'Paradise Showdown';
+exports.moneyName = 'PD';
 
 /**
  * The server address - the address at which Pokemon Showdown should be hosting
