@@ -37,7 +37,6 @@ export const commands: ChatCommands = {
 
 		Economy.write(userid, amount);
 		Economy.log(user.id).write(`${user.name} ingresó ${amount} ${Config.moneyName} en los ahorros de ${u.name}`);
-		if (user.id !== u.id) Economy.log(u.id).write(`${user.name} ingresó ${amount} ${Config.moneyName} en los ahorros de ${u.name}`);
 		this.sendReply(`|raw| Ingresaste <b>${amount} ${Config.moneyName}</b> en los ahorros de ${u.name}.`)
 	},
 	givemoneyhelp: ['/givemoney [user], [amount] - Ingresa una cantidad de dinero (amount) en los ahorros de un usuario.'],
@@ -62,7 +61,6 @@ export const commands: ChatCommands = {
 
 		Economy.write(userid, -amount);
 		Economy.log(user.id).write(`${user.name} extrajo ${amount} ${Config.moneyName} de los ahorros de ${u.name}`);
-		if (user.id !== u.id) Economy.log(u.id).write(`${user.name} extrajo ${amount} ${Config.moneyName} de los ahorros de ${u.name}`);
 		this.sendReply(`|raw| Extrajiste <b>${amount} ${Config.moneyName}</b> de los ahorros de ${u.name}.`)
 	},
 	takemoneyhelp: ['/takemoney [user], [amount] - Extrae una cantidad de dinero (amount) de los ahorros de un usuario.'],
