@@ -1,7 +1,4 @@
 import Economy from './economy';
-import { setProfiles } from './../../custom-users';
-
-const profiles = setProfiles(Object.create(null));
 
 export const commands: ChatCommands = {
 	'!pd': true,
