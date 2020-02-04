@@ -7,8 +7,8 @@
 
 'use strict';
 
-export type KeyType = string | number;
-export type ValueType = string | string[] | number | number[] | object | object[] | boolean | null;
+export type KeyType = string;
+export type ValueType = string | number | object | boolean | null;
 
 interface Db {
 	[k: string]: ValueType;
@@ -19,7 +19,7 @@ import { Monitor } from './monitor';
 
 const ROOT: string = __dirname + '/../db/';
 
-export function startDb(): void {
+export function start(): void {
 	const existsDb = fs.existsSync(ROOT);
 	if (!existsDb) {
 		fs.mkdirSync(ROOT);
@@ -58,7 +58,7 @@ export function Database(name: string, group?: string): object | any {
 	const keys: KeyType[] = Object.keys(db);
 	const values: ValueType[] = Object.values(db);
 
-	function setDb(key: KeyType | object, value?: ValueType): void | null {
+	function set(key: KeyType | object, value?: ValueType): void | null {
 		if (key === undefined) return null;
 		if (value === undefined || value === '' && typeof key === 'object') {
 			Object.assign(db, key);
@@ -71,7 +71,7 @@ export function Database(name: string, group?: string): object | any {
 		overwrite(path, db);
 	}
 
-	function putDb(key: KeyType, value: ValueType): ValueType {
+	function put(key: KeyType, value: ValueType): ValueType {
 		if (key && db[key] !== undefined && value) {
 			if (typeof db[key] === 'number' && typeof value === 'number') {
 				(db[key] as number) += value;
@@ -92,7 +92,7 @@ export function Database(name: string, group?: string): object | any {
 		return null;
 	}
 
-	function getDb(key: KeyType): ValueType | null {
+	function get(key: KeyType): ValueType | null {
 		if (db[key] === undefined) {
 			return null;
 		}
@@ -100,7 +100,7 @@ export function Database(name: string, group?: string): object | any {
 		return db[key];
 	}
 
-	function removeDb(key: KeyType): void | null {
+	function remove(key: KeyType): void | null {
 		if (db[key] === undefined) {
 			return null;
 		}
@@ -109,7 +109,7 @@ export function Database(name: string, group?: string): object | any {
 		overwrite(path, db);
 	}
 
-	function hasDb(key: KeyType): boolean {
+	function has(key: KeyType): boolean {
 		if (db[key] === undefined || db[key] === '') {
 			return false;
 		}
@@ -117,7 +117,7 @@ export function Database(name: string, group?: string): object | any {
 		return true;
 	}
 
-	function callDb(func: any): void {
+	function call<T>(func: T): void {
 		if (typeof func !== 'function') {
 			throw new Error('The required parameter must be a function!');
 		}
@@ -126,16 +126,9 @@ export function Database(name: string, group?: string): object | any {
 		overwrite(path, db);
 	}
 
-	return {
-		set: (key: KeyType | ValueType, value?: ValueType): void | null => setDb(key, value),
-		put: (key: KeyType, value: ValueType): ValueType => putDb(key, value),
-		get: (key: KeyType): ValueType => getDb(key),
-		remove: (key: KeyType): void | null => removeDb(key),
-		has: (key: KeyType): boolean => hasDb(key),
-		call: (func: any): void => callDb(func),
+	return {set, put, remove, get, has, call, 
 		keys: (): KeyType[] => keys,
 		values: (): ValueType[] => values,
-		exists: (): boolean => existsDb,
 		data: (): Db => db
 	};
 }
