@@ -83,9 +83,7 @@ export class CustomUser implements IUser {
 		Database(this.id, 'users').set({id: this.id, name: this.name, money: this.money, lvl: this.lvl, exp: this.exp, inbox: this.inbox, receipts: this.receipts, friends: this.friends, badges: this.badges});
 	}
 
-	get<T>(key: string): T | null {
-		const k = Database(this.id, 'users').get(key);
-		if (k === null) return null;
-		return k;
+	get(key: string): Profile | null {
+		return getProfile(this.id)[key];
 	}
 }
