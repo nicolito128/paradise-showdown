@@ -14,12 +14,15 @@ interface Db {
 	[k: string]: ValueType;
 }
 
+interface Callback { (db: Db, keys: KeyType[]): void }
+
+
 import * as fs from 'fs';
 import { Monitor } from './monitor';
 
 const ROOT: string = __dirname + '/../db/';
 
-export function start(): void {
+export function startDb(): void {
 	const existsDb = fs.existsSync(ROOT);
 	if (!existsDb) {
 		fs.mkdirSync(ROOT);
@@ -117,7 +120,7 @@ export function Database(name: string, group?: string): object | any {
 		return true;
 	}
 
-	function call<T>(func: T): void {
+	function call(func: Callback): void {
 		if (typeof func !== 'function') {
 			throw new Error('The required parameter must be a function!');
 		}
@@ -129,6 +132,7 @@ export function Database(name: string, group?: string): object | any {
 	return {set, put, remove, get, has, call, 
 		keys: (): KeyType[] => keys,
 		values: (): ValueType[] => values,
+		exists: (): boolean => existsDb,
 		data: (): Db => db
 	};
 }
