@@ -84,6 +84,8 @@ export class CustomUser implements IUser {
 	}
 
 	get(key: string): Profile | null {
-		return getProfile(this.id)[key];
+		const k = getProfile(this.id)[key];
+		if (typeof k === 'undefined') return null;
+		return k;
 	}
 }
