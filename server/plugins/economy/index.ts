@@ -1,6 +1,7 @@
 import Economy from './economy';
+import shop from './shop';
 
-export const commands: ChatCommands = {
+export const commands: ChatCommands = Object.assign({
 	'!pd': true,
 	wallet: 'pd',
 	money: 'pd',
@@ -74,4 +75,4 @@ export const commands: ChatCommands = {
 		user.popup(data);
 	},
 	moneyloghelp: ['/moneylog - Mira los registros dejados por autoridades al usar comandos de economía.'],
-};
+}, shop);
