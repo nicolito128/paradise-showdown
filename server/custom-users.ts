@@ -77,14 +77,14 @@ export class CustomUser implements IUser {
 	}
 
 	init(): void | null {
-		const exists = Database(this.id, 'users').exists();
+		const exists: boolean = Database(this.id, 'users').exists();
 		if (exists) return null;
 
 		Database(this.id, 'users').set({id: this.id, name: this.name, money: this.money, lvl: this.lvl, exp: this.exp, inbox: this.inbox, receipts: this.receipts, friends: this.friends, badges: this.badges});
 	}
 
 	get(key: string): Profile | null {
-		const k = getProfile(this.id)[key];
+		const k: any = getProfile(this.id)[key];
 		if (typeof k === 'undefined') return null;
 		return k;
 	}

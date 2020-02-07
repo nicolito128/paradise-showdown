@@ -23,17 +23,17 @@ export const commands: ChatCommands = Object.assign({
 	givemoney(target, room, user) {
 		if (!this.can('makeroom')) return false;
 
-		let targets = target.split(',');
+		let targets: string[] = target.split(',');
 		for (let u in targets) targets[u] = targets[u].trim();
 		if (targets.length < 2 || targets.length > 2) return this.parse("/help givemoney");
 		if (!targets[0] || targets[0] === '') return this.errorReply('Especifica un usuario.');
 		if (!targets[1] || targets[1] === '') return this.errorReply('Especifica una cantidad de dinero.');
 
-		const u = Users.getExact(targets[0]);
+		const u: any = Users.getExact(targets[0]);
 		if (u === null) return false;
 
-		const userid = u.id;
-		const amount = Number(targets[1]);
+		const userid: string = u.id;
+		const amount: number = parseInt(targets[1]);
 		if (isNaN(amount)) return this.errorReply("'amount' debe ser un valor numerico.");
 
 		Economy.write(userid, amount);
@@ -47,17 +47,17 @@ export const commands: ChatCommands = Object.assign({
 	takemoney(target, room, user) {
 		if (!this.can('makeroom')) return false;
 
-		let targets = target.split(',');
+		let targets: string[] = target.split(',');
 		for (let u in targets) targets[u] = targets[u].trim();
 		if (targets.length < 2 || targets.length > 2) return this.parse("/help takemoney");
 		if (!targets[0] || targets[0] === '') return this.errorReply('Especifica un usuario.');
 		if (!targets[1] || targets[1] === '') return this.errorReply('Especifica una cantidad de dinero.');
 
-		const u = Users.getExact(targets[0]);
+		const u: any = Users.getExact(targets[0]);
 		if (u === null) return false;
 
-		const userid = u.id;
-		const amount = Number(targets[1]);
+		const userid: string = u.id;
+		const amount: number = parseInt(targets[1]);
 		if (isNaN(amount)) return this.errorReply("'amount' debe ser un valor numerico.");
 
 		Economy.write(userid, -amount);
@@ -69,7 +69,7 @@ export const commands: ChatCommands = Object.assign({
 	moneylog(target, room, user) {
 		if (!this.can('gdeclare')) return false;
 
-		let data = Economy.log('moneylog').get();
+		let data: string = Economy.log('moneylog').get();
 		if (data === null) return this.errorReply('No hay registros para mostrar.');
 
 		user.popup(data);

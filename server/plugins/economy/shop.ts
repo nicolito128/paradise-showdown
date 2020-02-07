@@ -5,12 +5,12 @@ function createWindows(): string {
 
 	let html: string = `|pagehtml|<div class="pad"><p>${getShop()}</p></div>`;
 
-	const pagehtml = page + html;
+	const pagehtml: string = page + html;
 	return pagehtml;
 }
 
 function getShop(): string {
-	const data = JSON.parse(fs.readFileSync(__dirname + '/../../../server/plugins/economy/data/shop.json'));
+	const data: object = JSON.parse(fs.readFileSync(__dirname + '/../../../server/plugins/economy/data/shop.json'));
 
 	let shop: string = '<div style="margin: auto; text-align: center;">';
 	shop += `<h1 style="font-weight: bold;">Tienda de <span style="color: #56C043">${Config.serverName}</span></h1>`;
@@ -40,17 +40,17 @@ const commands: ChatCommands = {
 		add(target, room, user) {
 			if (!this.can('makeroom')) return false;
 
-			let targets = target.split(',');
+			let targets: string[] = target.split(',');
 			for(let u in targets) targets[u] = targets[u].trim();
 			if (targets.length < 3 || targets.length > 3) return this.errorReply('Uso: /shop add [Item name], [Item description], [Item price]'); 
 			for(let u in targets) {
 				if (!targets[u] || targets[u] === '') return this.errorReply('Rellena los campos faltantes.');
 			}
 
-			const id = toID(targets[0]);
-			const name = targets[0];
-			const desc = targets[1];
-			const price = parseInt(targets[2]);
+			const id: string = toID(targets[0]);
+			const name: string = targets[0];
+			const desc: string = targets[1];
+			const price: number = parseInt(targets[2]);
 
 			if (isNaN(price)) return this.errorReply('[Item price] debe ser un valor numerico.');
 			if (Math.sign(price) === -1 || Math.sign(price) === 0) return this.errorReply('El [Item price] especificado debe ser un número mayor a 0.');
