@@ -63,7 +63,36 @@ function log(name: string): object {
 	return {write, get};
 }
 
+const shop: object = {
+	get(): object {
+		const data: object = JSON.parse(fs.readFileSync(__dirname + '/../../../server/plugins/economy/data/shop.json'));
+		return data;
+	},
+
+	getJson(): string {
+		const data: string = fs.readFileSync(__dirname + '/../../../server/plugins/economy/data/shop.json');
+		return data;
+	},
+	
+	set(key: string, value: object): void {
+		key = toID(key);
+		let data: object = this.get();
+		let newData: object = {};
+		newData[key] = value;
+		Object.assign(data, newData);
+		fs.writeFileSync(__dirname + '/../../../server/plugins/economy/data/shop.json', JSON.stringify(data));
+	},
+
+	delete(key: string): void | null {
+		let data: object = this.get();
+		if (typeof data[key] === 'undefined') return null;
+
+		delete data[key];
+		fs.writeFileSync(__dirname + '/../../../server/plugins/economy/data/shop.json', JSON.stringify(data));
+	}
+};
+
 // Assignations
-void Object.assign(Economy, { read, write, log });
+void Object.assign(Economy, { read, write, log, shop });
 
 export default Economy;
