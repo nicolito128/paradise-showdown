@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import Economy from './economy';
 
 function createWindows(): string {
 	let page: string = `>view-shop\n|init|html\n|title|[Shop] Tienda\n`;
@@ -10,7 +10,7 @@ function createWindows(): string {
 }
 
 function getShop(): string {
-	const data: object = JSON.parse(fs.readFileSync(__dirname + '/../../../server/plugins/economy/data/shop.json'));
+	const data: object = Economy.shop.get();
 
 	let shop: string = '<div style="margin: auto; text-align: center;">';
 	shop += `<h1 style="font-weight: bold;">Tienda de <span style="color: #56C043">${Config.serverName}</span></h1>`;
@@ -38,7 +38,7 @@ const commands: ChatCommands = {
 		},
 
 		add(target, room, user) {
-			if (!this.can('makeroom')) return false;
+			if (!user.can('makeroom')) return false;
 
 			let targets: string[] = target.split(',');
 			for(let u in targets) targets[u] = targets[u].trim();
@@ -54,8 +54,38 @@ const commands: ChatCommands = {
 
 			if (isNaN(price)) return this.errorReply('[Item price] debe ser un valor numerico.');
 			if (Math.sign(price) === -1 || Math.sign(price) === 0) return this.errorReply('El [Item price] especificado debe ser un número mayor a 0.');
+
+			Economy.shop.set(id, {id, name, desc, price});
+			this.sendReply(`|raw| Añadiste correctamente el articulo <b>${name}</b> a la tienda del servidor.`);
+			Economy.log('shopadmin').write(`${user.name} añadió el articulo ${name} a la tienda`);
+		},
+
+		delete(target, room, user) {
+			if (!user.can('makeroom')) return false;
+
+			target = target.trim();
+			if (!target || target === '') return this.errorReply('Debes especificar un objeto de la tienda.');
+			target = toID(target);
+
+			const shop: object = Economy.shop.get();
+			if (typeof shop[target] === 'undefined') return this.errorReply('Debes especificar un objeto incluído en la tienda.');
+
+			this.sendReply(`|raw| Eliminaste correctamente el articulo ${shop[target].name} de la tienda del servidor.`);
+			Economy.log('shopadmin').write(`${user.name} eliminó el articulo ${shop[target].name} de la tienda`);
+			Economy.shop.delete(target);
+		},
+
+		logs(target, room, user) {
+			if (!user.can('makeroom')) return false;
+
+			const data: string = Economy.log('shopadmin').get();
+			user.popup(data);
 		}
 	},
+	shophelp: ['/shop - Visualiza la tienda del servidor',
+	'/shop add [name], [desc], [price] - Añade un nuevo articulo a la tienda. Requiere: & ~',
+	'/shop delete [name] - Elimina un articulo de la tienda. Requiere: & ~',
+	'/shop logs - Mira los registros de acciones dejados en la tienda. Requiere: & ~'],
 
 	buy(target, room, user) {}
 }
