@@ -15,7 +15,7 @@ let Economy = Object.create(null);
 
 function read(user: string, callback?: ICallback): Money {
 	if (!user || user === '' || user === undefined) return null;
-	const userid = toID(user);
+	const userid: string = toID(user);
 	const money: Money = Database(userid, 'users').get('money');
 
 	if (callback) callback(userid, money);
@@ -27,7 +27,7 @@ function write(user: string, amount: number, callback?: ICallback): Money {
 	if (typeof amount === 'undefined') return null;
 	if (isNaN(amount)) return null;
 
-	const userid = toID(user);
+	const userid: string = toID(user);
 	const money: Money = Database(userid, 'users').put('money', amount);
 
 	if (callback) callback(userid, money);
@@ -35,28 +35,28 @@ function write(user: string, amount: number, callback?: ICallback): Money {
 }
 
 function log(name: string): object {
-	const id = toID(name);
-	const ROOT_LOG = __dirname + '/../../../logs/economy'
+	const id: string = toID(name);
+	const ROOT_LOG: string = __dirname + '/../../../logs/economy'
 
-	const existsRoot = fs.existsSync(ROOT_LOG);
+	const existsRoot: boolean = fs.existsSync(ROOT_LOG);
 	if (!existsRoot) fs.mkdirSync(ROOT_LOG);
 
-	const existsFile = fs.existsSync(ROOT_LOG + `/${id}.txt`);
+	const existsFile: boolean = fs.existsSync(ROOT_LOG + `/${id}.txt`);
 	if (!existsFile) fs.writeFileSync(ROOT_LOG + `/${id}.txt`, "");
 
-	const ROOT = ROOT_LOG + `/${id}.txt`;
+	const ROOT: string = ROOT_LOG + `/${id}.txt`;
 
 	// local methods
 	const write = (message: string): void => {
-		let data = fs.readFileSync(ROOT, {encoding: 'utf8'});
+		let data: string = fs.readFileSync(ROOT, {encoding: 'utf8'});
 		fs.writeFileSync(ROOT, data + `[${new Date().toUTCString()}] ${message} \n`);
 	}
 
 	const get = (): string | null => {
-		const files = fs.readdirSync(ROOT_LOG);
+		const files: string[] = fs.readdirSync(ROOT_LOG);
 		if (!files.includes(`${id}.txt`)) return null;
 
-		let data = fs.readFileSync(ROOT, {encoding: 'utf8'});
+		let data: string = fs.readFileSync(ROOT, {encoding: 'utf8'});
 		return data as string;
 	};
 
@@ -76,9 +76,11 @@ const shop: object = {
 	
 	set(key: string, value: object): void {
 		key = toID(key);
+
 		let data: object = this.get();
 		let newData: object = {};
 		newData[key] = value;
+		
 		Object.assign(data, newData);
 		fs.writeFileSync(__dirname + '/../../../server/plugins/economy/data/shop.json', JSON.stringify(data));
 	},
