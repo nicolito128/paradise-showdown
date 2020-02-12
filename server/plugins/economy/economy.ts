@@ -16,7 +16,7 @@ let Economy = Object.create(null);
 function read(user: string, callback?: ICallback): Money {
 	if (!user || user === '' || user === undefined) return null;
 	const userid: string = toID(user);
-	const money: Money = Database(userid, 'users').get('money');
+	const money: Money = Database(userid, `users/${userid}`).get('money');
 
 	if (callback) callback(userid, money);
 	return money;
@@ -28,7 +28,7 @@ function write(user: string, amount: number, callback?: ICallback): Money {
 	if (isNaN(amount)) return null;
 
 	const userid: string = toID(user);
-	const money: Money = Database(userid, 'users').put('money', amount);
+	const money: Money = Database(userid, `users/${userid}`).put('money', amount);
 
 	if (callback) callback(userid, money);
 	return money;
@@ -48,15 +48,15 @@ function log(name: string): object {
 
 	// local methods
 	const write = (message: string): void => {
-		let data: string = fs.readFileSync(ROOT, {encoding: 'utf8'});
+		const data: string = fs.readFileSync(ROOT, {encoding: 'utf8'});
 		fs.writeFileSync(ROOT, data + `[${new Date().toUTCString()}] ${message} \n`);
-	}
+	};
 
 	const get = (): string | null => {
 		const files: string[] = fs.readdirSync(ROOT_LOG);
 		if (!files.includes(`${id}.txt`)) return null;
 
-		let data: string = fs.readFileSync(ROOT, {encoding: 'utf8'});
+		const data: string = fs.readFileSync(ROOT, {encoding: 'utf8'});
 		return data as string;
 	};
 
@@ -73,14 +73,14 @@ const shop: object = {
 		const data: string = fs.readFileSync(__dirname + '/../../../server/plugins/economy/data/shop.json');
 		return data;
 	},
-	
+
 	set(key: string, value: object): void {
 		key = toID(key);
 
 		let data: object = this.get();
 		let newData: object = {};
 		newData[key] = value;
-		
+
 		Object.assign(data, newData);
 		fs.writeFileSync(__dirname + '/../../../server/plugins/economy/data/shop.json', JSON.stringify(data));
 	},
@@ -91,7 +91,7 @@ const shop: object = {
 
 		delete data[key];
 		fs.writeFileSync(__dirname + '/../../../server/plugins/economy/data/shop.json', JSON.stringify(data));
-	}
+	},
 };
 
 // Assignations
