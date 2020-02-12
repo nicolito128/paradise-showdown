@@ -117,7 +117,11 @@ let Formats = [
 
 		mod: 'gen8',
 		ruleset: ['Same Type Clause', 'Standard', 'Dynamax Clause'],
-		banlist: ['Eternatus', 'Zacian', 'Zamazenta', 'Damp Rock', 'Smooth Rock', 'Moody', 'Shadow Tag', 'Baton Pass'],
+		banlist: [
+			'Eternatus', 'Kyurem-White', 'Lunala', 'Marshadow', 'Mewtwo', 'Necrozma-Dawn-Wings',
+			'Necrozma-Dusk-Mane', 'Reshiram', 'Solgaleo', 'Zacian', 'Zamazenta', 'Zekrom',
+			'Damp Rock', 'Smooth Rock', 'Moody', 'Shadow Tag', 'Baton Pass',
+		],
 	},
 	{
 		name: "[Gen 8] Anything Goes",
@@ -155,7 +159,11 @@ let Formats = [
 			battle: 1,
 		},
 		ruleset: ['Obtainable', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Accuracy Moves Clause', 'Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Dynamax Clause', 'Endless Battle Clause'],
-		banlist: ['Eternatus', 'Mew', 'Sableye', 'Zacian', 'Zamazenta', 'Moody', 'Focus Sash', 'Perish Song'],
+		banlist: [
+			'Eternatus', 'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Marshadow', 'Mew', 'Mewtwo', 'Necrozma-Dawn-Wings',
+			'Necrozma-Dusk-Mane', 'Reshiram', 'Sableye', 'Solgaleo', 'Zacian', 'Zamazenta', 'Zekrom',
+			'Focus Sash', 'Moody', 'Perish Song',
+		],
 	},
 	{
 		name: "[Gen 8] CAP",
@@ -165,7 +173,6 @@ let Formats = [
 		],
 
 		mod: 'gen8',
-		minSourceGen: 1,
 		ruleset: ['[Gen 8] OU', '+CAP'],
 		banlist: ['Crucibelle-Mega'],
 		onValidateSet(set) {
@@ -188,6 +195,7 @@ let Formats = [
 			battle: 3,
 		},
 		ruleset: ['Standard GBU'],
+		minSourceGen: 8,
 		onBegin() {
 			const allowedGigantamaxes = [
 				"Charizard-Gmax", "Butterfree-Gmax", "Pikachu-Gmax", "Meowth-Gmax", "Eevee-Gmax", "Snorlax-Gmax",
@@ -267,13 +275,14 @@ let Formats = [
 			validate: [4, 6],
 			battle: 4,
 		},
-		ruleset: ['Standard GBU', 'VGC Timer'],
+		ruleset: ['Standard GBU', 'Galar Pokedex', 'VGC Timer'],
 		banlist: [
 			'Alcremie-Gmax', 'Appletun-Gmax', 'Charizard-Gmax + Solar Power', 'Coalossal-Gmax', 'Copperajah-Gmax',
 			'Duraludon-Gmax', 'Flapple-Gmax', 'Garbodor-Gmax', 'Gengar-Gmax', 'Grimmsnarl-Gmax', 'Hatterene-Gmax',
 			'Kingler-Gmax', 'Lapras-Gmax', 'Machamp-Gmax', 'Melmetal-Gmax', 'Orbeetle-Gmax', 'Slowpoke-Galar',
 			'Toxtricity-Gmax',
 		],
+		minSourceGen: 8,
 	},
 	{
 		name: "[Gen 8] Battle Stadium Doubles",
@@ -289,6 +298,7 @@ let Formats = [
 			battle: 4,
 		},
 		ruleset: ['Standard GBU'],
+		minSourceGen: 8,
 		onBegin() {
 			const allowedGigantamaxes = [
 				"Charizard-Gmax", "Butterfree-Gmax", "Pikachu-Gmax", "Meowth-Gmax", "Eevee-Gmax", "Snorlax-Gmax",
@@ -469,9 +479,9 @@ let Formats = [
 		mod: 'gen8',
 		ruleset: ['[Gen 8] OU'],
 		banlist: [],
-		restrictedMoves: [
+		restricted: [
 			'Baneful Bunker', 'Block', 'Copycat', 'Detect', 'Destiny Bond', 'Ingrain', 'King\'s Shield', 'Mean Look', 'Metronome', 'Obstruct',
-			'Octolock', 'Nature Power', 'Parting Shot', 'Protect', 'Roar', 'Skill Swap', 'Sleep Talk', 'Spiky Shield', 'Teleport', 'Whirlwind',
+			'Octolock', 'Nature Power', 'Parting Shot', 'Protect', 'Roar', 'Skill Swap', 'Sleep Talk', 'Spiky Shield', 'Teleport', 'Whirlwind', 'Wish',
 		],
 		onValidateTeam(team, format, teamHas) {
 			for (const trademark in teamHas.trademarks) {
@@ -479,7 +489,7 @@ let Formats = [
 			}
 		},
 		validateSet(set, teamHas) {
-			const restrictedMoves = (this.format.restrictedMoves || []).concat('Yawn');
+			const restrictedMoves = (this.format.restricted || []).concat('Yawn');
 			const dex = this.dex;
 			let ability = dex.getMove(set.ability);
 			if (ability.category !== 'Status' || ability.status === 'slp' || restrictedMoves.includes(ability.name) || set.moves.map(toID).includes(ability.id)) return this.validateSet(set, teamHas);
@@ -576,17 +586,19 @@ let Formats = [
 		mod: 'mixandmega',
 		ruleset: ['Obtainable', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Dynamax Clause', 'Sleep Clause Mod', 'Endless Battle Clause'],
 		banlist: [
-			'AG', 'Eternatus', 'Gothitelle', 'Gothorita', 'Zacian', 'Moody', 'Baton Pass', 'Electrify',
+			'Eternatus', 'Gothitelle', 'Gothorita', 'Zacian', 'Moody', 'Baton Pass', 'Electrify',
 			'Beedrillite', 'Blazikenite', 'Gengarite', 'Kangaskhanite', 'Mawilite', 'Medichamite', 'Pidgeotite',
 		],
+		restricted: ['Kyurem-Black', 'Kyurem-White', 'Lunala', 'Marshadow', 'Mewtwo', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Reshiram', 'Solgaleo', 'Zamazenta', 'Zekrom'],
 		onValidateTeam(team, format) {
+			const restrictedPokemon = format.restricted || [];
 			/**@type {{[k: string]: true}} */
 			let itemTable = {};
 			for (const set of team) {
 				let item = this.dex.getItem(set.item);
 				if (!item || !item.megaStone) continue;
 				let template = this.dex.getTemplate(set.species);
-				if (format.banlist.includes('AG') && ['Venusaur', 'Blastoise', 'Zamazenta'].includes(template.baseSpecies)) {
+				if (restrictedPokemon.includes(template.species)) {
 					return [`${template.species} is not allowed to hold ${item.name}.`];
 				}
 				if (itemTable[item.id]) return ["You are limited to one of each mega stone.", "(You have more than one " + item.name + ")"];
@@ -629,7 +641,8 @@ let Formats = [
 		mod: 'gen8',
 		ruleset: ['Obtainable', '!Obtainable Abilities', 'Species Clause', 'Nickname Clause', '2 Ability Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Dynamax Clause', 'Sleep Clause Mod', 'Endless Battle Clause'],
 		banlist: [
-			'Dracovish', 'Eternatus', 'Shedinja', 'Zacian', 'Zamazenta', 'Baton Pass',
+			'Dracovish', 'Eternatus', 'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Marshadow', 'Mewtwo', 'Necrozma-Dawn-Wings',
+			'Necrozma-Dusk-Mane', 'Reshiram', 'Shedinja', 'Solgaleo', 'Zacian', 'Zamazenta', 'Zekrom', 'Baton Pass',
 			'Arena Trap', 'Comatose', 'Contrary', 'Fluffy', 'Fur Coat', 'Gorilla Tactics', 'Huge Power', 'Ice Scales', 'Illusion', 'Imposter', 'Innards Out', 'Intrepid Sword',
 			'Libero', 'Moody', 'Neutralizing Gas', 'Parental Bond', 'Protean', 'Pure Power', 'Shadow Tag', 'Simple', 'Stakeout', 'Speed Boost', 'Water Bubble', 'Wonder Guard',
 		],
@@ -644,8 +657,12 @@ let Formats = [
 
 		mod: 'gen8',
 		ruleset: ['Standard', 'STABmons Move Legality', 'Dynamax Clause'],
-		banlist: ['Darmanitan-Galar', 'Eternatus', 'Silvally', 'Zacian', 'Zamazenta', 'King\'s Rock', 'Razor Fang', 'Moody', 'Shadow Tag', 'Baton Pass'],
-		restrictedMoves: ['Acupressure', 'Belly Drum', 'Extreme Speed', 'Fishious Rend', 'Shell Smash', 'Shift Gear', 'Spore'],
+		banlist: [
+			'Darmanitan-Galar', 'Eternatus', 'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Marshadow', 'Mewtwo',
+			'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Reshiram', 'Silvally', 'Solgaleo', 'Zacian', 'Zamazenta', 'Zekrom',
+			'King\'s Rock', 'Razor Fang', 'Moody', 'Shadow Tag', 'Baton Pass',
+		],
+		restricted: ['Acupressure', 'Belly Drum', 'Extreme Speed', 'Fishious Rend', 'Shell Smash', 'Shift Gear', 'Spore'],
 	},
 	{
 		name: "[Gen 8] Camomons",
@@ -658,7 +675,8 @@ let Formats = [
 		searchShow: false,
 		ruleset: ['Obtainable', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Dynamax Clause', 'Sleep Clause Mod', 'Endless Battle Clause'],
 		banlist: [
-			'Darmanitan-Galar', 'Eternatus', 'Shedinja', 'Zacian', 'Zamazenta',
+			'Darmanitan-Galar', 'Eternatus', 'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Marshadow', 'Mewtwo',
+			'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Reshiram', 'Shedinja', 'Solgaleo', 'Zacian', 'Zamazenta', 'Zekrom',
 			'Arena Trap', 'Moody', 'Shadow Tag', 'Baton Pass',
 		],
 		onModifyTemplate(template, target, source, effect) {
@@ -705,7 +723,7 @@ let Formats = [
 		onModifyTemplate(template, target, source, effect) {
 			if (!template.abilities) return false;
 			/** @type {{[tier: string]: number}} */
-			let boosts = {
+			const boosts = {
 				'UU': 10,
 				'RUBL': 10,
 				'RU': 20,
@@ -718,7 +736,7 @@ let Formats = [
 				'LC': 40,
 			};
 			if (target && target.set.ability === 'Drizzle') return;
-			let tier = template.tier;
+			let tier = template.tier || 'OU';
 			if (target && target.set.item) {
 				let item = this.dex.getItem(target.set.item);
 				if (item.name === 'Kommonium Z' || item.name === 'Mewnium Z') return;
@@ -1008,7 +1026,7 @@ let Formats = [
 		name: "[Gen 4] 1v1",
 		desc: `Bring three Pok&eacute;mon to Team Preview and choose one to battle.`,
 		threads: [
-			`&bullet; <a href="https://www.smogon.com/forums/posts/8031458/">DPP 1v1</a>`,
+			`&bullet; <a href="https://www.smogon.com/forums/posts/8031457/">DPP 1v1</a>`,
 		],
 
 		mod: 'gen4',
@@ -1591,7 +1609,7 @@ let Formats = [
 		name: "[Gen 6] 1v1",
 		desc: `Bring three Pok&eacute;mon to Team Preview and choose one to battle.`,
 		threads: [
-			`&bullet; <a href="https://www.smogon.com/forums/posts/8031456/">ORAS 1v1</a>`,
+			`&bullet; <a href="https://www.smogon.com/forums/posts/8031459/">ORAS 1v1</a>`,
 		],
 
 		mod: 'gen6',
@@ -1864,7 +1882,7 @@ let Formats = [
 		name: "[Gen 5] 1v1",
 		desc: `Bring three Pok&eacute;mon to Team Preview and choose one to battle.`,
 		threads: [
-			`&bullet; <a href="https://www.smogon.com/forums/posts/8031457/">BW 1v1</a>`,
+			`&bullet; <a href="https://www.smogon.com/forums/posts/8031458/">BW 1v1</a>`,
 		],
 
 		mod: 'gen5',
@@ -2124,7 +2142,7 @@ let Formats = [
 		name: "[Gen 3] 1v1",
 		desc: `Bring three Pok&eacute;mon to Team Preview and choose one to battle.`,
 		threads: [
-			`&bullet; <a href="https://www.smogon.com/forums/posts/8031458/">ADV 1v1</a>`,
+			`&bullet; <a href="https://www.smogon.com/forums/posts/8031456/">ADV 1v1</a>`,
 		],
 
 		mod: 'gen3',

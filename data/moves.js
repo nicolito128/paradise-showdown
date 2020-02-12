@@ -2974,8 +2974,8 @@ let BattleMovedex = {
 				if (source !== this.effectData.target) return;
 				return source.side.foe.active[this.effectData.position];
 			},
-			onAfterDamage(damage, target, source, effect) {
-				if (effect && effect.effectType === 'Move' && source.side !== target.side && this.getCategory(effect) === 'Physical') {
+			onDamagingHit(damage, target, source, move) {
+				if (source.side !== target.side && this.getCategory(move) === 'Physical') {
 					this.effectData.position = source.position;
 					this.effectData.damage = 2 * damage;
 				}
@@ -3927,7 +3927,6 @@ let BattleMovedex = {
 		desc: "Hits twice. If the first hit breaks the target's substitute, it will take damage for the second hit. Has a 30% chance to flinch the target.",
 		shortDesc: "Hits twice. 30% chance to flinch.",
 		id: "doubleironbash",
-		isUnreleased: true,
 		isViable: true,
 		name: "Double Iron Bash",
 		pp: 5,
@@ -6941,7 +6940,7 @@ let BattleMovedex = {
 		flags: {},
 		isMax: "Duraludon",
 		self: {
-			onAfterHit(source) {
+			onHit(source) {
 				for (let pokemon of source.side.foe.active) {
 					const move = pokemon.lastMove;
 					if (move && !move.isZ && !move.isMax) {
@@ -6975,7 +6974,7 @@ let BattleMovedex = {
 		flags: {},
 		isMax: "Alcremie",
 		self: {
-			onAfterHit(target, source, move) {
+			onHit(target, source, move) {
 				for (let pokemon of source.side.active) {
 					this.heal(pokemon.maxhp / 6, pokemon, source, move);
 				}
@@ -10470,7 +10469,6 @@ let BattleMovedex = {
 		pp: 5,
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
-		isUnreleased: true,
 		recoil: [1, 2],
 		secondary: null,
 		target: "normal",
@@ -11944,8 +11942,8 @@ let BattleMovedex = {
 				if (source !== this.effectData.target) return;
 				return source.side.foe.active[this.effectData.position];
 			},
-			onAfterDamage(damage, target, source, effect) {
-				if (effect && effect.effectType === 'Move' && source.side !== target.side) {
+			onDamagingHit(damage, target, source, effect) {
+				if (source.side !== target.side) {
 					this.effectData.position = source.position;
 					this.effectData.damage = 1.5 * damage;
 				}
@@ -12301,8 +12299,8 @@ let BattleMovedex = {
 				if (source !== this.effectData.target) return;
 				return source.side.foe.active[this.effectData.position];
 			},
-			onAfterDamage(damage, target, source, effect) {
-				if (effect && effect.effectType === 'Move' && source.side !== target.side && this.getCategory(effect) === 'Special') {
+			onDamagingHit(damage, target, source, move) {
+				if (source.side !== target.side && this.getCategory(move) === 'Special') {
 					this.effectData.position = source.position;
 					this.effectData.damage = 2 * damage;
 				}

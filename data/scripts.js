@@ -291,6 +291,7 @@ let BattleScripts = {
 
 		return true;
 	},
+	/** NOTE: includes single-target moves */
 	trySpreadMoveHit(targets, pokemon, move) {
 		if (targets.length > 1) move.spreadHit = true;
 
@@ -549,6 +550,7 @@ let BattleScripts = {
 		}
 		return undefined;
 	},
+	/** NOTE: used only for moves that target sides/fields rather than pokemon */
 	tryMoveHit(target, pokemon, move) {
 		this.setActiveMove(move, pokemon, target);
 
@@ -706,6 +708,15 @@ let BattleScripts = {
 		// @ts-ignore
 		this.afterMoveSecondaryEvent(targetsCopy.filter(val => !!val), pokemon, move);
 
+		if (!move.negateSecondary && !(move.hasSheerForce && pokemon.hasAbility('sheerforce'))) {
+			for (let i = 0; i < damage.length; i++) {
+				const curDamage = damage[i];
+				if (typeof curDamage === 'number' && targets[i].hp <= targets[i].maxhp / 2 && targets[i].hp + curDamage > targets[i].maxhp / 2) {
+					this.runEvent('EmergencyExit', targets[i], pokemon);
+				}
+			}
+		}
+
 		return damage;
 	},
 	spreadMoveHit(targets, pokemon, moveOrMoveName, moveData, isSecondary, isSelf) {
@@ -788,6 +799,28 @@ let BattleScripts = {
 
 		for (let j = 0; j < targets.length; j++) {
 			if (!damage[j] && damage[j] !== 0) targets[j] = false;
+		}
+
+		/** @type {Pokemon[]} */
+		let damagedTargets = [];
+		let damagedDamage = [];
+		for (let i = 0; i < targets.length; i++) {
+			if (typeof damage[i] === 'number' && targets[i]) {
+				damagedTargets.push(/** @type {Pokemon} */ (targets[i]));
+				damagedDamage.push(damage[i]);
+			}
+		}
+		const pokemonOriginalHP = pokemon.hp;
+		if (damagedDamage.length) {
+			this.runEvent('DamagingHit', damagedTargets, pokemon, move, damagedDamage);
+			if (moveData.onAfterHit) {
+				for (const target of damagedTargets) {
+					this.singleEvent('AfterHit', moveData, {}, target, pokemon, move);
+				}
+			}
+			if (pokemon.hp <= pokemon.maxhp / 2 && pokemonOriginalHP > pokemon.maxhp / 2) {
+				this.runEvent('EmergencyExit', pokemon);
+			}
 		}
 
 		return [damage, targets];
@@ -940,10 +973,6 @@ let BattleScripts = {
 					}
 					if (!isSelf && !isSecondary) {
 						this.runEvent('Hit', target, pokemon, move);
-					}
-					if (moveData.onAfterHit) {
-						hitResult = this.singleEvent('AfterHit', moveData, {}, target, pokemon, move);
-						didSomething = this.combineResults(didSomething, hitResult);
 					}
 				}
 			}

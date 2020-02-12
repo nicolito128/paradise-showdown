@@ -109,7 +109,6 @@ interface SelfEffect {
 	terrain?: string
 	volatileStatus?: string
 	weather?: string
-	onAfterHit?: MoveEventMethods['onAfterHit']
 	onHit?: MoveEventMethods['onHit']
 }
 
@@ -122,7 +121,6 @@ interface SecondaryEffect {
 	self?: SelfEffect
 	status?: string
 	volatileStatus?: string
-	onAfterHit?: MoveEventMethods['onAfterHit']
 	onHit?: MoveEventMethods['onHit']
 }
 
@@ -196,7 +194,8 @@ interface PureEffectEventMethods {
 }
 
 interface EventMethods {
-	onAfterDamage?: (this: Battle, damage: number, target: Pokemon, source: Pokemon, move: ActiveMove) => void
+	onDamagingHit?: (this: Battle, damage: number, target: Pokemon, source: Pokemon, move: ActiveMove) => void
+	onEmergencyExit?: (this: Battle, pokemon: Pokemon) => void
 	onAfterEachBoost?: (this: Battle, boost: SparseBoostsTable, target: Pokemon, source: Pokemon) => void
 	onAfterHit?: MoveEventMethods['onAfterHit']
 	onAfterSetStatus?: (this: Battle, status: PureEffect, target: Pokemon, source: Pokemon, effect: Effect) => void
@@ -283,7 +282,7 @@ interface EventMethods {
 	onWeatherModifyDamage?: CommonHandlers['ModifierSourceMove']
 	onModifyDamagePhase1?: CommonHandlers['ModifierSourceMove']
 	onModifyDamagePhase2?: CommonHandlers['ModifierSourceMove']
-	onAllyAfterDamage?: (this: Battle, damage: number, target: Pokemon, source: Pokemon, move: ActiveMove) => void
+	onAllyDamagingHit?: (this: Battle, damage: number, target: Pokemon, source: Pokemon, move: ActiveMove) => void
 	onAllyAfterEachBoost?: (this: Battle, boost: SparseBoostsTable, target: Pokemon, source: Pokemon) => void
 	onAllyAfterHit?: MoveEventMethods['onAfterHit']
 	onAllyAfterSetStatus?: (this: Battle, status: PureEffect, target: Pokemon, source: Pokemon, effect: Effect) => void
@@ -368,7 +367,7 @@ interface EventMethods {
 	onAllyWeatherModifyDamage?: CommonHandlers['ModifierSourceMove']
 	onAllyModifyDamagePhase1?: CommonHandlers['ModifierSourceMove']
 	onAllyModifyDamagePhase2?: CommonHandlers['ModifierSourceMove']
-	onFoeAfterDamage?: (this: Battle, damage: number, target: Pokemon, source: Pokemon, move: ActiveMove) => void
+	onFoeDamagingHit?: (this: Battle, damage: number, target: Pokemon, source: Pokemon, move: ActiveMove) => void
 	onFoeAfterEachBoost?: (this: Battle, boost: SparseBoostsTable, target: Pokemon, source: Pokemon) => void
 	onFoeAfterHit?: MoveEventMethods['onAfterHit']
 	onFoeAfterSetStatus?: (this: Battle, status: PureEffect, target: Pokemon, source: Pokemon, effect: Effect) => void
@@ -453,7 +452,7 @@ interface EventMethods {
 	onFoeWeatherModifyDamage?: CommonHandlers['ModifierSourceMove']
 	onFoeModifyDamagePhase1?: CommonHandlers['ModifierSourceMove']
 	onFoeModifyDamagePhase2?: CommonHandlers['ModifierSourceMove']
-	onSourceAfterDamage?: (this: Battle, damage: number, target: Pokemon, source: Pokemon, move: ActiveMove) => void
+	onSourceDamagingHit?: (this: Battle, damage: number, target: Pokemon, source: Pokemon, move: ActiveMove) => void
 	onSourceAfterEachBoost?: (this: Battle, boost: SparseBoostsTable, target: Pokemon, source: Pokemon) => void
 	onSourceAfterHit?: MoveEventMethods['onAfterHit']
 	onSourceAfterSetStatus?: (this: Battle, status: PureEffect, target: Pokemon, source: Pokemon, effect: Effect) => void
@@ -538,7 +537,7 @@ interface EventMethods {
 	onSourceWeatherModifyDamage?: CommonHandlers['ModifierSourceMove']
 	onSourceModifyDamagePhase1?: CommonHandlers['ModifierSourceMove']
 	onSourceModifyDamagePhase2?: CommonHandlers['ModifierSourceMove']
-	onAnyAfterDamage?: (this: Battle, damage: number, target: Pokemon, source: Pokemon, move: ActiveMove) => void
+	onAnyDamagingHit?: (this: Battle, damage: number, target: Pokemon, source: Pokemon, move: ActiveMove) => void
 	onAnyAfterEachBoost?: (this: Battle, boost: SparseBoostsTable, target: Pokemon, source: Pokemon) => void
 	onAnyAfterHit?: MoveEventMethods['onAfterHit']
 	onAnyAfterSetStatus?: (this: Battle, status: PureEffect, target: Pokemon, source: Pokemon, effect: Effect) => void
@@ -626,7 +625,7 @@ interface EventMethods {
 
 	// Priorities (incomplete list)
 	onAccuracyPriority?: number
-	onAfterDamageOrder?: number
+	onDamagingHitOrder?: number
 	onAfterMoveSecondaryPriority?: number
 	onAfterMoveSecondarySelfPriority?: number
 	onAfterMoveSelfPriority?: number
@@ -1045,9 +1044,7 @@ interface FormatsData extends EventMethods {
 	onSwitchInPriority?: number
 	rated?: boolean
 	minSourceGen?: number
-	restrictedAbilities?: string[]
-	restrictedMoves?: string[]
-	restrictedStones?: string[]
+	restricted?: string[]
 	ruleset?: string[]
 	searchShow?: boolean
 	allowMultisearch?: boolean
