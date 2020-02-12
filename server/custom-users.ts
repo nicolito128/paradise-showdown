@@ -33,7 +33,7 @@ function setProfiles(obj: Profile): Profile | null{
 	users.forEach(user => {
 		const userid: string = user.slice(0, -5);
 		obj[userid] = {};
-		let data: object = Database(userid, 'users').data();
+		let data: object = Database(userid, `users/${userid}`).data();
 		let keys: string[] = Object.keys(data);
 
 		keys.forEach(key => obj[userid][key] = data[key]);
@@ -61,7 +61,7 @@ export class CustomUser implements IUser {
 	receipts: object[];
 	friends: object[];
 	badges: object[];
-	
+
 	constructor(name: string, options: object = {}) {
 		this.id = toID(name);
 		this.name = name;
@@ -76,16 +76,40 @@ export class CustomUser implements IUser {
 		this.badges = [];
 	}
 
-	init(): void | null {
-		const exists: boolean = Database(this.id, 'users').exists();
-		if (exists) return null;
+	init(): void {
+		const exists: boolean = Database(this.id, `users/${this.id}`).exists();
+		if (exists) {
+			const data = Database(this.id, `users/${this.id}`).data();
+			Database(this.id, `users/${this.id}`).set({
+				id: data.id,
+				name: data.name,
+				money: data.money,
+				lvl: data.lvl,
+				exp: data.exp,
+				inbox: data.inbox,
+				receipts: data.receipts,
+				friends: data.friends,
+				badges: data.badges,
+			});
 
-		Database(this.id, 'users').set({id: this.id, name: this.name, money: this.money, lvl: this.lvl, exp: this.exp, inbox: this.inbox, receipts: this.receipts, friends: this.friends, badges: this.badges});
+			Object.assign(this, data);
+		} else {
+			Database(this.id, `users/${this.id}`).set({
+				id: this.id,
+				name: this.name,
+				money: this.money,
+				lvl: this.lvl,
+				exp: this.exp,
+				inbox: this.inbox,
+				receipts: this.receipts,
+				friends: this.friends,
+				badges: this.badges,
+			});
+		}
+
 	}
 
-	get(key: string): Profile | null {
-		const k: any = getProfile(this.id)[key];
-		if (typeof k === 'undefined') return null;
-		return k;
+	get(key: string): any {
+		return this[key];
 	}
 }
