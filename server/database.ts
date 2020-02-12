@@ -14,7 +14,7 @@ interface Db {
 	[k: string]: ValueType;
 }
 
-interface Callback { (db: Db, keys: KeyType[]): void }
+interface Callback { (db: Db): void };
 
 
 import * as fs from 'fs';
@@ -43,7 +43,7 @@ export function Database(name: string, group?: string): object | any {
 		const existsGroup = fs.existsSync(ROOT + group);
 		if (!existsGroup) fs.mkdirSync(ROOT + group);
 
-		path = ROOT + `${group}/${name}.json`
+		path = ROOT + `${group}/${name}.json`;
 	} else {
 		path = ROOT + `${name}.json`;
 	}
@@ -125,14 +125,20 @@ export function Database(name: string, group?: string): object | any {
 			throw new Error('The required parameter must be a function!');
 		}
 
-		func(db, keys);
+		func(db);
 		overwrite(path, db);
 	}
 
-	return {set, put, remove, get, has, call, 
+	return {
+		set,
+		put,
+		remove,
+		get,
+		has,
+		call,
 		keys: (): KeyType[] => keys,
 		values: (): ValueType[] => values,
 		exists: (): boolean => existsDb,
-		data: (): Db => db
+		data: (): Db => db,
 	};
 }
