@@ -24,8 +24,9 @@ export const commands: ChatCommands = Object.assign({
 		if (!this.can('makeroom')) return false;
 
 		let targets: string[] = target.split(',');
-		for (let u in targets) targets[u] = targets[u].trim();
 		if (targets.length < 2 || targets.length > 2) return this.parse("/help givemoney");
+
+		targets = targets.map(item => item.trim());
 		if (!targets[0] || targets[0] === '') return this.errorReply('Especifica un usuario.');
 		if (!targets[1] || targets[1] === '') return this.errorReply('Especifica una cantidad de dinero.');
 
@@ -48,8 +49,9 @@ export const commands: ChatCommands = Object.assign({
 		if (!this.can('makeroom')) return false;
 
 		let targets: string[] = target.split(',');
-		for (let u in targets) targets[u] = targets[u].trim();
 		if (targets.length < 2 || targets.length > 2) return this.parse("/help takemoney");
+
+		targets = targets.map(item => item.trim());
 		if (!targets[0] || targets[0] === '') return this.errorReply('Especifica un usuario.');
 		if (!targets[1] || targets[1] === '') return this.errorReply('Especifica una cantidad de dinero.');
 
@@ -62,14 +64,14 @@ export const commands: ChatCommands = Object.assign({
 
 		Economy.write(userid, -amount);
 		Economy.log('moneylog').write(`${user.name} extrajo ${amount} ${Config.moneyName} de los ahorros de ${u.name}`);
-		this.sendReply(`|raw| Extrajiste <b>${amount} ${Config.moneyName}</b> de los ahorros de ${u.name}.`)
+		this.sendReply(`|raw| Extrajiste <b>${amount} ${Config.moneyName}</b> de los ahorros de ${u.name}.`);
 	},
 	takemoneyhelp: ['/takemoney [user], [amount] - Extrae una cantidad de dinero (amount) de los ahorros de un usuario.'],
 
 	moneylog(target, room, user) {
 		if (!this.can('gdeclare')) return false;
 
-		let data: string = Economy.log('moneylog').get();
+		const data: string = Economy.log('moneylog').get();
 		if (data === null) return this.errorReply('No hay registros para mostrar.');
 
 		user.popup(data);

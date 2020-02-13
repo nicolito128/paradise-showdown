@@ -11,7 +11,7 @@ type Money = number | null;
 
 import * as fs from 'fs';
 
-let Economy = Object.create(null);
+const Economy = Object.create(null);
 
 function read(user: string, callback?: ICallback): Money {
 	if (!user || user === '' || user === undefined) return null;
@@ -69,16 +69,16 @@ const shop: object = {
 		return data;
 	},
 
-	getJson(): string {
-		const data: string = fs.readFileSync(__dirname + '/../../../server/plugins/economy/data/shop.json');
+	getJson(): Buffer {
+		const data: Buffer = fs.readFileSync(__dirname + '/../../../server/plugins/economy/data/shop.json');
 		return data;
 	},
 
 	set(key: string, value: object): void {
 		key = toID(key);
 
-		let data: object = this.get();
-		let newData: object = {};
+		const data: object = this.get();
+		const newData: object = {};
 		newData[key] = value;
 
 		Object.assign(data, newData);
@@ -86,7 +86,7 @@ const shop: object = {
 	},
 
 	delete(key: string): void | null {
-		let data: object = this.get();
+		const data: object = this.get();
 		if (typeof data[key] === 'undefined') return null;
 
 		delete data[key];
