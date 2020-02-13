@@ -93,6 +93,28 @@ const shop: object = {
 		delete data[key];
 		fs.writeFileSync(SHOP_ROOT, JSON.stringify(data));
 	},
+
+	panel(): string {
+		const data: object = this.get();
+		const page: string = `>view-shop\n|init|html\n|title|[Shop] Tienda\n`;
+
+		let shop: string = '|pagehtml| <div class="pad"><p><div style="margin: auto; text-align: center;">';
+		shop += `<h1 style="font-weight: bold;">Tienda de <span style="color: #56C043">${Config.serverName}</span></h1>`;
+		shop += '<table border="1" style="margin: auto; text-align: center; border-radius: 5px; border-color: #39772E;"></thead><tr><th style="padding: 3.5px;">Item</th> <th style="padding: 3.5px;">Description</th> <th style="padding: 3.5px;">Price</th> <th style="padding: 3.5px;">Buy</th></tr></thead>';
+		shop += '<tbody>';
+		for (const i in data) {
+			const item: any = data[i];
+			shop += '<tr>';
+			shop += `<td style="padding: 4px;">${item.name}</td>`;
+			shop += `<td>${item.desc}</td>`;
+			shop += `<td style="padding: 4px; color: #f4821a; font-weight: bold;">${item.price}</td>`;
+			shop += `<td style="padding: 4px;"><button class="button"><em class="fa fa-shopping-cart fa-lg" aria-hidden="true"></em></button></td>`;
+			shop += '</tr>';
+		}
+		shop += '</tbody></table></div></p></div>';
+
+		return page + shop;
+	},
 };
 
 // Assignations

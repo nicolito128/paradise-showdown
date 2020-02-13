@@ -1,39 +1,10 @@
 import Economy from './economy';
 
-function createWindows(): string {
-	const page: string = `>view-shop\n|init|html\n|title|[Shop] Tienda\n`;
-	const html: string = `|pagehtml|<div class="pad"><p>${getShop()}</p></div>`;
-
-	const pagehtml: string = page + html;
-	return pagehtml;
-}
-
-function getShop(): string {
-	const data: object = Economy.shop.get();
-
-	let shop: string = '<div style="margin: auto; text-align: center;">';
-	shop += `<h1 style="font-weight: bold;">Tienda de <span style="color: #56C043">${Config.serverName}</span></h1>`;
-	shop += '<table border="1" style="margin: auto; text-align: center; border-radius: 5px; border-color: #39772E;"></thead><tr><th style="padding: 3.5px;">Item</th> <th style="padding: 3.5px;">Description</th> <th style="padding: 3.5px;">Price</th> <th style="padding: 3.5px;">Buy</th></tr></thead>';
-	shop += '<tbody>';
-	for (const i in data) {
-		const item: any = data[i];
-		shop += '<tr>';
-		shop += `<td style="padding: 4px;">${item.name}</td>`;
-		shop += `<td>${item.desc}</td>`;
-		shop += `<td style="padding: 4px; color: #f4821a; font-weight: bold;">${item.price}</td>`;
-		shop += `<td style="padding: 4px;"><button class="button"><em class="fa fa-shopping-cart fa-lg" aria-hidden="true"></em></button></td>`;
-		shop += '</tr>';
-	}
-	shop += '</tbody></table></div>';
-
-	return shop;
-}
-
 const commands: ChatCommands = {
 	shop: {
 		'': 'view',
 		view(target, room, user, connection) {
-			connection.send(createWindows());
+			connection.send(Economy.shop.panel());
 		},
 
 		add(target, room, user) {
@@ -84,14 +55,26 @@ const commands: ChatCommands = {
 
 			const data: string = Economy.log('shopadmin').get();
 			user.popup(data);
-		}
+		},
 	},
 	shophelp: ['/shop - Visualiza la tienda del servidor',
 	'/shop add [name], [desc], [price] - Añade un nuevo articulo a la tienda. Requiere: & ~',
 	'/shop delete [name] - Elimina un articulo de la tienda. Requiere: & ~',
 	'/shop logs - Mira los registros de acciones dejados en la tienda. Requiere: & ~'],
 
-	buy(target, room, user) {}
+	buy(target, room, user) {
+		const umoney: number = Economy.read(user.id);
+		const shop: object = Economy.shop.get();
+		const items: string[] = [];
+		for (const item of shop) {
+			items.push(item.id);
+		}
+
+		target = toID(target);
+		if (!items.includes(target)) {
+			return this.errorReply('Debes especificar un articulo de la tienda.');
+		}
+	},
 };
 
 export default commands;
