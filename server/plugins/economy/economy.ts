@@ -12,6 +12,7 @@ type Money = number | null;
 import * as fs from 'fs';
 
 const Economy = Object.create(null);
+const SHOP_ROOT = __dirname + '/../../../server/plugins/economy/data/shop.json';
 
 function read(user: string, callback?: ICallback): Money {
 	if (!user || user === '' || user === undefined) return null;
@@ -65,12 +66,12 @@ function log(name: string): object {
 
 const shop: object = {
 	get(): object {
-		const data: object = JSON.parse(fs.readFileSync(__dirname + '/../../../server/plugins/economy/data/shop.json'));
+		const data: object = JSON.parse(fs.readFileSync(SHOP_ROOT));
 		return data;
 	},
 
 	getJson(): Buffer {
-		const data: Buffer = fs.readFileSync(__dirname + '/../../../server/plugins/economy/data/shop.json');
+		const data: Buffer = fs.readFileSync(SHOP_ROOT);
 		return data;
 	},
 
@@ -82,7 +83,7 @@ const shop: object = {
 		newData[key] = value;
 
 		Object.assign(data, newData);
-		fs.writeFileSync(__dirname + '/../../../server/plugins/economy/data/shop.json', JSON.stringify(data));
+		fs.writeFileSync(SHOP_ROOT, JSON.stringify(data));
 	},
 
 	delete(key: string): void | null {
@@ -90,7 +91,7 @@ const shop: object = {
 		if (typeof data[key] === 'undefined') return null;
 
 		delete data[key];
-		fs.writeFileSync(__dirname + '/../../../server/plugins/economy/data/shop.json', JSON.stringify(data));
+		fs.writeFileSync(SHOP_ROOT, JSON.stringify(data));
 	},
 };
 
