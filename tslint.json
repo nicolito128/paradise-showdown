@@ -47,7 +47,7 @@
         "no-console": false,
         "prefer-conditional-expression": false,
         "prefer-object-spread": false,
-        "no-shadowed-variable": [true, {"temporalDeadZone": false}],
+        "no-shadowed-variable": false,
         // I don't understand why people care about this considering how aggressively they drop support for old IE versions
         "radix": false,
         "object-literal-sort-keys": false,
