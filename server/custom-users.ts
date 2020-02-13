@@ -27,14 +27,14 @@ interface Profile {
 }
 
 function setProfiles(obj: Profile): Profile | null{
-	let users: string[] = fs.readdirSync(__dirname + `/../db/users`)
+	const users: string[] = fs.readdirSync(__dirname + `/../db/users`)
 	if (users.length < 1) return null;
 
 	users.forEach(user => {
 		const userid: string = user.slice(0, -5);
 		obj[userid] = {};
-		let data: object = Database(userid, `users/${userid}`).data();
-		let keys: string[] = Object.keys(data);
+		const data: Profile = Database(userid, `users/${userid}`).data();
+		const keys: string[] = Object.keys(data);
 
 		keys.forEach(key => obj[userid][key] = data[key]);
 		Object.assign(obj, data);
@@ -45,7 +45,8 @@ function setProfiles(obj: Profile): Profile | null{
 
 export function getProfile(user: string): Profile | null {
 	user = toID(user);
-	const profiles: Profile = setProfiles(Object.create(null));
+	const profiles: Profile | null = setProfiles(Object.create(null));
+	if (profiles === null) return null;
 	if (typeof profiles[user] === 'undefined') return null;
 
 	return profiles[user];
