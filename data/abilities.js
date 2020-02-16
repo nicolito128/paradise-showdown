@@ -107,7 +107,7 @@ let BattleAbilities = {
 			let boosted = true;
 			for (const target of this.getAllActive()) {
 				if (target === pokemon) continue;
-				if (this.willMove(target)) {
+				if (this.queue.willMove(target)) {
 					boosted = false;
 					break;
 				}
@@ -185,7 +185,8 @@ let BattleAbilities = {
 		onAllyTryAddVolatile(status, target, source, effect) {
 			if (['attract', 'disable', 'encore', 'healblock', 'taunt', 'torment'].includes(status.id)) {
 				if (effect.effectType === 'Move') {
-					this.add('-activate', this.effectData.target, 'ability: Aroma Veil', '[of] ' + target);
+					const effectHolder = this.effectData.target;
+					this.add('-block', target, 'ability: Aroma Veil', '[of] ' + effectHolder);
 				}
 				return null;
 			}
@@ -439,7 +440,7 @@ let BattleAbilities = {
 
 				if (target.side.active.length === 2 && target.position === 1) {
 					// Curse Glitch
-					const action = this.willMove(target);
+					const action = this.queue.willMove(target);
 					if (action && action.move.id === 'curse') {
 						action.targetLoc = -1;
 					}
@@ -1060,14 +1061,16 @@ let BattleAbilities = {
 				}
 			}
 			if (showMsg && !(/** @type {ActiveMove} */(effect)).secondaries) {
-				this.add('-fail', this.effectData.target, 'unboost', '[from] ability: Flower Veil', '[of] ' + target);
+				const effectHolder = this.effectData.target;
+				this.add('-block', target, 'ability: Flower Veil', '[of] ' + effectHolder);
 			}
 		},
 		onAllySetStatus(status, target, source, effect) {
 			if (target.hasType('Grass') && source && target !== source && effect && effect.id !== 'yawn') {
 				this.debug('interrupting setStatus with Flower Veil');
 				if (effect.id === 'synchronize' || (effect.effectType === 'Move' && !effect.secondaries)) {
-					this.add('-activate', this.effectData.target, 'ability: Flower Veil', '[of] ' + target);
+					const effectHolder = this.effectData.target;
+					this.add('-block', target, 'ability: Flower Veil', '[of] ' + effectHolder);
 				}
 				return null;
 			}
@@ -1075,7 +1078,8 @@ let BattleAbilities = {
 		onAllyTryAddVolatile(status, target) {
 			if (target.hasType('Grass') && status.id === 'yawn') {
 				this.debug('Flower Veil blocking yawn');
-				this.add('-activate', this.effectData.target, 'ability: Flower Veil', '[of] ' + target);
+				const effectHolder = this.effectData.target;
+				this.add('-block', target, 'ability: Flower Veil', '[of] ' + effectHolder);
 				return null;
 			}
 		},
@@ -2389,7 +2393,7 @@ let BattleAbilities = {
 					continue;
 				}
 				// pokemon isn't switching this turn
-				if (curPoke !== pokemon && !this.willSwitch(curPoke)) {
+				if (curPoke !== pokemon && !this.queue.willSwitch(curPoke)) {
 					// this.add('-message', "" + curPoke + " skipped: not switching");
 					continue;
 				}
@@ -2647,7 +2651,8 @@ let BattleAbilities = {
 		onAllySetStatus(status, target, source, effect) {
 			if (!['psn', 'tox'].includes(status.id)) return;
 			if (!effect || !effect.status) return false;
-			this.add('-block', target, 'ability: Pastel Veil', '[of] ' + this.effectData.target);
+			const effectHolder = this.effectData.target;
+			this.add('-block', target, 'ability: Pastel Veil', '[of] ' + effectHolder);
 			return false;
 		},
 		id: "pastelveil",
@@ -4039,14 +4044,16 @@ let BattleAbilities = {
 		onAllySetStatus(status, target, source, effect) {
 			if (status.id === 'slp') {
 				this.debug('Sweet Veil interrupts sleep');
-				this.add('-activate', this.effectData.target, 'ability: Sweet Veil', '[of] ' + target);
+				const effectHolder = this.effectData.target;
+				this.add('-block', target, 'ability: Sweet Veil', '[of] ' + effectHolder);
 				return null;
 			}
 		},
 		onAllyTryAddVolatile(status, target) {
 			if (status.id === 'yawn') {
 				this.debug('Sweet Veil blocking yawn');
-				this.add('-activate', this.effectData.target, 'ability: Sweet Veil', '[of] ' + target);
+				const effectHolder = this.effectData.target;
+				this.add('-block', target, 'ability: Sweet Veil', '[of] ' + effectHolder);
 				return null;
 			}
 		},
@@ -4300,7 +4307,7 @@ let BattleAbilities = {
 		shortDesc: "This Pokemon skips every other turn instead of using a move.",
 		onStart(pokemon) {
 			pokemon.removeVolatile('truant');
-			if (pokemon.activeTurns && (pokemon.moveThisTurnResult !== undefined || !this.willMove(pokemon))) {
+			if (pokemon.activeTurns && (pokemon.moveThisTurnResult !== undefined || !this.queue.willMove(pokemon))) {
 				pokemon.addVolatile('truant');
 			}
 		},

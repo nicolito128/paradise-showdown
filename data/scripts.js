@@ -42,7 +42,7 @@ let BattleScripts = {
 		/* if (pokemon.moveThisTurn) {
 			// THIS IS PURELY A SANITY CHECK
 			// DO NOT TAKE ADVANTAGE OF THIS TO PREVENT A POKEMON FROM MOVING;
-			// USE this.cancelMove INSTEAD
+			// USE this.queue.cancelMove INSTEAD
 			this.debug('' + pokemon.id + ' INCONSISTENT STATE, ALREADY MOVED: ' + pokemon.moveThisTurn);
 			this.clearActiveMove(true);
 			return;
@@ -811,7 +811,7 @@ let BattleScripts = {
 			}
 		}
 		const pokemonOriginalHP = pokemon.hp;
-		if (damagedDamage.length) {
+		if (damagedDamage.length && !isSecondary && !isSelf) {
 			this.runEvent('DamagingHit', damagedTargets, pokemon, move, damagedDamage);
 			if (moveData.onAfterHit) {
 				for (const target of damagedTargets) {

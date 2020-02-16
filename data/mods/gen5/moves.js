@@ -253,6 +253,23 @@ let BattleMovedex = {
 	},
 	electroball: {
 		inherit: true,
+		basePowerCallback(pokemon, target) {
+			let ratio = (pokemon.getStat('spe') / Math.max(1, target.getStat('spe')));
+			this.debug([40, 60, 80, 120, 150][(Math.floor(ratio) > 4 ? 4 : Math.floor(ratio))] + ' bp');
+			if (ratio >= 4) {
+				return 150;
+			}
+			if (ratio >= 3) {
+				return 120;
+			}
+			if (ratio >= 2) {
+				return 80;
+			}
+			if (ratio >= 1) {
+				return 60;
+			}
+			return 40;
+		},
 		desc: "The power of this move depends on (user's current Speed / target's current Speed), rounded down. Power is equal to 150 if the result is 4 or more, 120 if 3, 80 if 2, 60 if 1, 40 if less than 1. If the target's current Speed is 0, it is treated as 1 instead.",
 	},
 	endure: {
@@ -404,6 +421,12 @@ let BattleMovedex = {
 	},
 	gyroball: {
 		inherit: true,
+		basePowerCallback(pokemon, target) {
+			let power = (Math.floor(25 * target.getStat('spe') / Math.max(1, pokemon.getStat('spe'))) + 1);
+			if (power > 150) power = 150;
+			this.debug('' + power + ' bp');
+			return power;
+		},
 		desc: "Power is equal to (25 * target's current Speed / user's current Speed) + 1, rounded down, but not more than 150. If the user's current Speed is 0, it is treated as 1 instead.",
 	},
 	healbell: {
@@ -767,7 +790,7 @@ let BattleMovedex = {
 		desc: "The user and its party members are protected from attacks with original priority greater than 0 made by other Pokemon, including allies, during this turn. This attack has a 1/X chance of being successful, where X starts at 1 and doubles each time this move is successfully used. X resets to 1 if this attack fails or if the user's last used move is not Detect, Endure, Protect, Quick Guard, or Wide Guard. If X is 256 or more, this move has a 1/(2^32) chance of being successful. Fails if the user moves last this turn or if this move is already in effect for the user's side.",
 		stallingMove: true,
 		onTryHitSide(side, source) {
-			return this.willAct() && this.runEvent('StallMove', source);
+			return this.queue.willAct() && this.runEvent('StallMove', source);
 		},
 		onHitSide(side, source) {
 			source.addVolatile('stall');
@@ -1230,7 +1253,7 @@ let BattleMovedex = {
 		desc: "The user and its party members are protected from damaging attacks made by other Pokemon, including allies, during this turn that target all adjacent foes or all adjacent Pokemon. This attack has a 1/X chance of being successful, where X starts at 1 and doubles each time this move is successfully used. X resets to 1 if this attack fails or if the user's last used move is not Detect, Endure, Protect, Quick Guard, or Wide Guard. If X is 256 or more, this move has a 1/(2^32) chance of being successful. Fails if the user moves last this turn or if this move is already in effect for the user's side.",
 		stallingMove: true,
 		onTryHitSide(side, source) {
-			return this.willAct() && this.runEvent('StallMove', source);
+			return this.queue.willAct() && this.runEvent('StallMove', source);
 		},
 		onHitSide(side, source) {
 			source.addVolatile('stall');

@@ -324,7 +324,7 @@ let BattleMovedex = {
 		stallingMove: true,
 		volatileStatus: 'backoffgrrr',
 		onTryHit(target, source, move) {
-			return !!this.willAct() && this.runEvent('StallMove', target);
+			return !!this.queue.willAct() && this.runEvent('StallMove', target);
 		},
 		onHit(pokemon) {
 			pokemon.addVolatile('stall');
@@ -447,7 +447,7 @@ let BattleMovedex = {
 			this.add('-anim', target, 'Dark Void', target);
 		},
 		onHit(target, source, move) {
-			let wouldMove = this.cancelMove(target);
+			let wouldMove = this.queue.cancelMove(target);
 			// Generate a new team
 			let team = this.teamGenerator.getTeam({name: target.side.name, inBattle: true});
 			let set = team.shift();
@@ -2495,7 +2495,7 @@ let BattleMovedex = {
 			this.attrLastMove('[still]');
 		},
 		onTryHit(pokemon) {
-			return !!this.willAct() && this.runEvent('StallMove', pokemon);
+			return !!this.queue.willAct() && this.runEvent('StallMove', pokemon);
 		},
 		onPrepareHit(target, source) {
 			this.add('-anim', source, "King's Shield", source);
@@ -2839,7 +2839,7 @@ let BattleMovedex = {
 		onPrepareHit(target, source) {
 			this.add('-anim', source, "Protect", source);
 			this.add('-anim', source, "Quiver Dance", source);
-			let result = !!this.willAct() && this.runEvent('StallMove', source);
+			let result = !!this.queue.willAct() && this.runEvent('StallMove', source);
 			return result;
 		},
 		onHit(target, source) {
@@ -3493,7 +3493,7 @@ let BattleMovedex = {
 		stallingMove: true,
 		volatileStatus: 'lilypadshield',
 		onTryHit(target, source, move) {
-			return !!this.willAct() && this.runEvent('StallMove', target);
+			return !!this.queue.willAct() && this.runEvent('StallMove', target);
 		},
 		onHit(pokemon) {
 			pokemon.addVolatile('stall');
@@ -3675,7 +3675,7 @@ let BattleMovedex = {
 		},
 		onHit(target, source) {
 			source.addVolatile('rage', source);
-			if (this.willAct() && this.runEvent('StallMove', source)) {
+			if (this.queue.willAct() && this.runEvent('StallMove', source)) {
 				this.debug('Rageeeee endure');
 				source.addVolatile('endure', source);
 				source.addVolatile('stall');
@@ -4028,7 +4028,7 @@ let BattleMovedex = {
 		accuracy: true,
 		category: "Physical",
 		basePower: 1,
-		desc: "The user creates a substitute to take its place in battle. This substitute is a Pokemon selected from a broad set of Random Battle-eligible Pokemon able to learn the move chosen as this move's base move. Upon the substitute's creation, this Pokemon's ability is suppressed until it switches out. The substitute Pokemon is generated with a Random Battle moveset with maximum PP that is added (except for duplicates) to the user's moveset; these additions are removed when this substitute is no longer active. The substitute uses its species's base stats, types, Ability, and weight but retains the user's max HP, stat stages, gender, level, status conditions, trapping, binding, and pseudo-statuses such as confusion. Its HP is 100% of the user's maximum HP. When this substitute falls to zero HP, it breaks, and the user reverts to the state in which it used this move. This substitute absorbs indirect damage and authentic moves but does not reset the counter of Toxic poison when broken and cannot be transfered through Baton Pass. Transforming into this substitute will not fail. If the user switches out while the substitute is up, the substitute will be removed and the user will revert to the state in which it used this move. This move's properties are based on the move Fake Claim is inheriting from.",
+		desc: "The user creates a substitute to take its place in battle. This substitute is a Pokemon selected from a broad set of Random Battle-eligible Pokemon able to learn the move chosen as this move's base move. Upon the substitute's creation, this Pokemon's ability is suppressed until it switches out. The substitute Pokemon is generated with a Random Battle moveset with maximum PP that is added (except for duplicates) to the user's moveset; these additions are removed when this substitute is no longer active. The substitute uses its species's base stats, types, Ability, and weight but retains the user's max HP, stat stages, gender, level, status conditions, trapping, binding, and pseudo-statuses such as confusion. Its HP is 100% of the user's maximum HP. When this substitute falls to zero HP, it breaks, and the user reverts to the state in which it used this move. This substitute absorbs indirect damage and authentic moves but does not reset the counter of Toxic poison when broken and cannot be transferred through Baton Pass. Transforming into this substitute will not fail. If the user switches out while the substitute is up, the substitute will be removed and the user will revert to the state in which it used this move. This move's properties are based on the move Fake Claim is inheriting from.",
 		shortDesc: "Uses a Random Battle Pokemon as a Substitute.",
 		id: "fakeclaim",
 		name: "Fake Claim",
@@ -4281,7 +4281,7 @@ let BattleMovedex = {
 				this.add('-message', `${source.active[0].name}'s replacement is going to switch out next turn!`);
 			},
 			onBeforeTurn(pokemon) {
-				this.insertQueue({choice: 'event', event: 'SSBRotate', pokemon: pokemon, priority: -69});
+				this.queue.insertChoice({choice: 'event', event: 'SSBRotate', pokemon: pokemon, priority: -69});
 			},
 			// @ts-ignore unsupported custom event
 			onSSBRotate(/** @type {Pokemon} */ pokemon) {

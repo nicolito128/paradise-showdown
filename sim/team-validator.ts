@@ -14,14 +14,14 @@ import {Dex} from './dex';
  * sourcesBefore covers all sources that do not have exclusive
  * moves (like catching wild pokemon).
  *
- * First character is a generation number, 1-7.
+ * First character is a generation number, 1-8.
  * Second character is a source ID, one of:
  *
  * - E = egg, 3rd char+ is the father in gen 2-5, empty in gen 6-7
  *   because egg moves aren't restricted to fathers anymore
  * - S = event, 3rd char+ is the index in .eventPokemon
  * - D = Dream World, only 5D is valid
- * - V = Virtual Console transfer, only 7V is valid
+ * - V = Virtual Console or Let's Go transfer, only 7V/8V is valid
  *
  * Designed to match MoveSource where possible.
  */
@@ -902,7 +902,7 @@ export class TeamValidator {
 			if (!eventData) {
 				throw new Error(`${eventTemplate.species} from ${template.species} doesn't have data for event ${source}`);
 			}
-		} else if (source.charAt(1) === 'V') {
+		} else if (source === '7V') {
 			const isMew = template.speciesid === 'mew';
 			const isCelebi = template.speciesid === 'celebi';
 			eventData = {
@@ -913,6 +913,14 @@ export class TeamValidator {
 				shiny: isMew ? undefined : 1,
 				pokeball: 'pokeball',
 				from: 'Gen 1-2 Virtual Console transfer',
+			};
+		} else if (source === '8V') {
+			const isMew = template.speciesid === 'mew';
+			eventData = {
+				generation: 8,
+				perfectIVs: isMew ? 3 : undefined,
+				shiny: isMew ? undefined : 1,
+				from: 'Gen 7 Let\'s Go! HOME transfer',
 			};
 		} else if (source.charAt(1) === 'D') {
 			eventData = {
@@ -1740,6 +1748,9 @@ export class TeamValidator {
 						}
 					}
 
+					// Gen 8 egg moves can be taught to any pokemon from any source
+					if (learned === '8E') learned = '8T';
+
 					if ('LMTR'.includes(learned.charAt(1))) {
 						if (learnedGen === dex.gen && learned.charAt(1) !== 'R') {
 							// current-gen level-up, TM or tutor moves:
@@ -1781,8 +1792,8 @@ export class TeamValidator {
 						// DW moves:
 						//   only if that was the source
 						moveSources.add(learned + template.id);
-					} else if (learned.charAt(1) === 'V') {
-						// Virtual Console moves:
+					} else if (learned.charAt(1) === 'V' && this.minSourceGen < learnedGen) {
+						// Virtual Console or Let's Go transfer moves:
 						//   only if that was the source
 						moveSources.add(learned);
 					}

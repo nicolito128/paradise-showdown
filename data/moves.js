@@ -278,11 +278,11 @@ let BattleMovedex = {
 		pp: 15,
 		priority: 0,
 		flags: {authentic: 1, mystery: 1},
-		onHit(target) {
+		onHit(target, source, move) {
 			if (target.side.active.length < 2) return false; // fails in singles
-			let action = this.willMove(target);
+			let action = this.queue.willMove(target);
 			if (action) {
-				this.prioritizeAction(action);
+				this.queue.prioritizeAction(action, move);
 				this.add('-activate', target, 'move: After You');
 			} else {
 				return false;
@@ -1041,7 +1041,7 @@ let BattleMovedex = {
 		stallingMove: true,
 		volatileStatus: 'banefulbunker',
 		onTryHit(target, source, move) {
-			return !!this.willAct() && this.runEvent('StallMove', target);
+			return !!this.queue.willAct() && this.runEvent('StallMove', target);
 		},
 		onHit(pokemon) {
 			pokemon.addVolatile('stall');
@@ -1615,7 +1615,7 @@ let BattleMovedex = {
 		accuracy: 100,
 		basePower: 85,
 		basePowerCallback(pokemon, target, move) {
-			if (target.newlySwitched || this.willMove(target)) {
+			if (target.newlySwitched || this.queue.willMove(target)) {
 				this.debug('Bolt Beak damage boost');
 				return move.basePower * 2;
 			}
@@ -2842,12 +2842,12 @@ let BattleMovedex = {
 		flags: {protect: 1, mirror: 1},
 		onHit(target) {
 			if (['battlebond', 'comatose', 'disguise', 'multitype', 'powerconstruct', 'rkssystem', 'schooling', 'shieldsdown', 'stancechange', 'zenmode'].includes(target.ability)) return;
-			if (target.newlySwitched || this.willMove(target)) return;
+			if (target.newlySwitched || this.queue.willMove(target)) return;
 			target.addVolatile('gastroacid');
 		},
 		onAfterSubDamage(damage, target) {
 			if (['battlebond', 'comatose', 'disguise', 'multitype', 'powerconstruct', 'rkssystem', 'schooling', 'shieldsdown', 'stancechange', 'zenmode'].includes(target.ability)) return;
-			if (target.newlySwitched || this.willMove(target)) return;
+			if (target.newlySwitched || this.queue.willMove(target)) return;
 			target.addVolatile('gastroacid');
 		},
 		secondary: null,
@@ -3105,7 +3105,7 @@ let BattleMovedex = {
 		flags: {},
 		sideCondition: 'craftyshield',
 		onTryHitSide(side, source) {
-			return !!this.willAct();
+			return !!this.queue.willAct();
 		},
 		effect: {
 			duration: 1,
@@ -3558,7 +3558,7 @@ let BattleMovedex = {
 		stallingMove: true,
 		volatileStatus: 'protect',
 		onPrepareHit(pokemon) {
-			return !!this.willAct() && this.runEvent('StallMove', pokemon);
+			return !!this.queue.willAct() && this.runEvent('StallMove', pokemon);
 		},
 		onHit(pokemon) {
 			pokemon.addVolatile('stall');
@@ -3682,7 +3682,7 @@ let BattleMovedex = {
 			noCopy: true, // doesn't get copied by Baton Pass
 			onStart(pokemon, source, effect) {
 				// The target hasn't taken its turn, or Cursed Body activated and the move was not used through Dancer or Instruct
-				if (this.willMove(pokemon) || (pokemon === this.activePokemon && this.activeMove && !this.activeMove.isExternal)) {
+				if (this.queue.willMove(pokemon) || (pokemon === this.activePokemon && this.activeMove && !this.activeMove.isExternal)) {
 					this.effectData.duration--;
 				}
 				if (!pokemon.lastMove) {
@@ -4594,7 +4594,7 @@ let BattleMovedex = {
 		flags: {protect: 1, mirror: 1, mystery: 1},
 		volatileStatus: 'electrify',
 		onTryHit(target) {
-			if (!this.willMove(target) && target.activeTurns) return false;
+			if (!this.queue.willMove(target) && target.activeTurns) return false;
 		},
 		effect: {
 			duration: 1,
@@ -4621,6 +4621,9 @@ let BattleMovedex = {
 		basePower: 0,
 		basePowerCallback(pokemon, target) {
 			let ratio = (pokemon.getStat('spe') / target.getStat('spe'));
+			if (target.getStat('spe') === 0) {
+				ratio = 0;
+			}
 			this.debug([40, 60, 80, 120, 150][(Math.floor(ratio) > 4 ? 4 : Math.floor(ratio))] + ' bp');
 			if (ratio >= 4) {
 				return 150;
@@ -4753,7 +4756,7 @@ let BattleMovedex = {
 				}
 				this.effectData.move = move.id;
 				this.add('-start', target, 'Encore');
-				if (!this.willMove(target)) {
+				if (!this.queue.willMove(target)) {
 					this.effectData.duration++;
 				}
 			},
@@ -4828,7 +4831,7 @@ let BattleMovedex = {
 		stallingMove: true,
 		volatileStatus: 'endure',
 		onTryHit(pokemon) {
-			return this.willAct() && this.runEvent('StallMove', pokemon);
+			return this.queue.willAct() && this.runEvent('StallMove', pokemon);
 		},
 		onHit(pokemon) {
 			pokemon.addVolatile('stall');
@@ -5407,7 +5410,7 @@ let BattleMovedex = {
 				// @ts-ignore
 				if (action.pokemon.side === source.side && ['grasspledge', 'waterpledge'].includes(action.move.id)) {
 					// @ts-ignore
-					this.prioritizeAction(action);
+					this.queue.prioritizeAction(action, move);
 					this.add('-waiting', source, action.pokemon);
 					return null;
 				}
@@ -5417,18 +5420,12 @@ let BattleMovedex = {
 			if (move.sourceEffect === 'waterpledge') {
 				move.type = 'Water';
 				move.forceSTAB = true;
+				move.self = {sideCondition: 'waterpledge'};
 			}
 			if (move.sourceEffect === 'grasspledge') {
 				move.type = 'Fire';
 				move.forceSTAB = true;
-			}
-		},
-		onHit(target, source, move) {
-			if (move.sourceEffect === 'grasspledge') {
-				target.side.addSideCondition('firepledge');
-			}
-			if (move.sourceEffect === 'waterpledge') {
-				source.side.addSideCondition('waterpledge');
+				move.sideCondition = 'firepledge';
 			}
 		},
 		effect: {
@@ -5522,7 +5519,7 @@ let BattleMovedex = {
 		accuracy: 100,
 		basePower: 85,
 		basePowerCallback(pokemon, target, move) {
-			if (target.newlySwitched || this.willMove(target)) {
+			if (target.newlySwitched || this.queue.willMove(target)) {
 				this.debug('Fishious Rend damage boost');
 				return move.basePower * 2;
 			}
@@ -7633,7 +7630,7 @@ let BattleMovedex = {
 				// @ts-ignore
 				if (action.pokemon.side === source.side && ['waterpledge', 'firepledge'].includes(action.move.id)) {
 					// @ts-ignore
-					this.prioritizeAction(action);
+					this.queue.prioritizeAction(action, move);
 					this.add('-waiting', source, action.pokemon);
 					return null;
 				}
@@ -7643,18 +7640,12 @@ let BattleMovedex = {
 			if (move.sourceEffect === 'waterpledge') {
 				move.type = 'Grass';
 				move.forceSTAB = true;
+				move.sideCondition = 'grasspledge';
 			}
 			if (move.sourceEffect === 'firepledge') {
 				move.type = 'Fire';
 				move.forceSTAB = true;
-			}
-		},
-		onHit(target, source, move) {
-			if (move.sourceEffect === 'waterpledge') {
-				target.side.addSideCondition('grasspledge');
-			}
-			if (move.sourceEffect === 'firepledge') {
-				target.side.addSideCondition('firepledge');
+				move.sideCondition = 'firepledge';
 			}
 		},
 		effect: {
@@ -7808,12 +7799,12 @@ let BattleMovedex = {
 					let applies = false;
 					if (pokemon.removeVolatile('bounce') || pokemon.removeVolatile('fly')) {
 						applies = true;
-						this.cancelMove(pokemon);
+						this.queue.cancelMove(pokemon);
 						pokemon.removeVolatile('twoturnmove');
 					}
 					if (pokemon.volatiles['skydrop']) {
 						applies = true;
-						this.cancelMove(pokemon);
+						this.queue.cancelMove(pokemon);
 
 						if (pokemon.volatiles['skydrop'].source) {
 							this.add('-end', pokemon.volatiles['twoturnmove'].source, 'Sky Drop', '[interrupt]');
@@ -8099,7 +8090,8 @@ let BattleMovedex = {
 		accuracy: 100,
 		basePower: 0,
 		basePowerCallback(pokemon, target) {
-			let power = (Math.floor(25 * target.getStat('spe') / pokemon.getStat('spe')) || 1);
+			let power = (Math.floor(25 * target.getStat('spe') / pokemon.getStat('spe')) + 1);
+			if (pokemon.getStat('spe') === 0) power = 1;
 			if (power > 150) power = 150;
 			this.debug('' + power + ' bp');
 			return power;
@@ -8634,7 +8626,7 @@ let BattleMovedex = {
 		flags: {authentic: 1},
 		volatileStatus: 'helpinghand',
 		onTryHit(target) {
-			if (!target.newlySwitched && !this.willMove(target)) return false;
+			if (!target.newlySwitched && !this.queue.willMove(target)) return false;
 		},
 		effect: {
 			duration: 1,
@@ -10057,7 +10049,7 @@ let BattleMovedex = {
 		stallingMove: true,
 		volatileStatus: 'kingsshield',
 		onTryHit(pokemon) {
-			return !!this.willAct() && this.runEvent('StallMove', pokemon);
+			return !!this.queue.willAct() && this.runEvent('StallMove', pokemon);
 		},
 		onHit(pokemon) {
 			pokemon.addVolatile('stall');
@@ -11369,7 +11361,7 @@ let BattleMovedex = {
 		stallingMove: true,
 		volatileStatus: 'maxguard',
 		onPrepareHit(pokemon) {
-			return !!this.willAct() && this.runEvent('StallMove', pokemon);
+			return !!this.queue.willAct() && this.runEvent('StallMove', pokemon);
 		},
 		onHit(pokemon) {
 			pokemon.addVolatile('stall');
@@ -11767,7 +11759,7 @@ let BattleMovedex = {
 		priority: 0,
 		flags: {protect: 1, authentic: 1},
 		onTryHit(target, pokemon) {
-			const action = this.willMove(target);
+			const action = this.queue.willMove(target);
 			if (!action) return false;
 
 			const noMeFirst = [
@@ -13134,7 +13126,7 @@ let BattleMovedex = {
 		stallingMove: true,
 		volatileStatus: 'obstruct',
 		onTryHit(pokemon) {
-			return !!this.willAct() && this.runEvent('StallMove', pokemon);
+			return !!this.queue.willAct() && this.runEvent('StallMove', pokemon);
 		},
 		onHit(pokemon) {
 			pokemon.addVolatile('stall');
@@ -13487,7 +13479,7 @@ let BattleMovedex = {
 		accuracy: 100,
 		basePower: 50,
 		basePowerCallback(pokemon, target, move) {
-			if (target.newlySwitched || this.willMove(target)) {
+			if (target.newlySwitched || this.queue.willMove(target)) {
 				this.debug('Payback NOT boosted');
 				return move.basePower;
 			}
@@ -13995,6 +13987,7 @@ let BattleMovedex = {
 		desc: "If the target uses a Fire-type move this turn, it is prevented from executing and the target loses 1/4 of its maximum HP, rounded half up. This effect does not happen if the Fire-type move is prevented by Primordial Sea.",
 		shortDesc: "If using a Fire move, target loses 1/4 max HP.",
 		id: "powder",
+		isNonstandard: 'Past',
 		name: "Powder",
 		pp: 20,
 		priority: 1,
@@ -14309,7 +14302,7 @@ let BattleMovedex = {
 		stallingMove: true,
 		volatileStatus: 'protect',
 		onPrepareHit(pokemon) {
-			return !!this.willAct() && this.runEvent('StallMove', pokemon);
+			return !!this.queue.willAct() && this.runEvent('StallMove', pokemon);
 		},
 		onHit(pokemon) {
 			pokemon.addVolatile('stall');
@@ -14746,7 +14739,7 @@ let BattleMovedex = {
 				this.debug('Pursuit start');
 				let alreadyAdded = false;
 				for (const source of this.effectData.sources) {
-					if (!this.cancelMove(source) || !source.hp) continue;
+					if (!this.queue.cancelMove(source) || !source.hp) continue;
 					if (!alreadyAdded) {
 						this.add('-activate', pokemon, 'move: Pursuit');
 						alreadyAdded = true;
@@ -14805,7 +14798,7 @@ let BattleMovedex = {
 		flags: {protect: 1, mirror: 1},
 		onHit(target) {
 			if (target.side.active.length < 2) return false; // fails in singles
-			let action = this.willMove(target);
+			let action = this.queue.willMove(target);
 			if (!action) return false;
 
 			action.order = 201;
@@ -14849,7 +14842,7 @@ let BattleMovedex = {
 		flags: {snatch: 1},
 		sideCondition: 'quickguard',
 		onTryHitSide(side, source) {
-			return !!this.willAct();
+			return !!this.queue.willAct();
 		},
 		onHitSide(side, source) {
 			source.addVolatile('stall');
@@ -15012,21 +15005,19 @@ let BattleMovedex = {
 		pp: 40,
 		priority: 0,
 		flags: {contact: 1, protect: 1, mirror: 1},
-		self: {
-			onHit(pokemon) {
-				if (pokemon.hp && pokemon.removeVolatile('leechseed')) {
-					this.add('-end', pokemon, 'Leech Seed', '[from] move: Rapid Spin', '[of] ' + pokemon);
+		onAfterHit(target, pokemon) {
+			if (pokemon.hp && pokemon.removeVolatile('leechseed')) {
+				this.add('-end', pokemon, 'Leech Seed', '[from] move: Rapid Spin', '[of] ' + pokemon);
+			}
+			let sideConditions = ['spikes', 'toxicspikes', 'stealthrock', 'stickyweb', 'gmaxsteelsurge'];
+			for (const condition of sideConditions) {
+				if (pokemon.hp && pokemon.side.removeSideCondition(condition)) {
+					this.add('-sideend', pokemon.side, this.dex.getEffect(condition).name, '[from] move: Rapid Spin', '[of] ' + pokemon);
 				}
-				let sideConditions = ['spikes', 'toxicspikes', 'stealthrock', 'stickyweb', 'gmaxsteelsurge'];
-				for (const condition of sideConditions) {
-					if (pokemon.hp && pokemon.side.removeSideCondition(condition)) {
-						this.add('-sideend', pokemon.side, this.dex.getEffect(condition).name, '[from] move: Rapid Spin', '[of] ' + pokemon);
-					}
-				}
-				if (pokemon.hp && pokemon.volatiles['partiallytrapped']) {
-					pokemon.removeVolatile('partiallytrapped');
-				}
-			},
+			}
+			if (pokemon.hp && pokemon.volatiles['partiallytrapped']) {
+				pokemon.removeVolatile('partiallytrapped');
+			}
 		},
 		secondary: {
 			chance: 100,
@@ -15857,14 +15848,14 @@ let BattleMovedex = {
 		pp: 15,
 		priority: 0,
 		flags: {protect: 1, mirror: 1, sound: 1, authentic: 1},
-		onTry() {
+		onTry(target, source, move) {
 			for (const action of this.queue) {
 				// @ts-ignore
 				if (!action.pokemon || !action.move) continue;
 				// @ts-ignore
 				if (action.move.id === 'round') {
 					// @ts-ignore
-					this.prioritizeAction(action);
+					this.queue.prioritizeAction(action, move);
 					return;
 				}
 			}
@@ -16613,9 +16604,9 @@ let BattleMovedex = {
 			onHit(pokemon, source, move) {
 				if (pokemon.side !== source.side && move.category === 'Physical') {
 					pokemon.volatiles['shelltrap'].gotHit = true;
-					let action = this.willMove(pokemon);
+					let action = this.queue.willMove(pokemon);
 					if (action) {
-						this.prioritizeAction(action);
+						this.queue.prioritizeAction(action, move);
 					}
 				}
 			},
@@ -17304,7 +17295,7 @@ let BattleMovedex = {
 				if (pokemon.hasItem('ironball') || pokemon.volatiles['ingrain'] || this.field.getPseudoWeather('gravity')) applies = false;
 				if (pokemon.removeVolatile('fly') || pokemon.removeVolatile('bounce')) {
 					applies = true;
-					this.cancelMove(pokemon);
+					this.queue.cancelMove(pokemon);
 					pokemon.removeVolatile('twoturnmove');
 				}
 				if (pokemon.volatiles['magnetrise']) {
@@ -17320,7 +17311,7 @@ let BattleMovedex = {
 			},
 			onRestart(pokemon) {
 				if (pokemon.removeVolatile('fly') || pokemon.removeVolatile('bounce')) {
-					this.cancelMove(pokemon);
+					this.queue.cancelMove(pokemon);
 					this.add('-start', pokemon, 'Smack Down');
 				}
 			},
@@ -17460,6 +17451,7 @@ let BattleMovedex = {
 		desc: "If another Pokemon uses certain non-damaging moves this turn, the user steals that move to use itself. If multiple Pokemon use one of those moves this turn, the applicable moves are all stolen by the first Pokemon in turn order that used this move this turn. This effect is ignored while the user is under the effect of Sky Drop.",
 		shortDesc: "User steals certain support moves to use itself.",
 		id: "snatch",
+		isNonstandard: "Past",
 		name: "Snatch",
 		pp: 10,
 		priority: 4,
@@ -17926,7 +17918,7 @@ let BattleMovedex = {
 		stallingMove: true,
 		volatileStatus: 'spikyshield',
 		onTryHit(target, source, move) {
-			return !!this.willAct() && this.runEvent('StallMove', target);
+			return !!this.queue.willAct() && this.runEvent('StallMove', target);
 		},
 		onHit(pokemon) {
 			pokemon.addVolatile('stall');
@@ -18821,7 +18813,7 @@ let BattleMovedex = {
 		priority: 1,
 		flags: {contact: 1, protect: 1, mirror: 1},
 		onTry(source, target) {
-			let action = this.willMove(target);
+			let action = this.queue.willMove(target);
 			if (!action || action.choice !== 'move' || (action.move.category === 'Status' && action.move.id !== 'mefirst') || target.volatiles.mustrecharge) {
 				this.add('-fail', source);
 				this.attrLastMove('[still]');
@@ -19388,7 +19380,7 @@ let BattleMovedex = {
 		effect: {
 			duration: 3,
 			onStart(target) {
-				if (target.activeTurns && !this.willMove(target)) {
+				if (target.activeTurns && !this.queue.willMove(target)) {
 					this.effectData.duration++;
 				}
 				this.add('-start', target, 'move: Taunt');
@@ -19625,6 +19617,7 @@ let BattleMovedex = {
 				target.item = yourItem.id; // bypass setItem so we don't break choicelock or anything
 				return;
 			}
+			this.add('-enditem', target, yourItem, '[silent]', '[from] move: Thief', '[of] ' + source);
 			this.add('-item', source, yourItem, '[from] move: Thief', '[of] ' + target);
 		},
 		secondary: null,
@@ -20194,7 +20187,7 @@ let BattleMovedex = {
 
 			if (target.side.active.length === 2 && target.position === 1) {
 				// Curse Glitch
-				const action = this.willMove(target);
+				const action = this.queue.willMove(target);
 				if (action && action.move.id === 'curse') {
 					action.targetLoc = -1;
 				}
@@ -20753,7 +20746,7 @@ let BattleMovedex = {
 				// @ts-ignore
 				if (action.pokemon.side === source.side && ['firepledge', 'grasspledge'].includes(action.move.id)) {
 					// @ts-ignore
-					this.prioritizeAction(action);
+					this.queue.prioritizeAction(action, move);
 					this.add('-waiting', source, action.pokemon);
 					return null;
 				}
@@ -20763,18 +20756,12 @@ let BattleMovedex = {
 			if (move.sourceEffect === 'grasspledge') {
 				move.type = 'Grass';
 				move.forceSTAB = true;
+				move.sideCondition = 'grasspledge';
 			}
 			if (move.sourceEffect === 'firepledge') {
 				move.type = 'Water';
 				move.forceSTAB = true;
-			}
-		},
-		onHit(target, source, move) {
-			if (move.sourceEffect === 'firepledge') {
-				source.side.addSideCondition('waterpledge');
-			}
-			if (move.sourceEffect === 'grasspledge') {
-				target.side.addSideCondition('grasspledge');
+				move.self = {sideCondition: 'waterpledge'};
 			}
 		},
 		effect: {
@@ -21009,7 +20996,7 @@ let BattleMovedex = {
 		flags: {snatch: 1},
 		sideCondition: 'wideguard',
 		onTryHitSide(side, source) {
-			return !!this.willAct();
+			return !!this.queue.willAct();
 		},
 		onHitSide(side, source) {
 			source.addVolatile('stall');
