@@ -17,7 +17,7 @@ const SHOP_ROOT = __dirname + '/../../../server/plugins/economy/data/shop.json';
 function read(user: string, callback?: ICallback): Money {
 	if (!user || user === '' || user === undefined) return null;
 	const userid: string = toID(user);
-	const money: Money = Database(userid, `users/${userid}`).get('money');
+	const money: Money = Profiles(userid).get('money');
 
 	if (callback) callback(userid, money);
 	return money;
@@ -29,7 +29,7 @@ function write(user: string, amount: number, callback?: ICallback): Money {
 	if (isNaN(amount)) return null;
 
 	const userid: string = toID(user);
-	const money: Money = Database(userid, `users/${userid}`).put('money', amount);
+	const money: Money = Profiles(userid).put('money', amount);
 
 	if (callback) callback(userid, money);
 	return money;
@@ -37,7 +37,7 @@ function write(user: string, amount: number, callback?: ICallback): Money {
 
 function log(name: string): object {
 	const id: string = toID(name);
-	const ROOT_LOG: string = __dirname + '/../../../logs/economy'
+	const ROOT_LOG: string = __dirname + '/../../../logs/economy';
 
 	const existsRoot: boolean = fs.existsSync(ROOT_LOG);
 	if (!existsRoot) fs.mkdirSync(ROOT_LOG);
