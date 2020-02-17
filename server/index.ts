@@ -110,9 +110,6 @@ import { startDb, Database } from './database';
 global.Database = Database;
 global.Db = Database;
 
-import { getProfile } from './custom-users';
-global.Profiles = getProfile;
-
 import {LoginServer} from './loginserver';
 global.LoginServer = LoginServer;
 
@@ -124,6 +121,9 @@ global.Chat = Chat;
 
 import {Users} from './users';
 global.Users = Users;
+
+import { getProfile } from './custom-users';
+global.Profiles = getProfile;
 
 import {Punishments} from './punishments';
 global.Punishments = Punishments;
