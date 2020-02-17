@@ -66,7 +66,6 @@ export class CustomUser implements IUser {
 			id: this.id,
 			name: this.name,
 			ips: this.ips,
-			names: this.names,
 			money: this.money,
 			lvl: this.lvl,
 			exp: this.exp,
@@ -83,7 +82,7 @@ export class CustomUser implements IUser {
 	}
 
 	set<T>(key: string, value?: T): T {
-		if (key && !value || value === undefined) return Database(this.id, `users/${this.id}`).set(key);
+		if (key && !value || value === undefined) return Database(this.id, `users`).set(key);
 		return Database(this.id, `users`).set(key);
 	}
 
