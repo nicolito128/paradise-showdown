@@ -5,9 +5,8 @@
  * @license MIT
  */
 
-import * as fs from 'fs';
 import { Database } from './database';
-import {Dex} from '../sim/dex';
+import { Dex } from '../sim/dex';
 const toID = Dex.getId;
 
 interface IUser {
@@ -22,10 +21,6 @@ interface IUser {
 	badges: object[];
 }
 
-interface Profile {
-	[k: string]: any;
-}
-
 export function getProfile(user: string): CustomUser {
 	const u = new CustomUser(user);
 	u.init();
@@ -35,6 +30,7 @@ export function getProfile(user: string): CustomUser {
 export class CustomUser implements IUser {
 	id: string;
 	name: string;
+	ips: string[] | undefined;
 	money: number;
 	lvl: number;
 	exp: number;
@@ -43,9 +39,11 @@ export class CustomUser implements IUser {
 	friends: object[];
 	badges: object[];
 
-	constructor(name: string, options: object = {}) {
+	constructor(name: string, options?: {ips: string[]}) {
 		this.id = toID(name);
 		this.name = name;
+
+		this.ips = options?.ips;
 
 		// Plugins
 		this.money = 0;
@@ -58,15 +56,17 @@ export class CustomUser implements IUser {
 	}
 
 	init(): void {
-		const exists: boolean = Database(this.id, `users/${this.id}`).exists();
+		const exists: boolean = Database(this.id, `users`).exists();
 		if (exists) {
-			const data = Database(this.id, `users/${this.id}`).data();
+			const data = Database(this.id, `users`).data();
 			Object.assign(this, data);
 		}
 
-		Database(this.id, `users/${this.id}`).set({
+		Database(this.id, `users`).set({
 			id: this.id,
 			name: this.name,
+			ips: this.ips,
+			names: this.names,
 			money: this.money,
 			lvl: this.lvl,
 			exp: this.exp,
@@ -84,10 +84,10 @@ export class CustomUser implements IUser {
 
 	set<T>(key: string, value?: T): T {
 		if (key && !value || value === undefined) return Database(this.id, `users/${this.id}`).set(key);
-		return Database(this.id, `users/${this.id}`).set(key);
+		return Database(this.id, `users`).set(key);
 	}
 
 	put<T>(key: string, value: T): T {
-		return Database(this.id, `users/${this.id}`).put(key, value);
+		return Database(this.id, `users`).put(key, value);
 	}
 }
