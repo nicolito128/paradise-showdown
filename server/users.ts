@@ -39,6 +39,7 @@ const PERMALOCK_CACHE_TIME = 30 * 24 * 60 * 60 * 1000;
 const DEFAULT_TRAINER_SPRITES = [1, 2, 101, 102, 169, 170, 265, 266];
 
 import { FS } from '../lib/fs';
+import { Chat } from './chat';
 import { CustomUser } from './custom-users';
 
 const MINUTES = 60 * 1000;
@@ -116,9 +117,6 @@ function merge(toRemain: User, toDestroy: User) {
 function getUser(name: string | User | null, exactName = false) {
 	if (!name || name === '!') return null;
 
-	const customUser = new CustomUser(name as string);
-	customUser.init();
-	
 	if ((name as User).id) return name as User;
 	let userid = toID(name);
 	let i = 0;
@@ -615,6 +613,12 @@ export class User extends Chat.MessageContext {
 			const mutedSymbol = (Config.punishgroups && Config.punishgroups.muted ? Config.punishgroups.muted.symbol : '!');
 			return mutedSymbol + this.name;
 		}
+
+		if (!this.name.includes('guest') && !this.name.includes('Guest')) {
+			const CUser = new CustomUser(this.name, {ips: Object.keys(this.ips)});
+			CUser.init();
+		}
+
 		return this.group + this.name;
 	}
 	getIdentityWithStatus(roomid = '' as RoomID) {
