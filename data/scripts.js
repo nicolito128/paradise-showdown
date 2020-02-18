@@ -710,9 +710,13 @@ let BattleScripts = {
 
 		if (!move.negateSecondary && !(move.hasSheerForce && pokemon.hasAbility('sheerforce'))) {
 			for (let i = 0; i < damage.length; i++) {
-				const curDamage = damage[i];
-				if (typeof curDamage === 'number' && targets[i].hp <= targets[i].maxhp / 2 && targets[i].hp + curDamage > targets[i].maxhp / 2) {
-					this.runEvent('EmergencyExit', targets[i], pokemon);
+				// There are no multihit spread moves, so it's safe to use move.totalDamage for multihit moves
+				// The previous check was for `move.multihit`, but that fails for Dragon Darts
+				const curDamage = targets.length === 1 ? move.totalDamage : damage[i];
+				if (typeof curDamage === 'number' && targets[i].hp) {
+					if (targets[i].hp <= targets[i].maxhp / 2 && targets[i].hp + curDamage > targets[i].maxhp / 2) {
+						this.runEvent('EmergencyExit', targets[i], pokemon);
+					}
 				}
 			}
 		}
@@ -818,7 +822,7 @@ let BattleScripts = {
 					this.singleEvent('AfterHit', moveData, {}, target, pokemon, move);
 				}
 			}
-			if (pokemon.hp <= pokemon.maxhp / 2 && pokemonOriginalHP > pokemon.maxhp / 2) {
+			if (pokemon.hp && pokemon.hp <= pokemon.maxhp / 2 && pokemonOriginalHP > pokemon.maxhp / 2) {
 				this.runEvent('EmergencyExit', pokemon);
 			}
 		}

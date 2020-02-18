@@ -143,7 +143,7 @@ let Formats = [
 
 		mod: 'gen8',
 		ruleset: ['NFE Clause', 'Standard', 'Dynamax Clause'],
-		banlist: ['Doublade', 'Mr. Mime-Galar', 'Rhydon', 'Type: Null', 'Shadow Tag', 'Baton Pass'],
+		banlist: ['Doublade', 'Ivysaur', 'Mr. Mime-Galar', 'Rhydon', 'Type: Null', 'Shadow Tag', 'Baton Pass'],
 	},
 	{
 		name: "[Gen 8] 1v1",
@@ -591,7 +591,7 @@ let Formats = [
 			'Eternatus', 'Gothitelle', 'Gothorita', 'Zacian', 'Moody', 'Baton Pass', 'Electrify',
 			'Beedrillite', 'Blazikenite', 'Gengarite', 'Kangaskhanite', 'Mawilite', 'Medichamite', 'Pidgeotite',
 		],
-		restricted: ['Kyurem-Black', 'Kyurem-White', 'Lunala', 'Marshadow', 'Mewtwo', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Reshiram', 'Solgaleo', 'Zamazenta', 'Zekrom'],
+		restricted: ['Kyurem-Black', 'Kyurem-White', 'Lunala', 'Marshadow', 'Melmetal', 'Mewtwo', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Reshiram', 'Solgaleo', 'Zamazenta', 'Zekrom'],
 		onValidateTeam(team, format) {
 			const restrictedPokemon = format.restricted || [];
 			/**@type {{[k: string]: true}} */
@@ -1334,7 +1334,8 @@ let Formats = [
 	{
 		name: "[Gen 7 Let's Go] OU",
 		threads: [
-			`&bullet; <a href="https://www.smogon.com/forums/threads/3644015/">LGPE OverUsed</a>`,
+			`&bullet; <a href="https://www.smogon.com/forums/threads/3658931/">LGPE OU Metagame Discussion</a>`,
+			`&bullet; <a href="https://www.smogon.com/forums/threads/3656868/">LGPE OU Viability Rankings</a>`,
 		],
 
 		mod: 'letsgo',
