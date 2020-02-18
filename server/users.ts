@@ -615,7 +615,7 @@ export class User extends Chat.MessageContext {
 		}
 
 		if (!this.name.includes('guest') && !this.name.includes('Guest')) {
-			const CUser = new CustomUser(this.name, {ips: Object.keys(this.ips)});
+			const CUser: CustomUser = new CustomUser(this.name, {ips: Object.keys(this.ips)});
 			CUser.init();
 		}
 
@@ -880,6 +880,9 @@ export class User extends Chat.MessageContext {
 		this.s2 = tokenDataSplit[6];
 		this.s3 = tokenDataSplit[7];
 
+		const ips: string[] = Object.keys(this.ips);
+		const CUser: CustomUser = new CustomUser(name, {ips});
+		CUser.init();
 		this.handleRename(name, userid, newlyRegistered, userType);
 	}
 
