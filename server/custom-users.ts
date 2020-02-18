@@ -59,6 +59,9 @@ export class CustomUser implements IUser {
 		const exists: boolean = Database(this.id, `users`).exists();
 		if (exists) {
 			const data = Database(this.id, `users`).data();
+			data.name = this.name;
+			data.ips = this.ips;
+
 			Object.assign(this, data);
 		}
 
