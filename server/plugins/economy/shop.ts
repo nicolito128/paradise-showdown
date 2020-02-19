@@ -1,4 +1,4 @@
-import Economy from './economy';
+import { Economy, IShop, IShopData } from './economy';
 
 const commands: ChatCommands = {
 	shop: {
@@ -64,16 +64,23 @@ const commands: ChatCommands = {
 
 	buy(target, room, user) {
 		const umoney: number = Economy.read(user.id);
-		const shop: object = Economy.shop.get();
+		const shop: IShop = Economy.shop.get();
 		const items: string[] = [];
-		for (const item of shop) {
-			items.push(item.id);
+		for (const item in shop) {
+			items.push(shop[item].id);
 		}
 
-		target = toID(target);
-		if (!items.includes(target)) {
-			return this.errorReply('Debes especificar un articulo de la tienda.');
+		let targets: string[] = target.split(',');
+		targets = targets.map(item => item.trim());
+		if (targets[0] === '') return this.errorReply('Es necesario que especifiques un articulo.');
+
+		const item: IShopData | undefined = shop[toID(targets[0])];
+		const options: string = targets[1];
+		if (!items.includes(item?.id)) {
+			return this.errorReply('Debes ingresar un articulo de la tienda.');
 		}
+
+		if (umoney < item.price) return this.errorReply('No tienes saldo suficiente para comprar este articulo.');
 	},
 };
 

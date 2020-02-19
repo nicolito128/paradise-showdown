@@ -7,11 +7,22 @@
 
 interface ICallback { (user: string, money: number): void }
 
-type Money = number | null;
+export interface IShopData {
+	id: string;
+	name: string;
+	price: number;
+	desc: string;
+}
+
+export interface IShop {
+	[k: string]: IShopData;
+}
+
+export type Money = number | null;
 
 import * as fs from 'fs';
 
-const Economy = Object.create(null);
+export const Economy = Object.create(null);
 const SHOP_ROOT = __dirname + '/../../../server/plugins/economy/data/shop.json';
 
 function read(user: string, callback?: ICallback): Money {
@@ -65,8 +76,8 @@ function log(name: string): object {
 }
 
 const shop: object = {
-	get(): object {
-		const data: object = JSON.parse(fs.readFileSync(SHOP_ROOT));
+	get(): IShop {
+		const data: IShop = JSON.parse(fs.readFileSync(SHOP_ROOT));
 		return data;
 	},
 
@@ -78,7 +89,7 @@ const shop: object = {
 	set(key: string, value: object): void {
 		key = toID(key);
 
-		const data: object = this.get();
+		const data: object = this.get() as object;
 		const newData: object = {};
 		newData[key] = value;
 
@@ -115,9 +126,19 @@ const shop: object = {
 
 		return page + shop;
 	},
+
+	buy(user: string, item: IShopData): void {
+		const userid = toID(user);
+		const exists: boolean = Database('shop').has('pending');
+		if (!exists) {
+			void Database('shop').set('pending', []);
+		}
+
+		const data = {date: new Date().toUTCString(), id: item.id, name: item.name};
+		Database('shop').put('pending', {user: {id: userid, name: user}, data});
+		Profiles(userid).put('receipts', data);
+	},
 };
 
 // Assignations
 void Object.assign(Economy, { read, write, log, shop });
-
-export default Economy;
