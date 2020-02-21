@@ -4113,28 +4113,16 @@ let BattleMovedex = {
 		accuracy: 100,
 		basePower: 50,
 		category: "Physical",
-		desc: "In singles, this move hits the target twice. In doubles, this move hits each target once.",
-		shortDesc: "Singles: Hits twice. Doubles: Hits each once.",
+		desc: "Hits two times with smart targeting. In singles, hits the foe twice. In Doubles, if hitting either foe would fail (from immunity, protection moves, semi-invulnerability, absorption abilities, or accuracy), hits the other foe twice. Otherwise, hits the target once, and then the other foe once. Target redirection (Follow Me, etc) causes it to hit that target twice.",
+		shortDesc: "Hits 2x (hit 2 targets other foe smartly)",
 		id: "dragondarts",
 		name: "Dragon Darts",
 		pp: 10,
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
 		multihit: 2,
+		smartTarget: true,
 		secondary: null,
-		onModifyMove(move, pokemon, target) {
-			if (target.side.active.length === 2) {
-				move.multihit = 1;
-				move.spreadModifier = 1;
-				move.target = "allAdjacentFoes";
-				for (const currentTarget of target.side.active) {
-					if (currentTarget.volatiles['protect'] || !currentTarget.runImmunity('Dragon') || currentTarget.fainted) {
-						move.multihit = 2;
-						break;
-					}
-				}
-			}
-		},
 		target: "normal",
 		type: "Dragon",
 		gmaxPower: 130,
@@ -6125,6 +6113,7 @@ let BattleMovedex = {
 			onFoeRedirectTargetPriority: 1,
 			onFoeRedirectTarget(target, source, source2, move) {
 				if (!this.effectData.target.isSkyDropped() && this.validTarget(this.effectData.target, source, move.target)) {
+					if (move.smartTarget) move.smartTarget = false;
 					this.debug("Follow Me redirected target of move");
 					return this.effectData.target;
 				}
@@ -11346,7 +11335,7 @@ let BattleMovedex = {
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
-		desc: "The user is protected from all attacks made by other Pokemon during this turn. This move has a 1/X chance of being successful, where X starts at 1 and triples each time this move is successfully used. X resets to 1 if this move fails, if the user's last move used is not Baneful Bunker, Detect, Endure, King's Shield, Obstruct, Protect, Quick Guard, Spiky Shield, or Wide Guard, or if it was one of those moves and the user's protection was broken. Fails if the user moves last this turn.",
+		desc: "The user is protected from nearly all attacks made by other Pokemon during this turn. This move has a 1/X chance of being successful, where X starts at 1 and triples each time this move is successfully used. X resets to 1 if this move fails, if the user's last move used is not Baneful Bunker, Detect, Endure, King's Shield, Obstruct, Protect, Quick Guard, Spiky Shield, or Wide Guard, or if it was one of those moves and the user's protection was broken. Fails if the user moves last this turn.",
 		shortDesc: "Prevents all moves from affecting the user this turn.",
 		id: "maxguard",
 		isViable: true,
@@ -11370,6 +11359,14 @@ let BattleMovedex = {
 			},
 			onTryHitPriority: 3,
 			onTryHit(target, source, move) {
+				/** moves blocked by Max Guard but not Protect */
+				const overrideBypassProtect = [
+					'block', 'flowershield', 'gearup', 'magneticflux', 'phantomforce', 'psychup', 'teatime', 'transform',
+				];
+				const blockedByMaxGuard = move.flags['protect'] || move.isZ || move.isMax || overrideBypassProtect.includes(move.id);
+				if (!blockedByMaxGuard) {
+					return;
+				}
 				this.add('-activate', target, 'move: Max Guard');
 				let lockedmove = source.getVolatile('lockedmove');
 				if (lockedmove) {
@@ -14365,7 +14362,6 @@ let BattleMovedex = {
 		priority: 0,
 		flags: {authentic: 1, mystery: 1},
 		onHit(target, source) {
-			if (target.volatiles['maxguard']) return false;
 			for (let i in target.boosts) {
 				// @ts-ignore
 				source.boosts[i] = target.boosts[i];
@@ -14959,6 +14955,7 @@ let BattleMovedex = {
 			onFoeRedirectTargetPriority: 1,
 			onFoeRedirectTarget(target, source, source2, move) {
 				if (!this.effectData.target.isSkyDropped() && source.runStatusImmunity('powder') && this.validTarget(this.effectData.target, source, move.target)) {
+					if (move.smartTarget) move.smartTarget = false;
 					this.debug("Rage Powder redirected target of move");
 					return this.effectData.target;
 				}
@@ -20091,7 +20088,7 @@ let BattleMovedex = {
 		priority: 0,
 		flags: {mystery: 1},
 		onHit(target, pokemon) {
-			if (target.volatiles['maxguard'] || !pokemon.transformInto(target)) {
+			if (!pokemon.transformInto(target)) {
 				return false;
 			}
 		},
