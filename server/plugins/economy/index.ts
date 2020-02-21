@@ -1,7 +1,7 @@
-import Economy from './economy';
+import { Economy } from './economy';
 import shop from './shop';
 
-export const commands: ChatCommands = Object.assign({
+export const commands: ChatCommands = {
 	'!pd': true,
 	wallet: 'pd',
 	money: 'pd',
@@ -14,7 +14,7 @@ export const commands: ChatCommands = Object.assign({
 			target = toID(target);
 		}
 
-		this.sendReplyBox(`Ahorros de ${Users.getExact(target).name}: ${Economy.read(target)}`);
+		this.sendReplyBox(`Ahorros de ${Users.getExact(target).name}: <b>${Economy.read(target)} ${Config.moneyName}</b>`);
 	},
 	pdhelp: ['/pd [user] - Mira los ahorros de un usuario'],
 
@@ -77,4 +77,6 @@ export const commands: ChatCommands = Object.assign({
 		user.popup(data);
 	},
 	moneyloghelp: ['/moneylog - Mira los registros dejados por autoridades al usar comandos de economía.'],
-}, shop);
+};
+
+Object.assign(commands, shop);

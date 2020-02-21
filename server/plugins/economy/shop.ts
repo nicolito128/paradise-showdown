@@ -11,7 +11,7 @@ const commands: ChatCommands = {
 			if (!user.can('makeroom')) return false;
 
 			let targets: string[] = target.split(',');
-			if (targets.length < 3 || targets.length > 3) {
+			if (targets.length < 3) {
 				return this.errorReply('Uso: /shop add [Item name], [Item description], [Item price]');
 			}
 
@@ -20,15 +20,28 @@ const commands: ChatCommands = {
 				if (!item || item === '') return this.errorReply('Rellena los campos faltantes.');
 			});
 
+			if (!targets[3] || targets[3] === '' || targets[3] === undefined) {
+				targets[3] = 'false';
+			} else if (targets[3] !== 'true') {
+				return this.errorReply('Si se requiere información adicional para este objeto especifica el parametro como "true"');
+			}
+
 			const id: string = toID(targets[0]);
 			const name: string = targets[0];
 			const desc: string = targets[1];
 			const price: number = parseInt(targets[2]);
 
+			let options: boolean;
+			if (targets[3] === 'false') {
+				options = false;
+			} else {
+				options = true;
+			}
+
 			if (isNaN(price)) return this.errorReply('[Item price] debe ser un valor numerico.');
 			if (Math.sign(price) === -1 || Math.sign(price) === 0) return this.errorReply('El [Item price] especificado debe ser un número mayor a 0.');
 
-			Economy.shop.set(id, {id, name, desc, price});
+			Economy.shop.set(id, {id, name, desc, price, options});
 			this.sendReply(`|raw| Añadiste correctamente el articulo <b>${name}</b> a la tienda del servidor.`);
 			Economy.log('shopadmin').write(`${user.name} añadió el articulo ${name} a la tienda`);
 		},
@@ -65,23 +78,27 @@ const commands: ChatCommands = {
 	buy(target, room, user) {
 		const umoney: number = Economy.read(user.id);
 		const shop: IShop = Economy.shop.get();
-		const items: string[] = [];
-		for (const item in shop) {
-			items.push(shop[item].id);
-		}
 
 		let targets: string[] = target.split(',');
 		targets = targets.map(item => item.trim());
-		if (targets[0] === '') return this.errorReply('Es necesario que especifiques un articulo.');
+		if (!targets[0] || targets[0] === '') return this.errorReply('Es necesario que especifiques un articulo.');
+		if (!targets[1] || targets[1] === '' || targets[1] === undefined) targets[1] = '';
 
 		const item: IShopData | undefined = shop[toID(targets[0])];
 		const options: string = targets[1];
-		if (!items.includes(item?.id)) {
-			return this.errorReply('Debes ingresar un articulo de la tienda.');
+
+		if (item === undefined) return this.errorReply('Ingresa un articulo de la tienda.');
+		if (umoney < item.price) return this.errorReply('No tienes saldo suficiente para comprar este articulo.');
+
+		const buyStatus: boolean | null = Economy.shop.buy(user.name, item, options);
+		if (buyStatus === null) {
+			return this.errorReply(`'${item.name}' requiere parametros adicionales que no has especificado.`);
 		}
 
-		if (umoney < item.price) return this.errorReply('No tienes saldo suficiente para comprar este articulo.');
+		this.sendReply(`|raw| ¡Compraste exsitosamente el articulo <b>${item.name}</b>! Espera a que un staff revise tu compra. Puedes revisar tus compras con el comando /receipts`);
+		Economy.write(user.id, -item.price);
 	},
+	buyhelp: ['/buy [item], [options]optional - Compra un articulo de la tienda.'],
 };
 
 export default commands;

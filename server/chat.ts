@@ -1514,14 +1514,13 @@ export const Chat = new class {
 			this.loadPlugin(`chat-plugins/${file}`);
 		}
 
-		let plugins = FS('server/plugins').readdirSync();
-		plugins.splice(plugins.indexOf('utils'), 1);
+		const plugins: string[] = FS('server/plugins').readdirSync();
 
-		for (let folder of plugins) {
-			let files = FS(`server/plugins/${folder}`).readdirSync();
+		for (const folder of plugins) {
+			const customFiles: string[] = FS(`server/plugins/${folder}`).readdirSync();
 
 			let i: string;
-			if (files.includes('index.ts')) {
+			if (customFiles.includes('index.ts')) {
 				i = 'index.ts';
 			} else {
 				i = 'index.js';

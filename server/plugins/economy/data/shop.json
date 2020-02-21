@@ -1,8 +1,1 @@
-{
-	"room": {
-		"id": "room",
-		"name": "Private Chat Room",
-		"price": 100,
-		"desc": "Una sala de chat privada"
-	}
-}
+{"privatechatroom":{"id":"privatechatroom","name":"Private Chat Room","price":100,"desc":"Una sala de chat privada","options":true}}

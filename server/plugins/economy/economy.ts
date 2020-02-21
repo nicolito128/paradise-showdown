@@ -7,11 +7,21 @@
 
 interface ICallback { (user: string, money: number): void }
 
+interface IEconomy {
+	read: (user: string, callback?: ICallback) => Money;
+	write: (user: string, amount: number, callback?: ICallback) => Money;
+	log: (name: string) => object;
+	shop: {
+		[k: string]: any;
+	};
+}
+
 export interface IShopData {
 	id: string;
 	name: string;
 	price: number;
 	desc: string;
+	options: boolean;
 }
 
 export interface IShop {
@@ -22,7 +32,7 @@ export type Money = number | null;
 
 import * as fs from 'fs';
 
-export const Economy = Object.create(null);
+export const Economy: IEconomy = Object.create(null);
 const SHOP_ROOT = __dirname + '/../../../server/plugins/economy/data/shop.json';
 
 function read(user: string, callback?: ICallback): Money {
@@ -127,16 +137,22 @@ const shop: object = {
 		return page + shop;
 	},
 
-	buy(user: string, item: IShopData): void {
+	buy(user: string, item: IShopData, options: string): boolean | null {
 		const userid = toID(user);
 		const exists: boolean = Database('shop').has('pending');
 		if (!exists) {
 			void Database('shop').set('pending', []);
 		}
 
-		const data = {date: new Date().toUTCString(), id: item.id, name: item.name};
-		Database('shop').put('pending', {user: {id: userid, name: user}, data});
-		Profiles(userid).put('receipts', data);
+		if (item.options && options === '' || options === undefined) {
+			return null;
+		}
+
+		const data: object = {date: new Date().toUTCString(), id: item.id, name: item.name};
+		Database('shop').put('pending', {user: {id: userid, name: user}, ...data, options});
+		Profiles(userid).put('receipts', {...data, options});
+
+		return true;
 	},
 };
 
