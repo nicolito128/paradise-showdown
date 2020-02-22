@@ -284,18 +284,24 @@ let BattleAbilities = {
 		shortDesc: "This Pokemon's highest stat is raised by 1 if it attacks and KOes another Pokemon.",
 		onSourceFaint(target, source, effect) {
 			if (effect && effect.effectType === 'Move') {
+				source.addVolatile('beastboost');
+			}
+		},
+		effect: {
+			duration: 1,
+			onStart(pokemon) {
 				let statName = 'atk';
 				let bestStat = 0;
 				/** @type {StatNameExceptHP} */
 				let s;
-				for (s in source.storedStats) {
-					if (source.storedStats[s] > bestStat) {
+				for (s in pokemon.storedStats) {
+					if (pokemon.storedStats[s] > bestStat) {
 						statName = s;
-						bestStat = source.storedStats[s];
+						bestStat = pokemon.storedStats[s];
 					}
 				}
-				this.boost({[statName]: 1}, source);
-			}
+				this.boost({[statName]: 1}, pokemon);
+			},
 		},
 		id: "beastboost",
 		name: "Beast Boost",
@@ -2318,8 +2324,14 @@ let BattleAbilities = {
 		shortDesc: "This Pokemon's Attack is raised by 1 stage if it attacks and KOes another Pokemon.",
 		onSourceFaint(target, source, effect) {
 			if (effect && effect.effectType === 'Move') {
-				this.boost({atk: 1}, source);
+				source.addVolatile('moxie');
 			}
+		},
+		effect: {
+			duration: 1,
+			onStart(pokemon) {
+				this.boost({atk: 1}, pokemon);
+			},
 		},
 		id: "moxie",
 		name: "Moxie",
@@ -4459,8 +4471,8 @@ let BattleAbilities = {
 		desc: "The Pokémon exchanges Abilities with a Pokémon that hits it with a move that makes direct contact.",
 		shortDesc: "Exchanges abilities when hit with a contact move.",
 		onDamagingHit(damage, target, source, move) {
-			if (source.ability === 'wanderingspirit') return;
-			if (target.volatiles['dynamax'] || target.ability === 'illusion' || target.ability === 'wonderguard') return;
+			if (target.volatiles['dynamax']) return;
+			if (['illusion', 'wanderingspirit', 'wonderguard'].includes(source.ability)) return;
 			if (move.flags['contact']) {
 				let sourceAbility = source.setAbility('wanderingspirit', target);
 				if (!sourceAbility) return;
@@ -4625,7 +4637,11 @@ let BattleAbilities = {
 			if (target === source || move.category === 'Status' || move.type === '???' || move.id === 'struggle') return;
 			this.debug('Wonder Guard immunity: ' + move.id);
 			if (target.runEffectiveness(move) <= 0) {
-				this.add('-immune', target, '[from] ability: Wonder Guard');
+				if (move.smartTarget) {
+					move.smartTarget = false;
+				} else {
+					this.add('-immune', target, '[from] ability: Wonder Guard');
+				}
 				return null;
 			}
 		},
