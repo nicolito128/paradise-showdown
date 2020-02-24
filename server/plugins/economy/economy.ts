@@ -10,9 +10,19 @@ interface ICallback { (user: string, money: number): void }
 interface IEconomy {
 	read: (user: string, callback?: ICallback) => Money;
 	write: (user: string, amount: number, callback?: ICallback) => Money;
-	log: (name: string) => object;
+	receipts: (user: string) => IReceipt[];
+	log: (name: string) => {
+		write: (message: string) => void;
+		get: () => string | null;
+	};
 	shop: {
-		[k: string]: any;
+		get: () => IShop;
+		getJson: () => Buffer;
+		set: (set: string, value: object) => void;
+		delete: (key: string) => void | null;
+		panel: () => string;
+		buy: (user: string, item: IShopData, options: string) => boolean | null;
+		pending: () => IReceipt[];
 	};
 }
 
@@ -26,6 +36,14 @@ export interface IShopData {
 
 export interface IShop {
 	[k: string]: IShopData;
+}
+
+export interface IReceipt {
+	date: string;
+	id: string;
+	name: string;
+	user?: object;
+	options?: string;
 }
 
 export type Money = number | null;
@@ -54,6 +72,12 @@ function write(user: string, amount: number, callback?: ICallback): Money {
 
 	if (callback) callback(userid, money);
 	return money;
+}
+
+function receipts(user: string): IReceipt[] | null {
+	const userid: string = toID(user);
+	const receipts: IReceipt[] | null = Profiles(userid).get('receipts');
+	return receipts;
 }
 
 function log(name: string): object {
@@ -154,7 +178,12 @@ const shop: object = {
 
 		return true;
 	},
+
+	pending(): IReceipt[] | null {
+		const pending: IReceipt[] | null = Database('shop').get('pending');
+		return pending;
+	},
 };
 
 // Assignations
-void Object.assign(Economy, { read, write, log, shop });
+void Object.assign(Economy, { read, write, receipts, log, shop });
