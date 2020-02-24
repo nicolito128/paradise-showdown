@@ -1,4 +1,4 @@
-import { Economy, IShop, IShopData } from './economy';
+import { Economy, IShop, IShopData, IReceipt } from './economy';
 
 const commands: ChatCommands = {
 	shop: {
@@ -99,6 +99,29 @@ const commands: ChatCommands = {
 		Economy.write(user.id, -item.price);
 	},
 	buyhelp: ['/buy [item], [options]optional - Compra un articulo de la tienda.'],
+
+	receipts(target, room, user) {
+		const receipts: IReceipt[] | null = Economy.receipts(user.id);
+
+		if (receipts === null) return this.errorReply('No tienes ningún recibo de compra.');
+		if (!this.runBroadcast()) return false;
+
+		let box: string = '<table style="text-align: center; margin: auto;" border="1">';
+		box += '<thead><tr> <th style="padding: 2px;">Date</th> <th style="padding: 2px;">Item</th> <th style="padding: 2px;">Options</th> </tr></thead>';
+		box += '<tbody>';
+		receipts.forEach(receipt => {
+			box += '<tr>';
+			box += `<td style="padding: 5px; font-style: italic;">${receipt.date}</td>`;
+			box += `<td style="padding: 5px; font-weight: bold;">${receipt.name}</td>`;
+			box += `<td style="padding: 5px;">${receipt.options}</td>`;
+			box += '</tr>';
+		});
+		box += '</tbody>';
+		box += '</table>';
+
+		this.sendReplyBox(box);
+	},
+	receiptshelp: ['/receipts - Mira tus recibos de compra de la tienda.'],
 };
 
 export default commands;
