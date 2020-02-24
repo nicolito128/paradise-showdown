@@ -172,36 +172,7 @@ export class Side {
 			pokemon: [] as AnyObject[],
 		};
 		for (const pokemon of this.pokemon) {
-			const entry: AnyObject = {
-				ident: pokemon.fullname,
-				details: pokemon.details,
-				condition: pokemon.getHealth().secret,
-				active: (pokemon.position < pokemon.side.active.length),
-				stats: {
-					atk: pokemon.baseStoredStats['atk'],
-					def: pokemon.baseStoredStats['def'],
-					spa: pokemon.baseStoredStats['spa'],
-					spd: pokemon.baseStoredStats['spd'],
-					spe: pokemon.baseStoredStats['spe'],
-				},
-				moves: pokemon.moves.map(move => {
-					if (move === 'hiddenpower') {
-						return move + toID(pokemon.hpType) + (this.battle.gen < 6 ? '' : pokemon.hpPower);
-					}
-					if (move === 'frustration' || move === 'return') {
-						const m = this.battle.dex.getMove(move)!;
-						// @ts-ignore - Frustration and Return only require the source Pokemon
-						const basePower = m.basePowerCallback(pokemon);
-						return `${move}${basePower}`;
-					}
-					return move;
-				}),
-				baseAbility: pokemon.baseAbility,
-				item: pokemon.item,
-				pokeball: pokemon.pokeball,
-			};
-			if (this.battle.gen > 6) entry.ability = pokemon.ability;
-			data.pokemon.push(entry);
+			data.pokemon.push(pokemon.getSwitchRequestData());
 		}
 		return data;
 	}
@@ -373,7 +344,7 @@ export class Side {
 		// Parse moveText (name or index)
 		// If the move is not found, the action is invalid without requiring further inspection.
 
-		const requestMoves = pokemon.getRequestData().moves;
+		const requestMoves = pokemon.getMoveRequestData().moves;
 		let moveid = '';
 		let targetType = '';
 		if (autoChoose) moveText = 1;
@@ -470,8 +441,8 @@ export class Side {
 			moveid = 'struggle';
 		} else if (maxMove) {
 			// Dynamaxed; only Taunt and Assault Vest disable Max Guard
-			if (maxMove.id === 'maxguard' && (pokemon.hasItem('assaultvest') || pokemon.volatiles['taunt'])) {
-				return this.emitChoiceError(`Can't move: ${pokemon.name}'s ${move.name} is disabled`);
+			if (pokemon.maxMoveDisabled(maxMove)) {
+				return this.emitChoiceError(`Can't move: ${pokemon.name}'s ${maxMove.name} is disabled`);
 			}
 		} else if (!zMove) {
 			// Check for disabled moves
@@ -909,9 +880,19 @@ export class Side {
 		if (this.requestState === 'teampreview') {
 			if (!this.isChoiceDone()) this.chooseTeam();
 		} else if (this.requestState === 'switch') {
-			while (!this.isChoiceDone()) this.chooseSwitch();
+			let i = 0;
+			while (!this.isChoiceDone()) {
+				if (!this.chooseSwitch()) throw new Error(`autoChoose switch crashed: ${this.choice.error}`);
+				i++;
+				if (i > 10) throw new Error(`autoChoose failed: infinite looping`);
+			}
 		} else if (this.requestState === 'move') {
-			while (!this.isChoiceDone()) this.chooseMove();
+			let i = 0;
+			while (!this.isChoiceDone()) {
+				if (!this.chooseMove()) throw new Error(`autoChoose crashed: ${this.choice.error}`);
+				i++;
+				if (i > 10) throw new Error(`autoChoose failed: infinite looping`);
+			}
 		}
 		return true;
 	}

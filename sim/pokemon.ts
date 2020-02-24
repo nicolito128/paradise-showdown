@@ -804,7 +804,7 @@ export class Pokemon {
 			}
 			let disabled = moveSlot.disabled;
 			if (this.volatiles['dynamax']) {
-				disabled = false;
+				disabled = this.maxMoveDisabled(this.battle.dex.getMove(moveSlot.id));
 			} else if (
 				(moveSlot.pp <= 0 && !this.volatiles['partialtrappinglock']) || disabled &&
 				this.side.active.length >= 2 && this.battle.targetTypeChoices(target!)
@@ -828,7 +828,11 @@ export class Pokemon {
 		return hasValidMove ? moves : [];
 	}
 
-	getRequestData() {
+	maxMoveDisabled(move: Move) {
+		return !!(move.category === 'Status' && (this.hasItem('assaultvest') || this.volatiles['taunt']));
+	}
+
+	getMoveRequestData() {
 		let lockedMove = this.getLockedMove();
 
 		// Information should be restricted for the last active Pokémon
@@ -882,6 +886,39 @@ export class Pokemon {
 		}
 
 		return data;
+	}
+
+	getSwitchRequestData() {
+		const entry: AnyObject = {
+			ident: this.fullname,
+			details: this.details,
+			condition: this.getHealth().secret,
+			active: (this.position < this.side.active.length),
+			stats: {
+				atk: this.baseStoredStats['atk'],
+				def: this.baseStoredStats['def'],
+				spa: this.baseStoredStats['spa'],
+				spd: this.baseStoredStats['spd'],
+				spe: this.baseStoredStats['spe'],
+			},
+			moves: this.moves.map(move => {
+				if (move === 'hiddenpower') {
+					return move + toID(this.hpType) + (this.battle.gen < 6 ? '' : this.hpPower);
+				}
+				if (move === 'frustration' || move === 'return') {
+					const m = this.battle.dex.getMove(move)!;
+					// @ts-ignore - Frustration and Return only require the source Pokemon
+					const basePower = m.basePowerCallback(this);
+					return `${move}${basePower}`;
+				}
+				return move;
+			}),
+			baseAbility: this.baseAbility,
+			item: this.item,
+			pokeball: this.pokeball,
+		};
+		if (this.battle.gen > 6) entry.ability = this.ability;
+		return entry;
 	}
 
 	isLastActive() {

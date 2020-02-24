@@ -198,3 +198,11 @@ import {Repl} from '../lib/repl';
 import { consoleips } from '../config/config-example';
 // tslint:disable-next-line: no-eval
 Repl.start('app', cmd => eval(cmd));
+
+/*********************************************************
+ * Fully initialized, run startup hook
+ *********************************************************/
+
+if (Config.startuphook) {
+	process.nextTick(Config.startuphook);
+}
