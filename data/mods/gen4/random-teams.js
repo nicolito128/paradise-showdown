@@ -13,16 +13,18 @@ class RandomGen4Teams extends RandomGen5Teams {
 		let baseTemplate = (template = this.dex.getTemplate(template));
 		let species = template.species;
 
-		if (!template.exists || (!template.randomBattleMoves && !template.learnset)) {
+		if (!template.exists || !template.randomBattleMoves && !this.dex.data.Learnsets[template.id]) {
 			template = this.dex.getTemplate('unown');
 
-			let err = new Error('Template incompatible with random battles: ' + species);
+			const err = new Error('Template incompatible with random battles: ' + species);
 			Monitor.crashlog(err, 'The gen 4 randbat set generator');
 		}
 
-		if (template.battleOnly) species = template.baseSpecies;
+		if (template.battleOnly) species = /** @type {string} */ (template.battleOnly);
 
-		let movePool = (template.randomBattleMoves ? template.randomBattleMoves.slice() : template.learnset ? Object.keys(template.learnset) : []);
+		// @ts-ignore
+		let movePool = (template.randomBattleMoves || Object.keys(this.dex.data.Learnsets[template.id].learnset)).slice();
+		/** @type {string[]} */
 		let rejectedPool = [];
 		/**@type {string[]} */
 		let moves = [];
@@ -54,7 +56,6 @@ class RandomGen4Teams extends RandomGen5Teams {
 		let hasAbility = {};
 		hasAbility[template.abilities[0]] = true;
 		if (template.abilities[1]) {
-			// @ts-ignore
 			hasAbility[template.abilities[1]] = true;
 		}
 		let availableHP = 0;
@@ -391,6 +392,7 @@ class RandomGen4Teams extends RandomGen5Teams {
 				// Reject defensive status moves if a reliable recovery move is available but not selected.
 				// Toxic is only defensive if used with another status move other than Protect (Toxic + 3 attacks and Toxic + Protect are ok).
 				if ((defensiveStatusMoves.includes(moveid) || moveid === 'toxic' && ((counter.Status > 1 && !hasMove['protect']) || counter.Status > 2)) &&
+					// @ts-ignore
 					!moves.some(id => recoveryMoves.includes(id)) && movePool.some(id => recoveryMoves.includes(id))) {
 					rejected = true;
 				}
@@ -568,8 +570,8 @@ class RandomGen4Teams extends RandomGen5Teams {
 			ability = ability0.name;
 		}
 
-		if (template.requiredItems) {
-			item = this.sample(template.requiredItems);
+		if (template.requiredItem) {
+			item = template.requiredItem;
 
 		// First, the extra high-priority items
 		} else if (template.species === 'Farfetch\'d') {

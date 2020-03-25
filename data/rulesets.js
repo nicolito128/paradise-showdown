@@ -292,6 +292,10 @@ let BattleFormats = {
 			if (!template.nfe || futureGenEvo) {
 				return [set.species + " doesn't have an evolution family."];
 			}
+			// Temporary hack for LC past-gen formats and other mashups
+			if (set.level > 5) {
+				return [`${set.species} can't be above level 5 in Little Cup formats.`];
+			}
 		},
 	},
 	blitz: {
@@ -303,7 +307,7 @@ let BattleFormats = {
 		onBegin() {
 			this.add('rule', 'Blitz: Super-fast timer');
 		},
-		timer: {starting: 15, addPerTurn: 5, maxPerTurn: 15, maxFirstTurn: 30, grace: 30},
+		timer: {starting: 15, addPerTurn: 5, maxPerTurn: 15, maxFirstTurn: 40, grace: 30},
 	},
 	vgctimer: {
 		effectType: 'Rule',
@@ -600,18 +604,15 @@ let BattleFormats = {
 			this.add('rule', 'Z-Move Clause: Z-Moves are banned');
 		},
 	},
-	nfeclause: {
+	notfullyevolved: {
 		effectType: 'ValidatorRule',
-		name: 'NFE Clause',
+		name: 'Not Fully Evolved',
 		desc: "Bans Pok&eacute;mon that are fully evolved or can't evolve",
 		onValidateSet(set) {
 			const template = this.dex.getTemplate(set.species);
 			if (!template.nfe) {
 				return [set.species + " cannot evolve."];
 			}
-		},
-		onBegin() {
-			this.add('rule', 'NFE Clause: Fully Evolved Pokémon are banned');
 		},
 	},
 	hppercentagemod: {
@@ -756,8 +757,9 @@ let BattleFormats = {
 		onValidateSet(set) {
 			let template = this.dex.getTemplate(set.species);
 			if (template.num === 493 && set.evs) {
-				for (let stat in set.evs) {
-					// @ts-ignore
+				/** @type {StatName} */
+				let stat;
+				for (stat in set.evs) {
 					const ev = set.evs[stat];
 					if (ev > 100) {
 						return [
@@ -837,11 +839,70 @@ let BattleFormats = {
 		desc: "Holds all custom Pet Mod ruleset validation",
 		// Implemented in mods/[petmod]/rulesets.js
 	},
-	uunfeclause: {
+	nfeclause: {
 		effectType: 'ValidatorRule',
-		name: 'UU NFE Clause',
-		desc: "Bans all NFE Pokemon, except Scyther, from [Gen 3] UU.",
-		// Implemented in mods/gen3/rulesets.js
+		name: 'NFE Clause',
+		desc: "Bans all NFE Pokemon",
+		onValidateSet(set) {
+			const template = this.dex.getTemplate(set.species || set.name);
+			const feInCurrentGen = template.evos && this.dex.getTemplate(template.evos[0]).gen > this.gen;
+			if (template.nfe && !feInCurrentGen) {
+				if (this.ruleTable.has(`+pokemon:${template.id}`)) return;
+				return [`${set.species} is banned due to NFE Clause.`];
+			}
+		},
+	},
+	mimicglitch: {
+		effectType: 'ValidatorRule',
+		name: 'Mimic Glitch',
+		desc: "Allows any Pokemon with access to Assist, Copycat, Metronome, Mimic, or Transform to gain access to almost any other move.",
+		// Implemented in sim/team-validator.ts
+	},
+	formeclause: {
+		effectType: 'ValidatorRule',
+		name: 'Forme Clause',
+		desc: "Prevents teams from having more than one Pok&eacute;mon of the same forme",
+		onBegin() {
+			this.add('rule', 'Forme Clause: Limit one of each forme of a Pokémon');
+		},
+		onValidateTeam(team) {
+			/** @type {Set<string>} */
+			const formeTable = new Set();
+			for (const set of team) {
+				let template = this.dex.getTemplate(set.species);
+				if (template.species !== template.baseSpecies) {
+					let baseSpecies = this.dex.getTemplate(template.baseSpecies);
+					if (template.types.join('/') === baseSpecies.types.join('/') && Object.values(template.baseStats).join('/') === Object.values(baseSpecies.baseStats).join('/')) {
+						template = baseSpecies;
+					}
+				}
+				if (formeTable.has(template.species)) {
+					return [`You are limited to one of each forme of a Pokémon by Forme Clause.`, `(You have more than one of ${template.species})`];
+				}
+				formeTable.add(template.species);
+			}
+		},
+	},
+	scalemonsmod: {
+		effectType: 'Rule',
+		name: 'Scalemons Mod',
+		desc: "Every Pok&eacute;mon's stats, barring HP, are scaled to give them a BST as close to 600 as possible",
+		onBegin() {
+			this.add('rule', 'Scalemons Mod: Every Pokemon\'s stats, barring HP, are scaled to come as close to a BST of 600 as possible');
+		},
+		onModifyTemplate(template, target, source) {
+			const newTemplate = this.dex.deepClone(template);
+			newTemplate.baseStats = this.dex.deepClone(newTemplate.baseStats);
+			/** @type {StatName[]} */
+			let stats = ['atk', 'def', 'spa', 'spd', 'spe'];
+			/** @type {number} */
+			let pst = stats.map(stat => newTemplate.baseStats[stat]).reduce((x, y) => x + y);
+			let scale = 600 - newTemplate.baseStats['hp'];
+			for (const stat of stats) {
+				newTemplate.baseStats[stat] = this.dex.clampIntRange(newTemplate.baseStats[stat] * scale / pst, 1, 255);
+			}
+			return newTemplate;
+		},
 	},
 };
 

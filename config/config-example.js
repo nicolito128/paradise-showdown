@@ -277,6 +277,7 @@ exports.battlemodchat = false;
 exports.pmmodchat = false;
 /**
  * ladder modchat - minimum group for laddering
+ * @type {false | GroupSymbol}
  */
 exports.laddermodchat = false;
 

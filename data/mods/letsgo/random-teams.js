@@ -12,19 +12,20 @@ class RandomLetsGoTeams extends RandomTeams {
 		template = this.dex.getTemplate(template);
 		let species = template.species;
 
-		if (!template.exists || (!template.randomBattleMoves && !template.learnset)) {
-			template = this.dex.getTemplate('bulbasaur');
+		if (!template.exists || !template.randomBattleMoves && !this.dex.data.Learnsets[template.id]) {
+			template = this.dex.getTemplate(this.sample(['Pikachu-Starter', 'Eevee-Starter']));
 
-			let err = new Error('Template incompatible with random battles: ' + species);
+			const err = new Error('Template incompatible with random battles: ' + species);
 			Monitor.crashlog(err, 'The Let\'s Go randbat set generator');
 		}
 
 		if (template.battleOnly) {
 			// Only change the species. The template has custom moves, and may have different typing and requirements.
-			species = template.baseSpecies;
+			species = /** @type {string} */ (template.battleOnly);
 		}
 
-		let movePool = (template.randomBattleMoves ? template.randomBattleMoves.slice() : template.learnset ? Object.keys(template.learnset) : []);
+		// @ts-ignore
+		let movePool = (template.randomBattleMoves || Object.keys(this.dex.data.Learnsets[template.id].learnset)).slice();
 		/**@type {string[]} */
 		let moves = [];
 		/**@type {{[k: string]: true}} */

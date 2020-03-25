@@ -163,10 +163,10 @@ let BattleMovedex = {
 			let koed;
 			if (Math.round(this.random())) {
 				koed = target;
-				this.add(`c|%Aeonic|What a buncha jokers`);
+				this.add(`c|@Aeonic|What a buncha jokers`);
 			} else {
 				koed = source;
-				this.add(`c|%Aeonic|haha yeah`);
+				this.add(`c|@Aeonic|haha yeah`);
 			}
 
 			this.add('-anim', koed, "Explosion", koed);
@@ -3685,33 +3685,6 @@ let BattleMovedex = {
 		secondary: null,
 		target: "normal",
 		type: "Flying",
-	},
-	// Raid
-	firestorm: {
-		accuracy: 90,
-		basePower: 100,
-		category: "Special",
-		desc: "100% chance to burn the target.",
-		shortDesc: "100% chance to burn the target.",
-		id: "firestorm",
-		name: "Firestorm",
-		isNonstandard: "Custom",
-		pp: 10,
-		priority: 0,
-		flags: {protect: 1, mirror: 1},
-		onTryMove() {
-			this.attrLastMove('[still]');
-		},
-		onPrepareHit(target, source) {
-			this.add('-anim', source, "Fire Spin", target);
-			this.add('-anim', source, "Hurricane", target);
-		},
-		secondary: {
-			chance: 100,
-			status: 'brn',
-		},
-		target: "normal",
-		type: "Fire",
 	},
 	// Ransei
 	mashupmotive: {

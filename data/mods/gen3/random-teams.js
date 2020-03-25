@@ -12,16 +12,17 @@ class RandomGen3Teams extends RandomGen4Teams {
 		let baseTemplate = (template = this.dex.getTemplate(template));
 		let species = template.species;
 
-		if (!template.exists || (!template.randomBattleMoves && !template.learnset)) {
+		if (!template.exists || !template.randomBattleMoves && !this.dex.data.Learnsets[template.id]) {
 			template = this.dex.getTemplate('unown');
 
-			let err = new Error('Template incompatible with random battles: ' + species);
+			const err = new Error('Template incompatible with random battles: ' + species);
 			Monitor.crashlog(err, 'The gen 3 randbat set generator');
 		}
 
-		if (template.battleOnly) species = template.baseSpecies;
+		if (template.battleOnly) species = /** @type {string} */ (template.battleOnly);
 
-		let movePool = (template.randomBattleMoves ? template.randomBattleMoves.slice() : template.learnset ? Object.keys(template.learnset) : []);
+		// @ts-ignore
+		let movePool = (template.randomBattleMoves || Object.keys(this.dex.data.Learnsets[template.id].learnset)).slice();
 		/**@type {string[]} */
 		let moves = [];
 		let ability = '';
@@ -52,7 +53,6 @@ class RandomGen3Teams extends RandomGen4Teams {
 		let hasAbility = {};
 		hasAbility[template.abilities[0]] = true;
 		if (template.abilities[1]) {
-			// @ts-ignore TypeScript bug
 			hasAbility[template.abilities[1]] = true;
 		}
 		let availableHP = 0;
@@ -509,11 +509,8 @@ class RandomGen3Teams extends RandomGen4Teams {
 			ability = ability0.name;
 		}
 
-		if (template.requiredItems) {
-			item = this.sample(template.requiredItems);
-
 		// First, the extra high-priority items
-		} else if (template.species === 'Farfetch\'d') {
+		if (template.species === 'Farfetch\'d') {
 			item = 'Stick';
 		} else if (template.species === 'Marowak') {
 			item = 'Thick Club';

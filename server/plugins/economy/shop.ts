@@ -69,6 +69,13 @@ const commands: ChatCommands = {
 			const data: string = Economy.log('shopadmin').get();
 			user.popup(data);
 		},
+
+		admin(target, room, user, connection) {
+			if (!user.can('makeroom')) return false;
+
+			const data: string = Economy.shop.adminPanel();
+			connection.send(data);
+		},
 	},
 	shophelp: ['/shop - Visualiza la tienda del servidor',
 	'/shop add [name], [desc], [price] - Añade un nuevo articulo a la tienda. Requiere: & ~',

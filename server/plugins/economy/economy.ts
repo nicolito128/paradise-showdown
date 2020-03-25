@@ -23,6 +23,7 @@ interface IEconomy {
 		panel: () => string;
 		buy: (user: string, item: IShopData, options: string) => boolean | null;
 		pending: () => IReceipt[];
+		adminPanel: () => string;
 	};
 }
 
@@ -151,7 +152,7 @@ const shop: object = {
 			const item: any = data[i];
 			shop += '<tr>';
 			shop += `<td style="padding: 4px;">${item.name}</td>`;
-			shop += `<td>${item.desc}</td>`;
+			shop += `<td style="padding: 4px;">${item.desc}</td>`;
 			shop += `<td style="padding: 4px; color: #f4821a; font-weight: bold;">${item.price}</td>`;
 			shop += `<td style="padding: 4px;"><button class="button"><em class="fa fa-shopping-cart fa-lg" aria-hidden="true"></em></button></td>`;
 			shop += '</tr>';
@@ -182,6 +183,28 @@ const shop: object = {
 	pending(): IReceipt[] | null {
 		const pending: IReceipt[] | null = Database('shop').get('pending');
 		return pending;
+	},
+
+	adminPanel(): string {
+		const receipts: IReceipt[] | null = this.pending();
+		if (receipts === null) return '';
+
+		const page: string = `>shop-admin-panel\n|init|html\n|title|[Shop] Admin\n`;
+		let shop: string = '|pagehtml| <div class="pad"><p><div style="margin: auto; text-align: center;">';
+		shop += `<h1 style="font-weight: bold;">Registros de compra</span></h1>`;
+		shop += '<table border="1" style="margin: auto; text-align: center; border-radius: 5px; border-color: #39772E;"></thead><tr><th style="padding: 3.5px;">Date</th> <th style="padding: 3.5px;">Name</th> <th style="padding: 3.5px;">User</th> <th style="padding: 3.5px;">Options</th></tr></thead>';
+		shop += '<tbody>';
+		for (const receipt of receipts) {
+			shop += '<tr>';
+			shop += `<td style="padding: 4px; font-weight: italic;"><small>${receipt.date}</small></td>`;
+			shop += `<td style="padding: 4px; font-weight: bold;">${receipt.name}</td>`;
+			shop += `<td style="padding: 4px; font-weight: bold;">${receipt.user.name}</td>`;
+			shop += `<td style="padding: 4px;">${receipt.options}</td>`;
+			shop += '</tr>';
+		}
+		shop += '</tbody></table></div></p></div>';
+
+		return page + shop;
 	},
 };
 

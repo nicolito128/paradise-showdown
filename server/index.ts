@@ -195,8 +195,7 @@ TeamValidatorAsync.PM.spawn();
  *********************************************************/
 
 import {Repl} from '../lib/repl';
-import { consoleips } from '../config/config-example';
-// tslint:disable-next-line: no-eval
+// eslint-disable-next-line no-eval
 Repl.start('app', cmd => eval(cmd));
 
 /*********************************************************

@@ -60,13 +60,13 @@ let BattleStatuses = {
 	aeonic: {
 		noCopy: true,
 		onStart() {
-			this.add(`c|%Aeonic|Guys the emoji movie wasn't __that__ bad`);
+			this.add(`c|@Aeonic|Guys the emoji movie wasn't __that__ bad`);
 		},
 		onSwitchOut() {
-			this.add(`c|%Aeonic|Still better than kie btw`);
+			this.add(`c|@Aeonic|Still better than kie btw`);
 		},
 		onFaint() {
-			this.add(`c|%Aeonic|Don't forget me`);
+			this.add(`c|@Aeonic|Don't forget me`);
 		},
 	},
 	aethernum: {
@@ -1018,10 +1018,10 @@ let BattleStatuses = {
 	martha: {
 		noCopy: true,
 		onStart() {
-			this.add(`c|@martha|in to lose r1`);
+			this.add(`c|+martha|in to lose r1`);
 		},
 		onSwitchOut() {
-			this.add(`c|@martha|bad`);
+			this.add(`c|+martha|bad`);
 		},
 	},
 	marty: {
@@ -1282,10 +1282,6 @@ let BattleStatuses = {
 		onFaint() {
 			this.add(`c|%Rage|/me quits`);
 		},
-	},
-	raid: {
-		noCopy: true,
-		// No messages provided
 	},
 	ransei: {
 		noCopy: true,

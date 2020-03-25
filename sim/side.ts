@@ -145,7 +145,7 @@ export class Side {
 			switch (action.choice) {
 			case 'move':
 				let details = ``;
-				if (action.targetLoc && this.active.length > 1) details += ` ${action.targetLoc}`;
+				if (action.targetLoc && this.active.length > 1) details += ` ${action.targetLoc > 0 ? '+' : ''}${action.targetLoc}`;
 				if (action.mega) details += (action.pokemon!.item === 'ultranecroziumz' ? ` ultra` : ` mega`);
 				if (action.zmove) details += ` zmove`;
 				if (action.maxMove) details += ` dynamax`;
@@ -327,7 +327,7 @@ export class Side {
 		return this.choice.actions.length >= this.active.length;
 	}
 
-	chooseMove(moveText?: string | number, targetLoc?: number, megaDynaOrZ?: boolean | string) {
+	chooseMove(moveText?: string | number, targetLoc = 0, megaDynaOrZ: 'mega' | 'zmove' | 'ultra' | 'dynamax' | '' = '') {
 		if (this.requestState !== 'move') {
 			return this.emitChoiceError(`Can't move: You need a ${this.requestState} response`);
 		}
@@ -338,24 +338,21 @@ export class Side {
 		const autoChoose = !moveText;
 		const pokemon: Pokemon = this.active[index];
 
-		if (megaDynaOrZ === true) megaDynaOrZ = 'mega';
-		if (!targetLoc) targetLoc = 0;
-
 		// Parse moveText (name or index)
 		// If the move is not found, the action is invalid without requiring further inspection.
 
-		const requestMoves = pokemon.getMoveRequestData().moves;
+		const request = pokemon.getMoveRequestData();
 		let moveid = '';
 		let targetType = '';
 		if (autoChoose) moveText = 1;
 		if (typeof moveText === 'number' || (moveText && /^[0-9]+$/.test(moveText))) {
 			// Parse a one-based move index.
-			const moveIndex = +moveText - 1;
-			if (moveIndex < 0 || moveIndex >= requestMoves.length || !requestMoves[moveIndex]) {
+			const moveIndex = Number(moveText) - 1;
+			if (moveIndex < 0 || moveIndex >= request.moves.length || !request.moves[moveIndex]) {
 				return this.emitChoiceError(`Can't move: Your ${pokemon.name} doesn't have a move ${moveIndex + 1}`);
 			}
-			moveid = requestMoves[moveIndex].id;
-			targetType = requestMoves[moveIndex].target!;
+			moveid = request.moves[moveIndex].id;
+			targetType = request.moves[moveIndex].target!;
 		} else {
 			// Parse a move ID.
 			// Move names are also allowed, but may cause ambiguity (see client issue #167).
@@ -363,10 +360,31 @@ export class Side {
 			if (moveid.startsWith('hiddenpower')) {
 				moveid = 'hiddenpower';
 			}
-			for (const move of requestMoves) {
+			for (const move of request.moves) {
 				if (move.id !== moveid) continue;
 				targetType = move.target || 'normal';
 				break;
+			}
+			if (!targetType && ['', 'dynamax'].includes(megaDynaOrZ) && request.maxMoves) {
+				for (const [i, moveRequest] of request.maxMoves.maxMoves.entries()) {
+					if (moveid === moveRequest.move) {
+						moveid = request.moves[i].id;
+						targetType = moveRequest.target;
+						megaDynaOrZ = 'dynamax';
+						break;
+					}
+				}
+			}
+			if (!targetType && ['', 'zmove'].includes(megaDynaOrZ) && request.canZMove) {
+				for (const [i, moveRequest] of request.canZMove.entries()) {
+					if (!moveRequest) continue;
+					if (moveid === toID(moveRequest.move)) {
+						moveid = request.moves[i].id;
+						targetType = moveRequest.target;
+						megaDynaOrZ = 'zmove';
+						break;
+					}
+				}
 			}
 			if (!targetType) {
 				return this.emitChoiceError(`Can't move: Your ${pokemon.name} doesn't have a move matching ${moveid}`);
@@ -375,7 +393,7 @@ export class Side {
 
 		const moves = pokemon.getMoves();
 		if (autoChoose) {
-			for (const [i, move] of requestMoves.entries()) {
+			for (const [i, move] of request.moves.entries()) {
 				if (move.disabled) continue;
 				if (i < moves.length && move.id === moves[i].id && moves[i].disabled) continue;
 				moveid = move.id;
@@ -562,7 +580,7 @@ export class Side {
 			slot = this.active.length;
 			while (this.choice.switchIns.has(slot) || this.pokemon[slot].fainted) slot++;
 		} else {
-			slot = parseInt(slotText!, 10) - 1;
+			slot = parseInt(slotText!) - 1;
 		}
 		if (isNaN(slot) || slot < 0) {
 			// maybe it's a name/species id!
@@ -635,7 +653,7 @@ export class Side {
 		if (!data) data = `123456`;
 		const positions = (('' + data)
 			.split(data.includes(',') ? ',' : '')
-			.map(datum => parseInt(datum, 10) - 1));
+			.map(datum => parseInt(datum) - 1));
 
 		if (autoFill && this.choice.actions.length >= this.maxTeamSize) return true;
 		if (this.requestState !== 'teampreview') {
@@ -702,7 +720,7 @@ export class Side {
 		let forcedSwitches = 0;
 		let forcedPasses = 0;
 		if (this.battle.requestState === 'switch') {
-			const canSwitchOut = this.active.filter(pokemon => pokemon && pokemon.switchFlag).length;
+			const canSwitchOut = this.active.filter(pokemon => pokemon?.switchFlag).length;
 			const canSwitchIn = this.pokemon.slice(this.active.length).filter(pokemon => pokemon && !pokemon.fainted).length;
 			forcedSwitches = Math.min(canSwitchOut, canSwitchIn);
 			forcedPasses = canSwitchOut - forcedSwitches;
@@ -759,7 +777,7 @@ export class Side {
 				const original = data;
 				const error = () => this.emitChoiceError(`Conflicting arguments for "move": ${original}`);
 				let targetLoc: number | undefined;
-				let megaDynaOrZ = '';
+				let megaDynaOrZ: 'mega' | 'zmove' | 'ultra' | 'dynamax' | '' = '';
 				while (true) {
 					// If data ends with a number, treat it as a target location.
 					// We need to special case 'Conversion 2' so it doesn't get
@@ -767,7 +785,7 @@ export class Side {
 					// '2' (since Conversion targets 'self', targetLoc can't be 2).
 					if (/\s(?:-|\+)?[1-3]$/.test(data) && toID(data) !== 'conversion2') {
 						if (targetLoc !== undefined) return error();
-						targetLoc = parseInt(data.slice(-2), 10);
+						targetLoc = parseInt(data.slice(-2));
 						data = data.slice(0, -2).trim();
 					} else if (data.endsWith(' mega')) {
 						if (megaDynaOrZ) return error();
@@ -785,6 +803,14 @@ export class Side {
 						if (megaDynaOrZ) return error();
 						megaDynaOrZ = 'dynamax';
 						data = data.slice(0, -8);
+					} else if (data.endsWith(' gigantamax')) {
+						if (megaDynaOrZ) return error();
+						megaDynaOrZ = 'dynamax';
+						data = data.slice(0, -11);
+					} else if (data.endsWith(' max')) {
+						if (megaDynaOrZ) return error();
+						megaDynaOrZ = 'dynamax';
+						data = data.slice(0, -4);
 					} else {
 						break;
 					}

@@ -438,13 +438,15 @@ describe('Choices', function () {
 			assert.equal(battle.getAllActive().length, 0, `All active Pok\u00E9mon should have fainted`);
 
 			assert.constant(() => battle.turn, () => {
-				assert.throws(() => battle.p1.choosePass(),
+				assert.throws(
+					() => battle.p1.choosePass(),
 					/\[Invalid choice\] Can't pass: You need to switch in a Pokémon to replace Latias/,
 					`Expected choosePass() to fail`
 				);
 				battle.p1.chooseSwitch(3);
 				battle.p2.chooseSwitch(3);
-				assert.throws(() => battle.p2.choosePass(),
+				assert.throws(
+					() => battle.p2.choosePass(),
 					/\[Invalid choice\] Can't pass: You need to switch in a Pokémon to replace Charmander/,
 					`Expected choosePass() to fail`
 				);
@@ -583,10 +585,10 @@ describe('Choices', function () {
 				{species: "Charmander", ability: 'blaze', moves: ['scratch']},
 				{species: "Charizard", ability: 'blaze', moves: ['scratch']},
 			]]);
-			battle.makeChoices('move tackle 1, move tackle 2', 'move scratch 2, move scratch 1');
+			battle.makeChoices('move tackle +1, move tackle +2', 'move scratch +2, move scratch +1');
 
 			const logText = battle.inputLog.join('\n');
-			const subString = '>p1 move tackle 1, move tackle 2\n>p2 move scratch 2, move scratch 1';
+			const subString = '>p1 move tackle +1, move tackle +2\n>p2 move scratch +2, move scratch +1';
 			assert(logText.includes(subString), `${logText} does not include ${subString}`);
 		});
 
@@ -598,10 +600,10 @@ describe('Choices', function () {
 				{species: "Charmander", ability: 'blaze', moves: ['scratch']},
 				{species: "Charizard", ability: 'blaze', moves: ['scratch']},
 			]]);
-			battle.makeChoices('move magnitude, move rockslide', 'move scratch 1, move scratch 1');
+			battle.makeChoices('move magnitude, move rockslide', 'move scratch +1, move scratch +1');
 
 			const logText = battle.inputLog.join('\n');
-			const subString = '>p1 move magnitude, move rockslide\n>p2 move scratch 1, move scratch 1';
+			const subString = '>p1 move magnitude, move rockslide\n>p2 move scratch +1, move scratch +1';
 			assert(logText.includes(subString), `${logText} does not include ${subString}`);
 		});
 
@@ -1043,7 +1045,8 @@ describe('Choice extensions', function () {
 				battle.choose('p1', 'switch 3, switch 4');
 				assert(!battle.p1.activeRequest.noCancel);
 				if (mode === 'revoke') battle.undoChoice('p1');
-				assert.throws(() => battle.makeChoices('switch 4, switch 3', 'pass'),
+				assert.throws(
+					() => battle.makeChoices('switch 4, switch 3', 'pass'),
 					/\[Invalid choice\] Can't switch: You can't switch to a fainted Pokémon/,
 					`Expected switch to fail`
 				);
@@ -1070,7 +1073,8 @@ describe('Choice extensions', function () {
 				battle.choose('p1', 'pass, switch 3');
 				assert(battle.p1.activeRequest.noCancel);
 				if (mode === 'revoke') battle.undoChoice('p1');
-				assert.throws(() => battle.makeChoices('switch 3, pass', 'pass'),
+				assert.throws(
+					() => battle.makeChoices('switch 3, pass', 'pass'),
 					/\[Invalid choice\] Can't switch: You can't switch to a fainted Pokémon/,
 					`Expected switch to fail`
 				);
@@ -1275,7 +1279,8 @@ describe('Choice internals', function () {
 
 		assert.equal(battle.turn, 1);
 		p1.choose('move recover, switch 4');
-		assert.throws(() => p2.choose('switch 3'),
+		assert.throws(
+			() => p2.choose('switch 3'),
 			/\[Invalid choice\] Can't switch: You do not have a Pokémon in slot 3 to switch to/,
 			`Expected switch to fail`
 		);
@@ -1287,7 +1292,8 @@ describe('Choice internals', function () {
 		assert.equal(p1.active[1].name, 'Ekans');
 
 		p1.choose('switch 4, move leer');
-		assert.throws(() => p2.choose('switch 3'),
+		assert.throws(
+			() => p2.choose('switch 3'),
 			/\[Invalid choice\] Can't switch: You do not have a Pokémon in slot 3 to switch to/,
 			`Expected switch to fail`
 		);

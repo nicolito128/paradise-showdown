@@ -13,8 +13,6 @@
  * @license MIT
  */
 
-'use strict';
-
 import * as child_process from 'child_process';
 import * as path from 'path';
 import * as util from 'util';
@@ -180,9 +178,9 @@ async function runModlog(
 }
 
 async function checkRoomModlog(pathString: string, regex: RegExp | null, results: SortedLimitedLengthList) {
-	const fileStream = await FS(pathString).createReadStream();
-	const line = await fileStream.readLine();
-	while (line !== null) {
+	const fileStream = FS(pathString).createReadStream();
+	let line;
+	while ((line = await fileStream.readLine()) !== null) {
 		if (!regex || regex.test(line)) {
 			results.insert(line);
 		}
@@ -286,11 +284,11 @@ function prettifyResults(
 }
 
 async function getModlog(
-	connection: Connection, roomid = 'global' as RoomID, searchString = '',
+	connection: Connection, roomid: RoomID = 'global', searchString = '',
 	maxLines = 20, onlyPunishments = false, timed = false
 ) {
 	const startTime = Date.now();
-	const targetRoom = Rooms.search(roomid) as BasicChatRoom;
+	const targetRoom = Rooms.search(roomid);
 	const user = connection.user;
 
 	// permission checking
@@ -305,7 +303,9 @@ async function getModlog(
 	}
 
 	const hideIps = !user.can('lock');
-	const addModlogLinks = Config.modloglink && (user.group !== ' ' || (targetRoom && targetRoom.isPrivate !== true));
+	const addModlogLinks = !!(
+		Config.modloglink && (user.group !== ' ' || (targetRoom && targetRoom.isPrivate !== true))
+	);
 
 	if (searchString.length > MAX_QUERY_LENGTH) {
 		connection.popup(`Your search query must be shorter than ${MAX_QUERY_LENGTH} characters.`);
@@ -313,7 +313,7 @@ async function getModlog(
 	}
 
 	let exactSearch = false;
-	if (searchString.match(/^["'].+["']$/)) {
+	if (/^["'].+["']$/.test(searchString)) {
 		exactSearch = true;
 		searchString = searchString.substring(1, searchString.length - 1);
 	}
@@ -321,11 +321,9 @@ async function getModlog(
 	let roomidList;
 	// handle this here so the child process doesn't have to load rooms data
 	if (roomid === 'public') {
-		const isPublicRoom = (
-			(room: Room) =>
-			!(room.isPrivate || room.battle || room.isPersonal || room.roomid === 'global')
-		);
-		roomidList = [...Rooms.rooms.values()].filter(isPublicRoom).map(room => room.roomid);
+		roomidList = [...Rooms.rooms.values()].filter(
+			room => !(room.isPrivate || room.battle || room.isPersonal || room.roomid === 'global')
+		).map(room => room.roomid);
 	} else {
 		roomidList = [roomid];
 	}
@@ -501,7 +499,7 @@ export const pages: PageTable = {
 		}).map(tier => {
 			// Use the official tier name
 			const format = Dex.getFormat(tier);
-			if (format && format.exists) tier = format.name;
+			if (format?.exists) tier = format.name;
 			// Otherwise format as best as possible
 			if (tier.substring(0, 3) === 'gen') {
 				return `[Gen ${tier.substring(3, 4)}] ${tier.substring(4)}`;
@@ -566,12 +564,12 @@ export const commands: ChatCommands = {
 	timedmodlog: 'modlog',
 	modlog(target, room, user, connection, cmd) {
 		if (!room) room = Rooms.get('global') as ChatRoom | GameRoom;
-		let roomid = (room.roomid === 'staff' ? 'global' : room.roomid);
+		let roomid: RoomID = (room.roomid === 'staff' ? 'global' : room.roomid);
 
 		if (target.includes(',')) {
 			const targets = target.split(',');
 			target = targets[1].trim();
-			roomid = toID(targets[0]) || room.roomid;
+			roomid = toID(targets[0]) as RoomID || room.roomid;
 		}
 
 		const targetRoom = Rooms.search(roomid);
@@ -607,7 +605,7 @@ export const commands: ChatCommands = {
 
 		void getModlog(
 			connection,
-			roomid as RoomID,
+			roomid,
 			target,
 			lines,
 			(cmd === 'punishlog' || cmd === 'pl'),
@@ -646,7 +644,7 @@ export const commands: ChatCommands = {
  * Process manager
  *********************************************************/
 
-export const PM: QueryProcessManager = new QueryProcessManager(module, async data => {
+export const PM = new QueryProcessManager<AnyObject, AnyObject>(module, async data => {
 	switch (data.cmd) {
 	case 'modlog':
 		const {roomidList, searchString, exactSearch, maxLines, onlyPunishments} = data;
@@ -697,7 +695,7 @@ if (!PM.isParentProcess) {
 	});
 	global.Dex = Dex;
 	global.toID = Dex.getId;
-	// tslint:disable-next-line: no-eval
+	// eslint-disable-next-line no-eval
 	Repl.start('modlog', cmd => eval(cmd));
 } else {
 	PM.spawn(MAX_PROCESSES);
