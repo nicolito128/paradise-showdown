@@ -43,7 +43,7 @@ export interface IReceipt {
 	date: string;
 	id: string;
 	name: string;
-	user?: object;
+	user?: {id: string, name: string};
 	options?: string;
 }
 
@@ -165,13 +165,9 @@ const shop: object = {
 	buy(user: string, item: IShopData, options: string): boolean | null {
 		const userid = toID(user);
 		const exists: boolean = Database('shop').has('pending');
-		if (!exists) {
-			void Database('shop').set('pending', []);
-		}
 
-		if (item.options && options === '' || options === undefined) {
-			return null;
-		}
+		if (!exists) void Database('shop').set('pending', []);
+		if (item.options && options === '' || options === undefined) return null;
 
 		const data: object = {date: new Date().toUTCString(), id: item.id, name: item.name};
 		Database('shop').put('pending', {user: {id: userid, name: user}, ...data, options});
@@ -189,10 +185,10 @@ const shop: object = {
 		const receipts: IReceipt[] | null = this.pending();
 		if (receipts === null) return '';
 
-		const page: string = `>shop-admin-panel\n|init|html\n|title|[Shop] Admin\n`;
+		const page: string = `>shop-admin\n|init|html\n|title|[Shop] Admin\n`;
 		let shop: string = '|pagehtml| <div class="pad"><p><div style="margin: auto; text-align: center;">';
-		shop += `<h1 style="font-weight: bold;">Registros de compra</span></h1>`;
-		shop += '<table border="1" style="margin: auto; text-align: center; border-radius: 5px; border-color: #39772E;"></thead><tr><th style="padding: 3.5px;">Date</th> <th style="padding: 3.5px;">Name</th> <th style="padding: 3.5px;">User</th> <th style="padding: 3.5px;">Options</th></tr></thead>';
+		shop += `<h1 style="font-weight: bold;">Registros de compras</span></h1>`;
+		shop += '<table border="1" style="margin: auto; text-align: center; border-radius: 5px; border-color: #39772E;"></thead><tr><th style="padding: 3.5px;">Date</th> <th style="padding: 3.5px;">Name</th> <th style="padding: 3.5px;">User</th> <th style="padding: 3.5px;">Options</th> <th style="padding: 3.5px;"> </th> <th style="padding: 3.5px;"> </th></tr></thead>';
 		shop += '<tbody>';
 		for (const receipt of receipts) {
 			shop += '<tr>';
@@ -200,6 +196,8 @@ const shop: object = {
 			shop += `<td style="padding: 4px; font-weight: bold;">${receipt.name}</td>`;
 			shop += `<td style="padding: 4px; font-weight: bold;">${receipt.user.name}</td>`;
 			shop += `<td style="padding: 4px;">${receipt.options}</td>`;
+			shop += `<td style="padding: 4px;"><button class="button" style="font-weight: bold; color: green;">Accept</button></td>`;
+			shop += `<td style="padding: 4px;"><button class="button" style="font-weight: bold; color: red;">Reject</button></td>`;
 			shop += '</tr>';
 		}
 		shop += '</tbody></table></div></p></div>';

@@ -92,10 +92,11 @@ const commands: ChatCommands = {
 		if (!targets[1] || targets[1] === '' || targets[1] === undefined) targets[1] = '';
 
 		const item: IShopData | undefined = shop[toID(targets[0])];
-		const options: string = targets[1];
+		const options: string = targets[1].trim();
 
 		if (item === undefined) return this.errorReply('Ingresa un articulo de la tienda.');
 		if (umoney < item.price) return this.errorReply('No tienes saldo suficiente para comprar este articulo.');
+		if (options && options.length > 16) return this.errorReply('El parametro opcional no puede contener más de 16 carácteres.');
 
 		const buyStatus: boolean | null = Economy.shop.buy(user.name, item, options);
 		if (buyStatus === null) {
