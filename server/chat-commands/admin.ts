@@ -13,6 +13,8 @@
 import * as child_process from 'child_process';
 import {FS} from '../../lib/fs';
 
+import * as ProcessManager from '../../lib/process-manager';
+
 export const commands: ChatCommands = {
 
 	/*********************************************************
@@ -272,7 +274,10 @@ export const commands: ChatCommands = {
 
 				const processManagers = require('../../lib/process-manager').processManagers;
 				for (const manager of processManagers.slice()) {
-					if (manager.filename.startsWith(FS('server/chat-plugins').path)) {
+					if (
+						manager.filename.startsWith(FS('server/chat-plugins').path) ||
+						manager.filename.startsWith(FS('.server-dist/chat-plugins').path)
+					) {
 						manager.destroy();
 					}
 				}
@@ -436,13 +441,30 @@ export const commands: ChatCommands = {
 		`/nohotpatch [chat|formats|battles|validator|tournaments|punishments|all] [reason] - Disables hotpatching the specified part of the simulator. Requires: & ~`,
 	],
 
+	'!processes': true,
+	processes(target, room, user) {
+		if (!this.can('lockdown')) return false;
+
+		let buf = `<strong>${process.pid}</strong> - Main<br />`;
+		for (const manager of ProcessManager.processManagers) {
+			for (const [i, process] of manager.processes.entries()) {
+				buf += `<strong>${process.getProcess().pid}</strong> - ${manager.basename} ${i} (load ${process.load})<br />`;
+			}
+			for (const [i, process] of manager.releasingProcesses.entries()) {
+				buf += `<strong>${process.getProcess().pid}</strong> - PENDING RELEASE ${manager.basename} ${i} (load ${process.load})<br />`;
+			}
+		}
+
+		this.sendReplyBox(buf);
+	},
+
 	async savelearnsets(target, room, user) {
 		if (!this.can('hotpatch')) return false;
 		this.sendReply("saving...");
 		await FS('data/learnsets.js').write(`'use strict';\n\nexports.BattleLearnsets = {\n` +
-			Object.entries(Dex.data.Learnsets).map(([speciesid, entry]) => (
-				`\t${speciesid}: {learnset: {\n` +
-				Object.entries(Dex.getLearnsetData(speciesid as ID)).sort(
+			Object.entries(Dex.data.Learnsets).map(([id, entry]) => (
+				`\t${id}: {learnset: {\n` +
+				Object.entries(Dex.getLearnsetData(id as ID)).sort(
 					(a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0)
 				).map(([moveid, sources]) => (
 					`\t\t${moveid}: ["` + sources.join(`", "`) + `"],\n`
@@ -744,10 +766,6 @@ export const commands: ChatCommands = {
 			return this.errorReply("Wait for /updateserver to finish before using /kill.");
 		}
 
-		for (const worker of Sockets.workers.values()) {
-			worker.kill();
-		}
-
 		const logRoom = Rooms.get('staff') || room;
 		if (!(logRoom as any).destroyLog) {
 			process.exit();
@@ -996,7 +1014,7 @@ export const commands: ChatCommands = {
 			if (/^[0-9]+$/.test(input)) {
 				return `.pokemon[${(parseInt(input) - 1)}]`;
 			}
-			return `.pokemon.find(p => p.speciesid==='${toID(targets[1])}')`;
+			return `.pokemon.find(p => p.id==='${toID(targets[1])}')`;
 		}
 		switch (cmd) {
 		case 'hp':

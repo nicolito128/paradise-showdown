@@ -56,9 +56,9 @@ let BattleScripts = {
 			}
 
 			// Treat here the items.
-			if ((['Cubone', 'Marowak'].includes(this.template.species) && this.item === 'thickclub' && statName === 'atk') || (this.template.species === 'Pikachu' && this.item === 'lightball' && statName === 'spa')) {
+			if ((['Cubone', 'Marowak'].includes(this.species.name) && this.item === 'thickclub' && statName === 'atk') || (this.species.name === 'Pikachu' && this.item === 'lightball' && statName === 'spa')) {
 				stat *= 2;
-			} else if (this.species === 'Ditto' && this.item === 'metalpowder' && ['def', 'spd'].includes(statName)) {
+			} else if (this.forme === 'Ditto' && this.item === 'metalpowder' && ['def', 'spd'].includes(statName)) {
 				stat *= 1.5;
 			}
 
@@ -612,9 +612,9 @@ let BattleScripts = {
 
 		// Using Beat Up
 		if (move.allies) {
-			attack = move.allies[0].template.baseStats.atk;
+			attack = move.allies[0].species.baseStats.atk;
 			move.allies.shift();
-			defense = defender.template.baseStats.def;
+			defense = defender.species.baseStats.def;
 		}
 
 		// Moves that ignore offense and defense respectively.
@@ -630,7 +630,7 @@ let BattleScripts = {
 
 		if (move.id === 'present') {
 			/**@type {{[k: string]: number}} */
-			const typeIndexes = {"Normal": 0, "Fighting": 1, "Flying": 2, "Poison": 3, "Ground": 4, "Rock": 5, "Bug": 7, "Ghost": 8, "Steel": 9, "Fire": 20, "Water": 21, "Grass": 22, "Electric": 23, "Psychic": 24, "Ice": 25, "Dragon": 26, "Dark": 27};
+			const typeIndexes = {Normal: 0, Fighting: 1, Flying: 2, Poison: 3, Ground: 4, Rock: 5, Bug: 7, Ghost: 8, Steel: 9, Fire: 20, Water: 21, Grass: 22, Electric: 23, Psychic: 24, Ice: 25, Dragon: 26, Dark: 27};
 			attack = 10;
 
 			const attackerLastType = attacker.getTypes().slice(-1)[0];

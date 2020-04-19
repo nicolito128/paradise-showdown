@@ -383,7 +383,7 @@ let BattleMovedex = {
 			},
 			onModifyDefPriority: 1,
 			onModifyDef(def, pokemon) {
-				if (pokemon.baseTemplate.baseSpecies === 'Quilava') {
+				if (pokemon.baseSpecies.baseSpecies === 'Quilava') {
 					return this.chainModify(2);
 				}
 			},
@@ -598,7 +598,7 @@ let BattleMovedex = {
 				}
 			},
 		},
-		ignoreImmunity: {'Ground': true},
+		ignoreImmunity: {Ground: true},
 		target: "normal",
 		type: "Ground",
 	},
@@ -945,7 +945,7 @@ let BattleMovedex = {
 				if (pokemon.hasType('Ground') && type === 'Electric') return false;
 			},
 		},
-		ignoreImmunity: {'Electric': true},
+		ignoreImmunity: {Electric: true},
 		secondary: null,
 		target: "normal",
 		type: "Electric",
@@ -1066,8 +1066,8 @@ let BattleMovedex = {
 			this.field.setTerrain('grassyterrain');
 		},
 		onAfterMove(pokemon) {
-			if (pokemon.template.baseSpecies !== 'Aegislash' || pokemon.transformed) return;
-			if (pokemon.template.species !== 'Aegislash') pokemon.formeChange('Aegislash');
+			if (pokemon.species.baseSpecies !== 'Aegislash' || pokemon.transformed) return;
+			if (pokemon.species.name !== 'Aegislash') pokemon.formeChange('Aegislash');
 		},
 		target: "normal",
 		type: "Steel",
@@ -1451,7 +1451,7 @@ let BattleMovedex = {
 			this.attrLastMove('[still]');
 		},
 		onHit(target, source, move) {
-			let baseForme = source.template.id;
+			let baseForme = source.species.id;
 			/** @type {{[forme: string]: string[]}} */
 			let formes = {
 				celebi: ['Future Sight', 'Recover'],
@@ -1494,7 +1494,7 @@ let BattleMovedex = {
 			this.add('-anim', source, 'Let\'s Snuggle Forever', target);
 		},
 		onBasePower(basePower, pokemon, target) {
-			if (target.template.evos.length) {
+			if (target.species.evos.length) {
 				return this.chainModify(2);
 			}
 		},
@@ -1771,7 +1771,7 @@ let BattleMovedex = {
 		type: "Fire",
 	},
 	// Gimm1ck
-	"slavsquat": {
+	slavsquat: {
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
@@ -1824,7 +1824,7 @@ let BattleMovedex = {
 			// Set target to the foe, this is a self targeting move so it works even if the foe has a subsitute
 			target = source.side.foe.active[0];
 			this.boost({atk: 2, spa: 2, spe: 2, def: -1, spd: -1}, source);
-			if (source.template.speciesid !== 'miniormeteor' || source.transformed) return;
+			if (source.species.id !== 'miniormeteor' || source.transformed) return;
 
 			let rainbow = ['', '-Orange', '-Yellow', '-Green', '-Blue', '-Indigo', '-Violet'];
 			let color = rainbow[this.random(rainbow.length)];
@@ -2001,7 +2001,7 @@ let BattleMovedex = {
 		accuracy: 100,
 		basePower: 0,
 		category: "Status",
-		desc: "Sets Scripted Terrain for 5 turns. The power of Bug-type moves is boosted by 1.5, and there is a 5% chance for every move used to become Glitch Out instead. At the end of a turn, every Pokemon has a 5% chance to transform into a Missingno. with 3 random moves and Glitch Out. Switching out will restore the Pokemon to its normal state. This terrain affects floating Pokemon.",
+		desc: "Sets Scripted Terrain for 5 turns. The power of Bug-type moves is boosted by 1.5, and there is a 5% chance for every move used to become Glitch Out instead. At the end of a turn, every Pokemon has a 5% chance to transform into a MissingNo. with 3 random moves and Glitch Out. Switching out will restore the Pokemon to its normal state. This terrain affects floating Pokemon.",
 		shortDesc: "5 turns: +Bug power, glitchy effects.",
 		id: "scriptedterrain",
 		name: "Scripted Terrain",
@@ -2054,7 +2054,7 @@ let BattleMovedex = {
 				this.eachEvent('Terrain');
 			},
 			onTerrain(pokemon) {
-				if (pokemon.template.id === 'missingno') return;
+				if (pokemon.species.id === 'missingno') return;
 				if (pokemon.fainted || !pokemon.hp) return;
 				if (this.random(20) === 1) {
 					this.debug('Scripted terrain corrupt');
@@ -2477,7 +2477,7 @@ let BattleMovedex = {
 		type: "Fighting",
 	},
 	// Kipkluif
-	"salutethecolonel": {
+	salutethecolonel: {
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
@@ -2603,16 +2603,16 @@ let BattleMovedex = {
 			this.add('-anim', source, "Nasty Plot", target);
 		},
 		onHit(pokemon) {
-			const template = pokemon.template;
+			const species = pokemon.species;
 			// @ts-ignore
 			pokemon.level += 5;
 			pokemon.set.level = pokemon.level;
-			pokemon.formeChange(template);
+			pokemon.formeChange(species);
 
-			pokemon.details = template.species + (pokemon.level === 100 ? '' : ', L' + pokemon.level) + (pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
+			pokemon.details = species.name + (pokemon.level === 100 ? '' : ', L' + pokemon.level) + (pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
 			this.add('detailschange', pokemon, pokemon.details);
 
-			const newHP = Math.floor(Math.floor(2 * template.baseStats['hp'] + pokemon.set.ivs['hp'] + Math.floor(pokemon.set.evs['hp'] / 4) + 100) * pokemon.level / 100 + 10);
+			const newHP = Math.floor(Math.floor(2 * species.baseStats['hp'] + pokemon.set.ivs['hp'] + Math.floor(pokemon.set.evs['hp'] / 4) + 100) * pokemon.level / 100 + 10);
 			pokemon.hp = newHP - (pokemon.maxhp - pokemon.hp);
 			pokemon.maxhp = newHP;
 			this.add('-heal', pokemon, pokemon.getHealth, '[silent]');
@@ -2638,7 +2638,7 @@ let BattleMovedex = {
 		priority: 3,
 		flags: {protect: 1, mirror: 1, contact: 1},
 		onTry(pokemon, target) {
-			if (pokemon.activeTurns > 1) {
+			if (pokemon.activeMoveActions > 1) {
 				this.attrLastMove('[still]');
 				this.add('-fail', pokemon);
 				this.hint("Bar Fight only works on your first turn out.");
@@ -2751,7 +2751,7 @@ let BattleMovedex = {
 		zMoveEffect: 'clearnegativeboosts',
 	},
 	// Mad Monty ¾°
-	"llamacide": {
+	llamacide: {
 		accuracy: 100,
 		basePower: 80,
 		category: "Physical",
@@ -2916,7 +2916,7 @@ let BattleMovedex = {
 			this.add('-anim', source, "Conversion", source);
 		},
 		onHit(target, source) {
-			if (source.baseTemplate.baseSpecies !== 'Silvally') return false;
+			if (source.baseSpecies.baseSpecies !== 'Silvally') return false;
 			let targetTypes = target.getTypes(true).filter(type => type !== '???');
 			if (!targetTypes.length) {
 				if (target.addedType) {
@@ -2936,8 +2936,8 @@ let BattleMovedex = {
 			let randomType = this.sample(weaknesses);
 			source.setItem(randomType + 'memory');
 			this.add('-item', source, source.getItem(), '[from] move: Type Analysis');
-			let template = this.dex.getTemplate('Silvally-' + randomType);
-			source.formeChange(template, this.dex.getAbility('rkssystem'), true);
+			let species = this.dex.getSpecies('Silvally-' + randomType);
+			source.formeChange(species, this.dex.getAbility('rkssystem'), true);
 			let move = this.dex.getActiveMove('multiattack');
 			move.basePower = 80;
 			this.useMove(move, source, target);
@@ -3419,7 +3419,7 @@ let BattleMovedex = {
 		type: "Ground",
 	},
 	// pre
-	"refactor": {
+	refactor: {
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
@@ -4050,14 +4050,14 @@ let BattleMovedex = {
 			// Tranform into it
 			pokemon.formeChange(set.species);
 			for (let newMove of set.moves) {
-				let moveTemplate = this.dex.getMove(newMove);
-				if (pokemon.moves.includes(moveTemplate.id)) continue;
+				let moveSpecies = this.dex.getMove(newMove);
+				if (pokemon.moves.includes(moveSpecies.id)) continue;
 				pokemon.moveSlots.push({
-					move: moveTemplate.name,
-					id: moveTemplate.id,
-					pp: ((moveTemplate.noPPBoosts || moveTemplate.isZ) ? moveTemplate.pp : moveTemplate.pp * 8 / 5),
-					maxpp: ((moveTemplate.noPPBoosts || moveTemplate.isZ) ? moveTemplate.pp : moveTemplate.pp * 8 / 5),
-					target: moveTemplate.target,
+					move: moveSpecies.name,
+					id: moveSpecies.id,
+					pp: ((moveSpecies.noPPBoosts || moveSpecies.isZ) ? moveSpecies.pp : moveSpecies.pp * 8 / 5),
+					maxpp: ((moveSpecies.noPPBoosts || moveSpecies.isZ) ? moveSpecies.pp : moveSpecies.pp * 8 / 5),
+					target: moveSpecies.target,
 					disabled: false,
 					disabledSource: '',
 					used: false,
@@ -4220,7 +4220,7 @@ let BattleMovedex = {
 			this.add('-anim', source, "Thunder", target);
 			this.add('-anim', source, "Fissure", target);
 		},
-		ignoreImmunity: {'Electric': true},
+		ignoreImmunity: {Electric: true},
 		onEffectiveness(typeMod, target, type) {
 			if (type === 'Ground') return 1;
 		},
@@ -4393,7 +4393,7 @@ let BattleMovedex = {
 			this.add('-anim', source, "Parting Shot", target);
 		},
 		onHit(target, source) {
-			const sideConditions = {'spikes': 1, 'toxicspikes': 1, 'stealthrock': 1, 'stickyweb': 1};
+			const sideConditions = {spikes: 1, toxicspikes: 1, stealthrock: 1, stickyweb: 1};
 			for (let i in sideConditions) {
 				let layers = source.side.sideConditions[i] ? (source.side.sideConditions[i].layers || 1) : 1;
 				if (source.side.removeSideCondition(i)) {
@@ -4764,11 +4764,11 @@ let BattleMovedex = {
 				return null;
 			}
 			this.attrLastMove('[still]');
-			let move = pokemon.template.speciesid === 'meloettapirouette' ? 'Brick Break' : 'Relic Song';
+			let move = pokemon.species.id === 'meloettapirouette' ? 'Brick Break' : 'Relic Song';
 			this.add('-anim', pokemon, move, target);
 		},
 		onHit(target, pokemon, move) {
-			if (pokemon.template.speciesid === 'meloettapirouette') {
+			if (pokemon.species.id === 'meloettapirouette') {
 				pokemon.formeChange('Meloetta');
 			} else if (pokemon.formeChange('Meloetta-Pirouette')) {
 				move.category = 'Physical';
@@ -4777,7 +4777,7 @@ let BattleMovedex = {
 		},
 		onAfterMove(pokemon) {
 			// Ensure Meloetta goes back to standard form after using the move
-			if (pokemon.template.speciesid === 'meloettapirouette') {
+			if (pokemon.species.id === 'meloettapirouette') {
 				pokemon.formeChange('Meloetta');
 			}
 			this.hint("Zarel still has the Serene Grace ability.");
@@ -4785,7 +4785,7 @@ let BattleMovedex = {
 		effect: {
 			duration: 1,
 			onAfterMoveSecondarySelf(pokemon, target, move) {
-				if (pokemon.template.speciesid === 'meloettapirouette') {
+				if (pokemon.species.id === 'meloettapirouette') {
 					pokemon.formeChange('Meloetta');
 				} else {
 					pokemon.formeChange('Meloetta-Pirouette');

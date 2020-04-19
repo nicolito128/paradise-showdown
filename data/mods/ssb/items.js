@@ -20,7 +20,7 @@ let BattleItems = {
 		megaStone: "Steelix-Mega",
 		megaEvolves: "Steelix",
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
+			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
 		fling: undefined, // Cannot be flung now since its a mega stone
@@ -57,7 +57,7 @@ let BattleItems = {
 		megaStone: ["Rotom-Wash", "Rotom-Mow", "Rotom-Heat", "Rotom-Frost", "Rotom-Fan"],
 		megaEvolves: "Rotom",
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
+			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
 		fling: undefined, // Cannot be flung now since its a mega stone
@@ -150,7 +150,7 @@ let BattleItems = {
 		desc: "If held by a Darkrai with Dark Void, it can use Absolute Configuration.",
 	},
 	// XpRienzo
-	"charcoal": {
+	charcoal: {
 		inherit: true,
 		zMove: "Bleh Flame",
 		zMoveFrom: "Blue Flare",

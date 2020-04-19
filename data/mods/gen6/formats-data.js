@@ -1,6 +1,6 @@
 'use strict';
 
-/**@type {{[k: string]: ModdedTemplateFormatsData}} */
+/**@type {{[k: string]: ModdedSpeciesFormatsData}} */
 let BattleFormatsData = {
 	bulbasaur: {
 		tier: "LC",
@@ -2674,7 +2674,7 @@ let BattleFormatsData = {
 		randomBattleMoves: ["seedflare", "airslash", "earthpower", "hiddenpowerice", "substitute", "leechseed"],
 		randomDoubleBattleMoves: ["seedflare", "earthpower", "airslash", "rest", "substitute", "leechseed", "tailwind", "protect", "hiddenpowerice"],
 		tier: "Uber",
-		doublesTier: "DUber",
+		doublesTier: "DOU",
 	},
 	arceus: {
 		randomBattleMoves: ["swordsdance", "extremespeed", "shadowclaw", "earthquake", "recover"],
@@ -3681,10 +3681,14 @@ let BattleFormatsData = {
 		doublesTier: "NFE",
 	},
 	aegislash: {
-		randomBattleMoves: ["kingsshield", "swordsdance", "shadowclaw", "sacredsword", "ironhead", "shadowsneak", "hiddenpowerice", "shadowball", "flashcannon"],
-		randomDoubleBattleMoves: ["kingsshield", "swordsdance", "shadowclaw", "sacredsword", "ironhead", "shadowsneak", "wideguard", "hiddenpowerice", "shadowball", "flashcannon"],
+		randomBattleMoves: ["flashcannon", "hiddenpowerice", "kingsshield", "shadowball", "shadowsneak"],
+		randomDoubleBattleMoves: ["flashcannon", "hiddenpowerice", "kingsshield", "shadowball", "shadowsneak"],
 		tier: "Uber",
 		doublesTier: "DOU",
+	},
+	aegislashblade: {
+		randomBattleMoves: ["ironhead", "sacredsword", "shadowclaw", "shadowsneak", "swordsdance"],
+		randomDoubleBattleMoves: ["ironhead", "kingsshield", "sacredsword", "shadowclaw", "shadowsneak", "swordsdance"],
 	},
 	spritzee: {
 		tier: "LC",

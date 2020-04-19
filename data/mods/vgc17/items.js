@@ -2,29 +2,29 @@
 
 /**@type {{[k: string]: ModdedItemData}} */
 let BattleItems = {
-	"kommoniumz": {
+	kommoniumz: {
 		inherit: true,
-		isUnreleased: true,
+		isNonstandard: "Unobtainable",
 	},
-	"lunaliumz": {
+	lunaliumz: {
 		inherit: true,
-		isUnreleased: true,
+		isNonstandard: "Unobtainable",
 	},
-	"lycaniumz": {
+	lycaniumz: {
 		inherit: true,
-		isUnreleased: true,
+		isNonstandard: "Unobtainable",
 	},
-	"mimikiumz": {
+	mimikiumz: {
 		inherit: true,
-		isUnreleased: true,
+		isNonstandard: "Unobtainable",
 	},
-	"solganiumz": {
+	solganiumz: {
 		inherit: true,
-		isUnreleased: true,
+		isNonstandard: "Unobtainable",
 	},
-	"ultranecroziumz": {
+	ultranecroziumz: {
 		inherit: true,
-		isUnreleased: true,
+		isNonstandard: "Unobtainable",
 	},
 };
 

@@ -1,6 +1,6 @@
 'use strict';
 
-/**@type {{[k: string]: TemplateFormatsData}} */
+/**@type {{[k: string]: SpeciesFormatsData}} */
 let BattleFormatsData = {
 	bulbasaur: {
 		randomBattleMoves: ["sleeppowder", "bodyslam"],
@@ -704,7 +704,6 @@ let BattleFormatsData = {
 	omanyte: {
 		randomBattleMoves: ["hydropump", "surf", "bodyslam", "rest"],
 		essentialMove: "blizzard",
-		comboMoves: ["surf", "hydropump"],
 		tier: "LC",
 	},
 	omastar: {

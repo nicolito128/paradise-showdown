@@ -2,6 +2,36 @@
 
 /**@type {{[k: string]: ModdedLearnsetData}} */
 let BattleLearnsets = {
+	missingno: {
+		learnset: {
+			blizzard: ["1M"],
+			bubblebeam: ["1M"],
+			cut: ["1M"],
+			doubleedge: ["1M"],
+			earthquake: ["1M"],
+			fissure: ["1M"],
+			fly: ["1M"],
+			icebeam: ["1M"],
+			megakick: ["1M"],
+			megapunch: ["1M"],
+			psychic: ["1M"],
+			rage: ["1M"],
+			razorwind: ["1M"],
+			rest: ["1M"],
+			seismictoss: ["1M"],
+			skyattack: ["1L1"],
+			submission: ["1M"],
+			substitute: ["1M"],
+			swordsdance: ["1M"],
+			takedown: ["1M"],
+			teleport: ["1M"],
+			thunder: ["1M"],
+			thunderwave: ["1M"],
+			toxic: ["1M"],
+			triattack: ["1M"],
+			watergun: ["1L1", "1M"],
+		},
+	},
 	bulbasaur: {
 		learnset: {
 			ancientpower: ["2S0"],
@@ -54,7 +84,7 @@ let BattleLearnsets = {
 			vinewhip: ["1L13", "2L10"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "growl", "ancientpower"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "growl", "ancientpower"]},
 		],
 	},
 	ivysaur: {
@@ -151,7 +181,7 @@ let BattleLearnsets = {
 			vinewhip: ["1L1", "1L13", "2L1", "2L10"],
 		},
 		eventData: [
-			{"generation": 2, "level": 40, "shiny": true, "moves": ["poisonpowder", "sleeppowder", "razorleaf", "sweetscent"]},
+			{generation: 2, level: 40, shiny: true, moves: ["poisonpowder", "sleeppowder", "razorleaf", "sweetscent"]},
 		],
 	},
 	charmander: {
@@ -218,7 +248,7 @@ let BattleLearnsets = {
 			toxic: ["1M", "2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["scratch", "growl", "crunch"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["scratch", "growl", "crunch"]},
 		],
 	},
 	charmeleon: {
@@ -343,7 +373,7 @@ let BattleLearnsets = {
 			wingattack: ["2L36", "2S0"],
 		},
 		eventData: [
-			{"generation": 2, "level": 40, "shiny": true, "moves": ["rage", "scaryface", "flamethrower", "wingattack"]},
+			{generation: 2, level: 40, shiny: true, moves: ["rage", "scaryface", "flamethrower", "wingattack"]},
 		],
 	},
 	squirtle: {
@@ -410,7 +440,7 @@ let BattleLearnsets = {
 			zapcannon: ["2S0"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "tailwhip", "zapcannon"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "tailwhip", "zapcannon"]},
 		],
 	},
 	wartortle: {
@@ -531,7 +561,7 @@ let BattleLearnsets = {
 			withdraw: ["1L31", "2L1", "2L10"],
 		},
 		eventData: [
-			{"generation": 2, "level": 40, "shiny": true, "moves": ["watergun", "bite", "rapidspin", "protect"]},
+			{generation: 2, level: 40, shiny: true, moves: ["watergun", "bite", "rapidspin", "protect"]},
 		],
 	},
 	caterpie: {
@@ -925,7 +955,7 @@ let BattleLearnsets = {
 			whirlwind: ["1M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["peck", "growl", "sonicboom"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["peck", "growl", "sonicboom"]},
 		],
 	},
 	fearow: {
@@ -971,7 +1001,7 @@ let BattleLearnsets = {
 			whirlwind: ["1M"],
 		},
 		eventData: [
-			{"generation": 1, "level": 20, "moves": ["growl", "leer", "furyattack", "payday"]},
+			{generation: 1, level: 20, moves: ["growl", "leer", "furyattack", "payday"]},
 		],
 	},
 	ekans: {
@@ -1111,10 +1141,10 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["thundershock", "charm", "dizzypunch"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["thundershock", "charm", "petaldance"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["thundershock", "charm", "scaryface"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["thundershock", "charm", "sing"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["thundershock", "charm", "dizzypunch"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["thundershock", "charm", "petaldance"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["thundershock", "charm", "scaryface"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["thundershock", "charm", "sing"]},
 		],
 	},
 	pikachu: {
@@ -1173,9 +1203,9 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 1, "level": 5, "moves": ["surf"]},
-			{"generation": 1, "level": 5, "moves": ["fly"]},
-			{"generation": 1, "level": 5, "moves": ["thundershock", "growl", "surf"]},
+			{generation: 1, level: 5, moves: ["surf"]},
+			{generation: 1, level: 5, moves: ["fly"]},
+			{generation: 1, level: 5, moves: ["thundershock", "growl", "surf"]},
 		],
 	},
 	raichu: {
@@ -1395,9 +1425,9 @@ let BattleLearnsets = {
 			toxic: ["1M", "2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["growl", "tackle", "lovelykiss"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["growl", "tackle", "moonlight"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["growl", "tackle", "sweetkiss"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["growl", "tackle", "lovelykiss"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["growl", "tackle", "moonlight"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["growl", "tackle", "sweetkiss"]},
 		],
 	},
 	nidorina: {
@@ -1575,9 +1605,9 @@ let BattleLearnsets = {
 			toxic: ["1M", "2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["leer", "tackle", "lovelykiss"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["leer", "tackle", "morningsun"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["leer", "tackle", "sweetkiss"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["leer", "tackle", "lovelykiss"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["leer", "tackle", "morningsun"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["leer", "tackle", "sweetkiss"]},
 		],
 	},
 	nidorino: {
@@ -1751,10 +1781,10 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["pound", "charm", "encore", "petaldance"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["pound", "charm", "encore", "scaryface"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["pound", "charm", "encore", "swift"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["pound", "charm", "encore", "dizzypunch"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["pound", "charm", "encore", "petaldance"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["pound", "charm", "encore", "scaryface"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["pound", "charm", "encore", "swift"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["pound", "charm", "encore", "dizzypunch"]},
 		],
 	},
 	clefairy: {
@@ -2032,10 +2062,10 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["sing", "charm", "defensecurl", "mimic"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["sing", "charm", "defensecurl", "petaldance"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["sing", "charm", "defensecurl", "scaryface"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["sing", "charm", "defensecurl", "dizzypunch"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["sing", "charm", "defensecurl", "mimic"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["sing", "charm", "defensecurl", "petaldance"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["sing", "charm", "defensecurl", "scaryface"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["sing", "charm", "defensecurl", "dizzypunch"]},
 		],
 	},
 	jigglypuff: {
@@ -2216,7 +2246,7 @@ let BattleLearnsets = {
 			wingattack: ["1L28", "2L27"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["leechlife", "flail"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["leechlife", "flail"]},
 		],
 	},
 	golbat: {
@@ -2337,7 +2367,7 @@ let BattleLearnsets = {
 			toxic: ["1M", "2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["absorb", "leechseed"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["absorb", "leechseed"]},
 		],
 	},
 	gloom: {
@@ -2475,7 +2505,7 @@ let BattleLearnsets = {
 			toxic: ["1M", "2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["scratch", "synthesis"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["scratch", "synthesis"]},
 		],
 	},
 	parasect: {
@@ -2883,9 +2913,9 @@ let BattleLearnsets = {
 			whirlpool: ["2M"],
 		},
 		eventData: [
-			{"generation": 1, "level": 15, "moves": ["scratch", "amnesia"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["scratch", "tailwhip", "petaldance"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["scratch", "tailwhip", "triattack"]},
+			{generation: 1, level: 15, moves: ["scratch", "amnesia"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["scratch", "tailwhip", "petaldance"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["scratch", "tailwhip", "triattack"]},
 		],
 	},
 	golduck: {
@@ -3214,9 +3244,9 @@ let BattleLearnsets = {
 			whirlpool: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["bubble", "growth"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["bubble", "lovelykiss"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["bubble", "sweetkiss"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["bubble", "growth"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["bubble", "lovelykiss"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["bubble", "sweetkiss"]},
 		],
 	},
 	poliwhirl: {
@@ -3389,7 +3419,7 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["teleport", "foresight"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["teleport", "foresight"]},
 		],
 	},
 	kadabra: {
@@ -3571,8 +3601,8 @@ let BattleLearnsets = {
 			vitalthrow: ["2L31"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["lowkick", "leer", "falseswipe"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["lowkick", "leer", "thrash"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["lowkick", "leer", "falseswipe"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["lowkick", "leer", "thrash"]},
 		],
 	},
 	machoke: {
@@ -3735,8 +3765,8 @@ let BattleLearnsets = {
 			wrap: ["1L13", "2L11"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["vinewhip", "lovelykiss"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["vinewhip", "sweetkiss"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["vinewhip", "lovelykiss"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["vinewhip", "sweetkiss"]},
 		],
 	},
 	weepinbell: {
@@ -3875,7 +3905,7 @@ let BattleLearnsets = {
 			wrap: ["1L13", "2L30"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["poisonsting", "confuseray"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["poisonsting", "confuseray"]},
 		],
 	},
 	tentacruel: {
@@ -3977,7 +4007,7 @@ let BattleLearnsets = {
 			toxic: ["1M", "2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "rapidspin"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "rapidspin"]},
 		],
 	},
 	graveler: {
@@ -4133,7 +4163,7 @@ let BattleLearnsets = {
 			toxic: ["1M", "2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "growl", "lowkick"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "growl", "lowkick"]},
 		],
 	},
 	rapidash: {
@@ -4179,7 +4209,7 @@ let BattleLearnsets = {
 			toxic: ["1M", "2M"],
 		},
 		eventData: [
-			{"generation": 1, "level": 40, "moves": ["ember", "firespin", "stomp", "payday"]},
+			{generation: 1, level: 40, moves: ["ember", "firespin", "stomp", "payday"]},
 		],
 	},
 	slowpoke: {
@@ -4358,7 +4388,7 @@ let BattleLearnsets = {
 			zapcannon: ["2L45", "2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "agility"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "agility"]},
 		],
 	},
 	magneton: {
@@ -4455,8 +4485,8 @@ let BattleLearnsets = {
 			whirlwind: ["1M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "moves": ["batonpass", "swordsdance", "agility", "slash"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["peck", "furycutter"]},
+			{generation: 2, level: 5, moves: ["batonpass", "swordsdance", "agility", "slash"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["peck", "furycutter"]},
 		],
 	},
 	doduo: {
@@ -4506,7 +4536,7 @@ let BattleLearnsets = {
 			whirlwind: ["1M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["peck", "growl", "lowkick"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["peck", "growl", "lowkick"]},
 		],
 	},
 	dodrio: {
@@ -4599,7 +4629,7 @@ let BattleLearnsets = {
 			whirlpool: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["headbutt", "growl", "flail"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["headbutt", "growl", "flail"]},
 		],
 	},
 	dewgong: {
@@ -5031,7 +5061,7 @@ let BattleLearnsets = {
 			toxic: ["1M", "2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "screech", "sharpen"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "screech", "sharpen"]},
 		],
 	},
 	drowzee: {
@@ -5094,7 +5124,7 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["pound", "hypnosis", "amnesia"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["pound", "hypnosis", "amnesia"]},
 		],
 	},
 	hypno: {
@@ -5207,7 +5237,7 @@ let BattleLearnsets = {
 			whirlpool: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["bubble", "leer", "metalclaw"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["bubble", "leer", "metalclaw"]},
 		],
 	},
 	kingler: {
@@ -5297,7 +5327,7 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "agility"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "agility"]},
 		],
 	},
 	electrode: {
@@ -5394,7 +5424,7 @@ let BattleLearnsets = {
 			toxic: ["1M", "2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["barrage", "hypnosis", "sweetscent"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["barrage", "hypnosis", "sweetscent"]},
 		],
 	},
 	exeggutor: {
@@ -5513,7 +5543,7 @@ let BattleLearnsets = {
 			watergun: ["1M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["growl", "tailwhip", "furyattack"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["growl", "tailwhip", "furyattack"]},
 		],
 	},
 	marowak: {
@@ -5610,8 +5640,8 @@ let BattleLearnsets = {
 			toxic: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "rage"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "dizzypunch"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "rage"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "dizzypunch"]},
 		],
 	},
 	hitmonlee: {
@@ -5818,7 +5848,7 @@ let BattleLearnsets = {
 			wrap: ["1L1", "2L25"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["lick", "doubleslap"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["lick", "doubleslap"]},
 		],
 	},
 	koffing: {
@@ -6106,7 +6136,7 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["pound", "sweetscent"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["pound", "sweetscent"]},
 		],
 	},
 	blissey: {
@@ -6212,7 +6242,7 @@ let BattleLearnsets = {
 			vinewhip: ["1L29", "2L19"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["constrict", "sleeppowder", "synthesis"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["constrict", "sleeppowder", "synthesis"]},
 		],
 	},
 	kangaskhan: {
@@ -6287,7 +6317,7 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["cometpunch", "feintattack"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["cometpunch", "feintattack"]},
 		],
 	},
 	horsea: {
@@ -6339,7 +6369,7 @@ let BattleLearnsets = {
 			whirlpool: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["bubble", "haze"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["bubble", "haze"]},
 		],
 	},
 	seadra: {
@@ -6465,7 +6495,7 @@ let BattleLearnsets = {
 			watergun: ["1M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["peck", "tailwhip", "swordsdance"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["peck", "tailwhip", "swordsdance"]},
 		],
 	},
 	seaking: {
@@ -6563,7 +6593,7 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "harden", "twister"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "harden", "twister"]},
 		],
 	},
 	starmie: {
@@ -6685,7 +6715,7 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["barrier", "mindreader"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["barrier", "mindreader"]},
 		],
 	},
 	scyther: {
@@ -6738,7 +6768,7 @@ let BattleLearnsets = {
 			wingattack: ["1L50", "2L30"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["quickattack", "leer", "sonicboom"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["quickattack", "leer", "sonicboom"]},
 		],
 	},
 	scizor: {
@@ -6822,9 +6852,9 @@ let BattleLearnsets = {
 			toxic: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["pound", "lick", "metronome"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["pound", "lick", "petaldance"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["pound", "lick", "dizzypunch"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["pound", "lick", "metronome"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["pound", "lick", "petaldance"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["pound", "lick", "dizzypunch"]},
 		],
 	},
 	jynx: {
@@ -6930,8 +6960,8 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["quickattack", "leer", "dizzypunch"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["quickattack", "leer", "pursuit"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["quickattack", "leer", "dizzypunch"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["quickattack", "leer", "pursuit"]},
 		],
 	},
 	electabuzz: {
@@ -7034,8 +7064,8 @@ let BattleLearnsets = {
 			toxic: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["ember", "feintattack"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["ember", "dizzypunch"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["ember", "feintattack"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["ember", "dizzypunch"]},
 		],
 	},
 	magmar: {
@@ -7135,7 +7165,7 @@ let BattleLearnsets = {
 			visegrip: ["1L1", "2L1", "2S0"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["visegrip", "rockthrow"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["visegrip", "rockthrow"]},
 		],
 	},
 	tauros: {
@@ -7190,7 +7220,7 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "tailwhip", "quickattack"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "tailwhip", "quickattack"]},
 		],
 	},
 	magikarp: {
@@ -7203,9 +7233,9 @@ let BattleLearnsets = {
 			tackle: ["1L15", "2L15"],
 		},
 		eventData: [
-			{"generation": 1, "level": 5, "moves": ["dragonrage"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["splash", "bubble"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["splash", "reversal"]},
+			{generation: 1, level: 5, moves: ["dragonrage"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["splash", "bubble"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["splash", "reversal"]},
 		],
 	},
 	gyarados: {
@@ -7323,8 +7353,8 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["watergun", "growl", "sing", "bite"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["watergun", "growl", "sing", "futuresight"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["watergun", "growl", "sing", "bite"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["watergun", "growl", "sing", "futuresight"]},
 		],
 	},
 	ditto: {
@@ -7377,7 +7407,7 @@ let BattleLearnsets = {
 			toxic: ["1M", "2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "tailwhip", "growth"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "tailwhip", "growth"]},
 		],
 	},
 	vaporeon: {
@@ -7668,7 +7698,7 @@ let BattleLearnsets = {
 			zapcannon: ["2L44", "2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "conversion", "barrier"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "conversion", "barrier"]},
 		],
 	},
 	porygon2: {
@@ -7763,7 +7793,7 @@ let BattleLearnsets = {
 			withdraw: ["1L1", "2L1", "2S0"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["constrict", "withdraw", "rockthrow"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["constrict", "withdraw", "rockthrow"]},
 		],
 	},
 	omastar: {
@@ -7868,7 +7898,7 @@ let BattleLearnsets = {
 			watergun: ["1M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["scratch", "harden", "rockthrow"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["scratch", "harden", "rockthrow"]},
 		],
 	},
 	kabutops: {
@@ -7980,7 +8010,7 @@ let BattleLearnsets = {
 			wingattack: ["1L1", "2L1", "2S0"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["wingattack", "rockthrow"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["wingattack", "rockthrow"]},
 		],
 	},
 	snorlax: {
@@ -8058,9 +8088,9 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "lovelykiss"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "splash"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "sweetkiss"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "lovelykiss"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "splash"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "sweetkiss"]},
 		],
 	},
 	articuno: {
@@ -8111,7 +8141,7 @@ let BattleLearnsets = {
 			whirlwind: ["1M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 50, "shiny": true, "moves": ["mist", "agility", "mindreader", "icebeam"]},
+			{generation: 2, level: 50, shiny: true, moves: ["mist", "agility", "mindreader", "icebeam"]},
 		],
 	},
 	zapdos: {
@@ -8161,7 +8191,7 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 50, "shiny": true, "moves": ["thunderwave", "agility", "detect", "drillpeck"]},
+			{generation: 2, level: 50, shiny: true, moves: ["thunderwave", "agility", "detect", "drillpeck"]},
 		],
 	},
 	moltres: {
@@ -8210,7 +8240,7 @@ let BattleLearnsets = {
 			wingattack: ["2L1"],
 		},
 		eventData: [
-			{"generation": 2, "level": 50, "shiny": true, "moves": ["firespin", "agility", "endure", "flamethrower"]},
+			{generation: 2, level: 50, shiny: true, moves: ["firespin", "agility", "endure", "flamethrower"]},
 		],
 	},
 	dratini: {
@@ -8273,8 +8303,8 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["wrap", "leer", "hydropump"]},
-			{"generation": 2, "level": 15, "shiny": 1, "moves": ["wrap", "thunderwave", "twister", "extremespeed"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["wrap", "leer", "hydropump"]},
+			{generation: 2, level: 15, shiny: 1, moves: ["wrap", "thunderwave", "twister", "extremespeed"]},
 		],
 	},
 	dragonair: {
@@ -8477,7 +8507,7 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 70, "shiny": true, "moves": ["psychup", "futuresight", "mist", "psychic"]},
+			{generation: 2, level: 70, shiny: true, moves: ["psychup", "futuresight", "mist", "psychic"]},
 		],
 	},
 	mew: {
@@ -8582,8 +8612,8 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 1, "level": 5, "moves": ["pound"]},
-			{"generation": 2, "level": 5, "moves": ["pound"]},
+			{generation: 1, level: 5, moves: ["pound"]},
+			{generation: 2, level: 5, moves: ["pound"]},
 		],
 		eventOnly: true,
 	},
@@ -8630,7 +8660,7 @@ let BattleLearnsets = {
 			vinewhip: ["2E"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "growl", "petaldance"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "growl", "petaldance"]},
 		],
 	},
 	bayleef: {
@@ -8713,7 +8743,7 @@ let BattleLearnsets = {
 			toxic: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 40, "shiny": true, "moves": ["reflect", "poisonpowder", "synthesis", "bodyslam"]},
+			{generation: 2, level: 40, shiny: true, moves: ["reflect", "poisonpowder", "synthesis", "bodyslam"]},
 		],
 	},
 	cyndaquil: {
@@ -8757,7 +8787,7 @@ let BattleLearnsets = {
 			toxic: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "leer", "doubleedge"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "leer", "doubleedge"]},
 		],
 	},
 	quilava: {
@@ -8843,7 +8873,7 @@ let BattleLearnsets = {
 			toxic: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 40, "shiny": true, "moves": ["smokescreen", "ember", "quickattack", "flamewheel"]},
+			{generation: 2, level: 40, shiny: true, moves: ["smokescreen", "ember", "quickattack", "flamewheel"]},
 		],
 	},
 	totodile: {
@@ -8892,7 +8922,7 @@ let BattleLearnsets = {
 			whirlpool: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["scratch", "leer", "submission"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["scratch", "leer", "submission"]},
 		],
 	},
 	croconaw: {
@@ -8985,7 +9015,7 @@ let BattleLearnsets = {
 			whirlpool: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 40, "shiny": true, "moves": ["watergun", "bite", "scaryface", "slash"]},
+			{generation: 2, level: 40, shiny: true, moves: ["watergun", "bite", "scaryface", "slash"]},
 		],
 	},
 	sentret: {
@@ -9034,7 +9064,7 @@ let BattleLearnsets = {
 			toxic: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "defensecurl", "dizzypunch"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "defensecurl", "dizzypunch"]},
 		],
 	},
 	furret: {
@@ -9121,7 +9151,7 @@ let BattleLearnsets = {
 			wingattack: ["2E"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "growl", "nightshade"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "growl", "nightshade"]},
 		],
 	},
 	noctowl: {
@@ -9202,7 +9232,7 @@ let BattleLearnsets = {
 			toxic: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "barrier"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "barrier"]},
 		],
 	},
 	ledian: {
@@ -9286,7 +9316,7 @@ let BattleLearnsets = {
 			toxic: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["poisonsting", "stringshot", "growth"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["poisonsting", "stringshot", "growth"]},
 		],
 	},
 	ariados: {
@@ -9362,7 +9392,7 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["bubble", "thunderwave", "supersonic", "lightscreen"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["bubble", "thunderwave", "supersonic", "lightscreen"]},
 		],
 	},
 	lanturn: {
@@ -9533,7 +9563,7 @@ let BattleLearnsets = {
 			toxic: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["peck", "leer", "safeguard"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["peck", "leer", "safeguard"]},
 		],
 	},
 	xatu: {
@@ -9759,9 +9789,9 @@ let BattleLearnsets = {
 			whirlpool: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "defensecurl", "dizzypunch"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "defensecurl", "hydropump"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "defensecurl", "scaryface"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "defensecurl", "dizzypunch"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "defensecurl", "hydropump"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "defensecurl", "scaryface"]},
 		],
 	},
 	azumarill: {
@@ -9846,7 +9876,7 @@ let BattleLearnsets = {
 			toxic: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["rockthrow", "mimic", "substitute"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["rockthrow", "mimic", "substitute"]},
 		],
 	},
 	politoed: {
@@ -9931,7 +9961,7 @@ let BattleLearnsets = {
 			toxic: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["splash", "synthesis", "tailwhip", "agility"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["splash", "synthesis", "tailwhip", "agility"]},
 		],
 	},
 	skiploom: {
@@ -10056,7 +10086,7 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["scratch", "tailwhip", "mimic"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["scratch", "tailwhip", "mimic"]},
 		],
 	},
 	sunkern: {
@@ -10088,7 +10118,7 @@ let BattleLearnsets = {
 			toxic: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["absorb", "growth", "splash"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["absorb", "growth", "splash"]},
 		],
 	},
 	sunflora: {
@@ -10158,8 +10188,8 @@ let BattleLearnsets = {
 			wingattack: ["2L37"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "foresight", "steelwing"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "foresight", "sweetkiss"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "foresight", "steelwing"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "foresight", "sweetkiss"]},
 		],
 	},
 	wooper: {
@@ -10207,8 +10237,8 @@ let BattleLearnsets = {
 			whirlpool: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["watergun", "tailwhip", "bellydrum"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["watergun", "tailwhip", "scaryface"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["watergun", "tailwhip", "bellydrum"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["watergun", "tailwhip", "scaryface"]},
 		],
 	},
 	quagsire: {
@@ -10295,7 +10325,7 @@ let BattleLearnsets = {
 			wingattack: ["2E"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["peck", "beatup"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["peck", "beatup"]},
 		],
 	},
 	slowking: {
@@ -10391,7 +10421,7 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["growl", "hypnosis"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["growl", "hypnosis"]},
 		],
 	},
 	unown: {
@@ -10408,7 +10438,7 @@ let BattleLearnsets = {
 			safeguard: ["2L1", "2S0"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["mirrorcoat", "safeguard", "destinybond", "mimic"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["mirrorcoat", "safeguard", "destinybond", "mimic"]},
 		],
 	},
 	girafarig: {
@@ -10497,7 +10527,7 @@ let BattleLearnsets = {
 			toxic: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "protect", "substitute"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "protect", "substitute"]},
 		],
 	},
 	forretress: {
@@ -10584,8 +10614,8 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["rage", "defensecurl", "furyattack"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["rage", "defensecurl", "horndrill"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["rage", "defensecurl", "furyattack"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["rage", "defensecurl", "horndrill"]},
 		],
 	},
 	gligar: {
@@ -10630,7 +10660,7 @@ let BattleLearnsets = {
 			wingattack: ["2E", "2S0"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "moves": ["earthquake", "poisonsting", "counter", "wingattack"]},
+			{generation: 2, level: 5, moves: ["earthquake", "poisonsting", "counter", "wingattack"]},
 		],
 	},
 	steelix: {
@@ -10725,7 +10755,7 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "scaryface", "tailwhip", "lovelykiss"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "scaryface", "tailwhip", "lovelykiss"]},
 		],
 	},
 	granbull: {
@@ -10816,7 +10846,7 @@ let BattleLearnsets = {
 			whirlpool: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "poisonsting", "doubleedge"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "poisonsting", "doubleedge"]},
 		],
 	},
 	shuckle: {
@@ -10893,7 +10923,7 @@ let BattleLearnsets = {
 			toxic: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "leer", "seismictoss"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "leer", "seismictoss"]},
 		],
 	},
 	sneasel: {
@@ -10952,7 +10982,7 @@ let BattleLearnsets = {
 			toxic: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["scratch", "leer", "moonlight"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["scratch", "leer", "moonlight"]},
 		],
 	},
 	teddiursa: {
@@ -11005,7 +11035,7 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["scratch", "leer", "sweetscent"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["scratch", "leer", "sweetscent"]},
 		],
 	},
 	ursaring: {
@@ -11157,7 +11187,7 @@ let BattleLearnsets = {
 			whirlwind: ["2S0"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "whirlwind"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "whirlwind"]},
 		],
 	},
 	piloswine: {
@@ -11279,8 +11309,8 @@ let BattleLearnsets = {
 			whirlpool: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["watergun", "amnesia"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["watergun", "mist"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["watergun", "amnesia"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["watergun", "mist"]},
 		],
 	},
 	octillery: {
@@ -11352,8 +11382,8 @@ let BattleLearnsets = {
 			toxic: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["present", "payday"]},
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["present", "spikes"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["present", "payday"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["present", "spikes"]},
 		],
 	},
 	mantine: {
@@ -11396,7 +11426,7 @@ let BattleLearnsets = {
 			wingattack: ["2L40"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "bubble", "gust"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "bubble", "gust"]},
 		],
 	},
 	skarmory: {
@@ -11435,7 +11465,7 @@ let BattleLearnsets = {
 			whirlwind: ["2E"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["leer", "peck", "furycutter"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["leer", "peck", "furycutter"]},
 		],
 	},
 	houndour: {
@@ -11563,8 +11593,8 @@ let BattleLearnsets = {
 			watergun: ["2E"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "growl", "absorb"]},
-			{"generation": 2, "level": 5, "moves": ["tackle", "growl", "encore"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "growl", "absorb"]},
+			{generation: 2, level: 5, moves: ["tackle", "growl", "encore"]},
 		],
 	},
 	donphan: {
@@ -11644,7 +11674,7 @@ let BattleLearnsets = {
 			toxic: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "safeguard"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "safeguard"]},
 		],
 	},
 	smeargle: {
@@ -11706,7 +11736,7 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["tackle", "growl", "megakick"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "growl", "megakick"]},
 		],
 	},
 	raikou: {
@@ -11751,7 +11781,7 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 40, "shiny": true, "moves": ["leer", "thundershock", "roar", "quickattack"]},
+			{generation: 2, level: 40, shiny: true, moves: ["leer", "thundershock", "roar", "quickattack"]},
 		],
 	},
 	entei: {
@@ -11794,7 +11824,7 @@ let BattleLearnsets = {
 			toxic: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 40, "shiny": true, "moves": ["leer", "ember", "roar", "firespin"]},
+			{generation: 2, level: 40, shiny: true, moves: ["leer", "ember", "roar", "firespin"]},
 		],
 	},
 	suicune: {
@@ -11842,7 +11872,7 @@ let BattleLearnsets = {
 			whirlpool: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 40, "shiny": true, "moves": ["leer", "watergun", "roar", "gust"]},
+			{generation: 2, level: 40, shiny: true, moves: ["leer", "watergun", "roar", "gust"]},
 		],
 	},
 	larvitar: {
@@ -11884,7 +11914,7 @@ let BattleLearnsets = {
 			toxic: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["bite", "leer", "rage"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["bite", "leer", "rage"]},
 		],
 	},
 	pupitar: {
@@ -12023,7 +12053,7 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 40, "shiny": true, "moves": ["aeroblast", "safeguard", "gust", "recover"]},
+			{generation: 2, level: 40, shiny: true, moves: ["aeroblast", "safeguard", "gust", "recover"]},
 		],
 	},
 	hooh: {
@@ -12076,7 +12106,7 @@ let BattleLearnsets = {
 			zapcannon: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 40, "shiny": true, "moves": ["sacredfire", "safeguard", "gust", "recover"]},
+			{generation: 2, level: 40, shiny: true, moves: ["sacredfire", "safeguard", "gust", "recover"]},
 		],
 	},
 	celebi: {
@@ -12121,7 +12151,7 @@ let BattleLearnsets = {
 			toxic: ["2M"],
 		},
 		eventData: [
-			{"generation": 2, "level": 5, "shiny": 1, "moves": ["leechseed", "confusion", "healbell", "recover"]},
+			{generation: 2, level: 5, shiny: 1, moves: ["leechseed", "confusion", "healbell", "recover"]},
 		],
 		eventOnly: true,
 	},

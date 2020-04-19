@@ -4,7 +4,7 @@
 let BattleItems = {
 	berryjuice: {
 		inherit: true,
-		isUnreleased: false,
+		isNonstandard: null,
 	},
 	brightpowder: {
 		inherit: true,
@@ -65,7 +65,7 @@ let BattleItems = {
 		desc: "If held by a Chansey, its critical hit ratio is always at stage 2. (25% crit rate)",
 		onModifyCritRatioPriority: -1,
 		onModifyCritRatio(critRatio, user) {
-			if (user.template.species === 'Chansey') {
+			if (user.species.name === 'Chansey') {
 				return 3;
 			}
 		},
@@ -80,7 +80,7 @@ let BattleItems = {
 	quickclaw: {
 		inherit: true,
 		desc: "Each turn, holder has a ~23.4% chance to move first in its priority bracket.",
-		onModifyPriority(priority, pokemon) {
+		onFractionalPriority(priority, pokemon) {
 			if (this.randomChance(60, 256)) {
 				return Math.round(priority) + 0.1;
 			}
@@ -91,7 +91,7 @@ let BattleItems = {
 		desc: "If held by a Farfetch'd, its critical hit ratio is always at stage 2. (25% crit rate)",
 		onModifyCritRatioPriority: -1,
 		onModifyCritRatio(critRatio, user) {
-			if (user.template.species === 'Farfetch\'d') {
+			if (user.species.name === 'Farfetch\'d') {
 				return 3;
 			}
 		},

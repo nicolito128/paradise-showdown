@@ -1,4 +1,5 @@
 type Battle = import('./battle').Battle;
+type BattleQueue = import('./battle-queue').BattleQueue;
 type Field = import('./field').Field;
 type Action = import('./battle-queue').Action;
 type ModdedDex = import('./dex').ModdedDex;
@@ -96,6 +97,7 @@ interface EventInfo {
 	nature?: string;
 	ivs?: SparseStatsTable;
 	perfectIVs?: number;
+	/** true: has hidden ability, false | undefined: never has hidden ability */
 	isHidden?: boolean;
 	abilities?: string[];
 	maxEggMoves?: number;
@@ -104,7 +106,7 @@ interface EventInfo {
 	from?: string;
 }
 
-type Effect = Ability | Item | ActiveMove | Template | PureEffect | Format;
+type Effect = Ability | Item | ActiveMove | Species | PureEffect | Format;
 
 interface SelfEffect {
 	boosts?: SparseBoostsTable;
@@ -791,7 +793,6 @@ interface EffectData {
 	effectType?: string;
 	infiltrates?: boolean;
 	isNonstandard?: Nonstandard | null;
-	isUnreleased?: boolean | 'Past';
 	/**
 	 * `true` for generic Z-moves like Gigavolt Havoc.
 	 * Also `true` for Z-powered status moves like Z-Encore.
@@ -1047,22 +1048,22 @@ interface ActiveMove extends BasicEffect, MoveData {
 	infiltrates?: boolean;
 }
 
-interface TemplateAbility {
+interface SpeciesAbility {
 	0: string;
 	1?: string;
 	H?: string;
 	S?: string;
 }
 
-interface TemplateData {
-	abilities: TemplateAbility;
+interface SpeciesData {
+	abilities: SpeciesAbility;
 	baseStats: StatsTable;
 	canHatch?: boolean;
 	color: string;
 	eggGroups: string[];
 	heightm: number;
 	num: number;
-	species: string;
+	name: string;
 	types: string[];
 	weightkg: number;
 	baseForme?: string;
@@ -1077,7 +1078,7 @@ interface TemplateData {
 	gender?: GenderName;
 	genderRatio?: {[k: string]: number};
 	maxHP?: number;
-	otherForms?: string[];
+	cosmeticFormes?: string[];
 	otherFormes?: string[];
 	prevo?: string;
 	gen?: number;
@@ -1090,17 +1091,16 @@ interface TemplateData {
 	inheritsFrom?: string;
 }
 
-interface ModdedTemplateData extends Partial<TemplateData> {
+interface ModdedSpeciesData extends Partial<SpeciesData> {
 	inherit?: true;
 }
 
-interface TemplateFormatsData {
+interface SpeciesFormatsData {
 	comboMoves?: readonly string[];
 	doublesTier?: string;
 	essentialMove?: string;
 	exclusiveMoves?: readonly string[];
 	isNonstandard?: Nonstandard | null;
-	isUnreleased?: boolean | 'Past';
 	maleOnlyHidden?: boolean;
 	randomBattleMoves?: readonly string[];
 	randomDoubleBattleMoves?: readonly string[];
@@ -1109,7 +1109,7 @@ interface TemplateFormatsData {
 	unreleasedHidden?: boolean | 'Past';
 }
 
-interface ModdedTemplateFormatsData extends Partial<TemplateFormatsData> {
+interface ModdedSpeciesFormatsData extends Partial<SpeciesFormatsData> {
 	inherit?: true;
 }
 
@@ -1125,7 +1125,7 @@ interface ModdedLearnsetData extends Partial<LearnsetData> {
 	inherit?: true;
 }
 
-type Template = import('./dex-data').Template;
+type Species = import('./dex-data').Species;
 
 type GameType = 'singles' | 'doubles' | 'triples' | 'rotation' | 'multi' | 'free-for-all';
 type SideID = 'p1' | 'p2' | 'p3' | 'p4';
@@ -1147,6 +1147,8 @@ interface FormatsData extends EventMethods {
 	banlist?: string[];
 	battle?: ModdedBattleScriptsData;
 	pokemon?: ModdedBattlePokemon;
+	// queue?: ModdedBattleQueue;
+	field?: ModdedField;
 	cannotMega?: string[];
 	challengeShow?: boolean;
 	debug?: boolean;
@@ -1174,16 +1176,16 @@ interface FormatsData extends EventMethods {
 	tournamentShow?: boolean;
 	unbanlist?: string[];
 	checkLearnset?: (
-		this: TeamValidator, move: Move, template: Template, setSources: PokemonSources, set: PokemonSet
+		this: TeamValidator, move: Move, species: Species, setSources: PokemonSources, set: PokemonSet
 	) => {type: string, [any: string]: any} | null;
 	onAfterMega?: (this: Battle, pokemon: Pokemon) => void;
 	onBegin?: (this: Battle) => void;
 	onChangeSet?: (
 		this: TeamValidator, set: PokemonSet, format: Format, setHas?: AnyObject, teamHas?: AnyObject
 	) => string[] | void;
-	onModifyTemplate?: (
-		this: Battle, template: Template, target?: Pokemon, source?: Pokemon, effect?: Effect
-	) => Template | void;
+	onModifySpecies?: (
+		this: Battle, species: Species, target?: Pokemon, source?: Pokemon, effect?: Effect
+	) => Species | void;
 	onStart?: (this: Battle) => void;
 	onTeamPreview?: (this: Battle) => void;
 	onValidateSet?: (
@@ -1334,6 +1336,12 @@ interface ModdedBattlePokemon {
 	ignoringAbility?: (this: Pokemon) => boolean;
 }
 
+// interface ModdedBattleQueue extends Partial<BattleQueue> {}
+
+interface ModdedField extends Partial<Field> {
+	suppressingWeather?: (this: Field) => boolean;
+}
+
 interface ModdedBattleScriptsData extends Partial<BattleScriptsData> {
 	inherit?: string;
 	lastDamage?: number;
@@ -1357,9 +1365,9 @@ interface ModdedBattleScriptsData extends Partial<BattleScriptsData> {
 	suppressingWeather?: (this: Battle) => boolean;
 
 	// oms
-	doGetMixedTemplate?: (this: Battle, template: Template, deltas: AnyObject) => Template;
-	getMegaDeltas?: (this: Battle, megaSpecies: Template) => AnyObject;
-	getMixedTemplate?: (this: Battle, originalSpecies: string, megaSpecies: string) => Template;
+	doGetMixedSpecies?: (this: Battle, species: Species, deltas: AnyObject) => Species;
+	getMegaDeltas?: (this: Battle, megaSpecies: Species) => AnyObject;
+	getMixedSpecies?: (this: Battle, originalName: string, megaName: string) => Species;
 	getAbility?: (this: Battle, name: string | Ability) => Ability;
 	getZMove?: (this: Battle, move: Move, pokemon: Pokemon, skipChecks?: boolean) => string | undefined;
 	getActiveZMove?: (this: Battle, move: Move, pokemon: Pokemon) => ActiveMove;
